@@ -1,0 +1,45 @@
+{
+  "name": "convert-svg-to-png",
+  "version": "0.1.0",
+  "description": "Converts SVG to PNG using headless Chromium",
+  "homepage": "https://github.com/NotNinja/convert-svg-to-png",
+  "bugs": {
+    "url": "https://github.com/NotNinja/convert-svg-to-png/issues"
+  },
+  "author": {
+    "name": "Alasdair Mercer",
+    "email": "mercer.alasdair@gmail.com",
+    "url": "https://not.ninja"
+  },
+  "license": "MIT",
+  "keywords": [
+    "convert",
+    "converter",
+    "svg",
+    "png",
+    "headless",
+    "chromium"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NotNinja/convert-svg-to-png.git"
+  },
+  "dependencies": {
+    "file-url": "^2.0.2",
+    "image-size": "^0.6.1",
+    "puppeteer": "^0.12.0",
+    "tmp": "0.0.33"
+  },
+  "devDependencies": {
+    "eslint": "^4.9.0",
+    "eslint-config-notninja": "^0.2.3"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "ci": "npm run test",
+    "test": "eslint \"src/**/*.js\""
+  },
+  "engines": {
+    "node": ">=8"
+  }
+}
