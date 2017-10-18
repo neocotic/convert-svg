@@ -12,8 +12,8 @@ All unit tests should be updated and passing as well. All of this can easily be 
 ``` bash
 # install/update package dependencies
 $ npm install
-# run build & test suite
-$ npm run ci
+# run test suite
+$ npm test
 ```
 
 You must have at least [Node.js](https://nodejs.org) version 8 or newer and [npm](https://npmjs.com) version 5 or newer

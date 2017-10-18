@@ -2,7 +2,7 @@
 
 A [Node.js](https://nodejs.org) module for converting SVG to PNG using headless Chromium.
 
-[![Build Status](https://img.shields.io/travis/NotNinja/convert-svg-to-png/develop.svg?style=flat-square)](https://travis-ci.org/NotNinja/convert-svg-to-png)
+[![Build Status](https://img.shields.io/codeship/0a4c5630-9648-0135-1042-7e44d22860e0/develop.svg?style=flat-square)](https://app.codeship.com/projects/251525)
 [![Dependency Status](https://img.shields.io/david/NotNinja/convert-svg-to-png.svg?style=flat-square)](https://david-dm.org/NotNinja/convert-svg-to-png)
 [![Dev Dependency Status](https://img.shields.io/david/dev/NotNinja/convert-svg-to-png.svg?style=flat-square)](https://david-dm.org/NotNinja/convert-svg-to-png?type=dev)
 [![License](https://img.shields.io/npm/l/convert-svg-to-png.svg?style=flat-square)](https://github.com/NotNinja/convert-svg-to-png/blob/master/LICENSE.md)

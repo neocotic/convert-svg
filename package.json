@@ -39,7 +39,6 @@
   },
   "main": "src/index.js",
   "scripts": {
-    "ci": "npm run test",
     "pretest": "eslint \"src/**/*.js\" \"test/**/*.js\"",
     "test": "mocha -R list \"test/**/*.spec.js\""
   },
