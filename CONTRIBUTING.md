@@ -19,6 +19,15 @@ $ npm run ci
 You must have at least [Node.js](https://nodejs.org) version 8 or newer and [npm](https://npmjs.com) version 5 or newer
 installed.
 
+Some of the test fixtures include Microsoft-based fonts so, if you're a non-Windows user, you will have to ensure that
+you have Microsoft fonts installed. For example; Ubuntu users can do the following:
+
+``` bash
+$ sudo apt-get update
+$ sudo apt-get install ttf-mscorefonts-installer -y
+$ sudo fc-cache -fv
+```
+
 All pull requests should be made to the `develop` branch.
 
 Don't forget to add your details to the list of
