@@ -28,6 +28,7 @@ const sinon = require('sinon');
 const Converter = require('../src/converter');
 const { createTests } = require('./helper');
 const index = require('../src/index');
+const pkg = require('../package.json');
 
 describe('index', () => {
   describe('.convert', () => {
@@ -57,6 +58,12 @@ describe('index', () => {
 
     it('should never return same instance', () => {
       expect(index.createConverter()).to.not.equal(index.createConverter(), 'Must return unique instances');
+    });
+  });
+
+  describe('.version', () => {
+    it('should match version in package.json', () => {
+      expect(index.version).to.equal(pkg.version, 'Must match package version');
     });
   });
 });

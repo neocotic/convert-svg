@@ -23,6 +23,7 @@
 'use strict';
 
 const Converter = require('./converter');
+const { version } = require('../package.json');
 
 /**
  * Converts the specified <code>source</code> SVG into a PNG using the <code>options</code> provided via a headless
@@ -75,4 +76,4 @@ function createConverter() {
   return new Converter();
 }
 
-module.exports = { convert, createConverter };
+module.exports = { convert, createConverter, version };
