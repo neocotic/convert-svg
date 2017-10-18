@@ -63,7 +63,7 @@ async function convert(source, options) {
  *
  * It is important to note that, after the first time {@link Converter#convert} is called, a headless Chromium instance
  * will remain open until {@link Converter#destroy} is called. This is done automatically when using the main API
- * <code>convert</code> method within this module, however, when using {@link Converter} diretly, it is the
+ * <code>convert</code> method within this module, however, when using {@link Converter} directly, it is the
  * responsibility of the caller. Due to the fact that creating browser instances is expensive, this level of control
  * allows callers to reuse a browser for multiple conversions. For example; one could create a {@link Converter} and use
  * it to convert a collection of SVG files to PNG files and then destroy it afterwards. It's not recommended to keep an
