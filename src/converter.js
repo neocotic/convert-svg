@@ -298,7 +298,7 @@ module.exports = Converter;
  * The options that can be passed to {@link Converter#convert}.
  *
  * @typedef {Object} Converter~ConvertOptions
- * @property {string} [baseFile] - The path of the file to be converted into a file URL to ue for all relative URLs
+ * @property {string} [baseFile] - The path of the file to be converted into a file URL to use for all relative URLs
  * contained within the SVG. When specified, this will always take precedence over the <code>baseUrl</code> option.
  * @property {string} [baseUrl] - The base URL to use for all relative URLs contained within the SVG. Ignored if
  * <code>baseFile</code> option is also specified.
