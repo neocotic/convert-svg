@@ -1,8 +1,13 @@
-sudo: false
+sudo: required
+dist: trusty
 language: node_js
 node_js:
   - "8"
 before_script:
+  - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+  - sudo apt-get update
+  - sudo apt-get install ttf-mscorefonts-installer -y
+  - sudo fc-cache -fv
   - npm install -g npm@latest
 script:
   - npm run ci
