@@ -15,7 +15,7 @@
             }
 
             text {
-              font-family: "Segoe UI";
+              font-family: "Verdana";
               font-size: 200px;
               fill: white;
               text-anchor: middle;
