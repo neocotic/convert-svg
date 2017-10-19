@@ -1,0 +1,6 @@
+test/
+.*
+*.log
+AUTHORS.md
+CONTRIBUTING.md
+README.md
