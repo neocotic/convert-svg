@@ -4,13 +4,13 @@ jobs:
     docker:
       - image: circleci/node:8
     working_directory: ~/repo
-    dependencies:
-      pre:
-        - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-        - sudo apt-get update -qq
-        - sudo apt-get install -y libxcomposite1 ttf-mscorefonts-installer
-        - sudo fc-cache -fv
     steps:
+      -  dependencies:
+        pre:
+          - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          - sudo apt-get update -qq
+          - sudo apt-get install -y libxcomposite1 ttf-mscorefonts-installer
+          - sudo fc-cache -fv
       - checkout
       - run: npm install
       - run: npm test
