@@ -1,0 +1,19 @@
+sudo: required
+dist: trusty
+language: node_js
+node_js:
+  - "8"
+before_install:
+  - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+  - sudo apt-get -qq update
+  - sudo apt-get install -y ttf-mscorefonts-installer
+  - sudo fc-cache -fv
+before_script:
+  - npm install -g npm@latest
+script:
+  - npm run ci
+notifications:
+  slack:
+    rooms:
+      - secure: sXYAo0YqAkdu4ZC0hnmnt0qpuZP7cOFtXf8MZA4a8CSJ/DyzzERF8B4lihEmHMXqXoDmHIMGOUGwQQ6SbG4kSRGWIJGGMiPC8yHhPbkbVBECnb2NxRc72KY7pD7Q2fYpieCGXBwh3ZukDPcUhFoiEddMdAKX1yTZsxYBR6xrIPUf3xGXq4e/T72bmxGono1NmUFD499uCdtPc6vYqQkXAo0vt79yGKaEMtCUoUeJcq6cPWaCzE9beMkKDb8XVjhLlJrJMXAqxuH3aIlKhGCgtwJfReomUNXRbmZGujTM4qi8yqi4f51F6jHp+1PiQbpcPW5bcGOOFlPcrtw6NVl1gcWe4Vz7hxBBeTq3Ut2B/pTLvkr91ow4tYy1g6sIS+R7cqPQNJ8MJsAtyydM3345yhj00EbxtiXxN/4by7GNMDJvWqQMIlhpBL+GA95ikh9rdOmafVjyUOSbGun048RHSdZav+rMGyQBLA9ncDAvTcPkJwDpkh/Ri2vRs41/SXHcdB/lOQfIeWLtZbSB63VtjlmCgxaPnr8ErglqBUEEBvK2/SyJshdCV94l+43v2eog0K8gN+5JkhwzNCY7hJjQOxpAqeghVPCr00QBw4HJcjb6A8b5LIKbgpIRHd6X9gD/NBJQuMTSPq+KIFQ8IgQjRr4+PyeXmvBH8OSzma8R9Uc=
+    on_success: change
