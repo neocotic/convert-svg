@@ -12,6 +12,5 @@ jobs:
         - sudo fc-cache -fv
     steps:
       - checkout
-      - run: sudo npm install -g npm@latest
       - run: npm install
       - run: npm test
