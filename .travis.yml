@@ -11,7 +11,7 @@ before_install:
 before_script:
   - npm install -g npm@latest
 script:
-  - npm run ci
+  - npm test
 notifications:
   slack:
     rooms:
