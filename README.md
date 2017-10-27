@@ -49,7 +49,7 @@ $ npm install --global convert-svg-to-png
 
 ## API
 
-### `convert(source[, options])`
+### `Converter.convert(source[, options])`
 
 Converts the specified `source` SVG into a PNG using the `options` provided via a headless Chromium instance.
 
@@ -76,13 +76,13 @@ this information could not be derived from `source`.
 #### Example
 
 ``` javascript
-const { convert } = require('convert-svg-to-png');
+const Converter = require('convert-svg-to-png');
 const express = require('express');
 
 const app = express();
 
 app.post('/convert', async(req, res) => {
-  const png = await convert(req.body);
+  const png = await Converter.convert(req.body);
 
   res.set('Content-Type', 'image/png');
   res.send(png);
@@ -91,7 +91,7 @@ app.post('/convert', async(req, res) => {
 app.listen(3000);
 ```
 
-### `convertFile(sourceFilePath[, options])`
+### `Converter.convertFile(sourceFilePath[, options])`
 
 Converts the SVG file at the specified path into a PNG using the `options` provided and writes it to the the target
 file.
@@ -119,18 +119,31 @@ Has the same options as the standard `convert` method but also supports the foll
 #### Example
 
 ``` javascript
-const { convertFile } = require('convert-svg-to-png');
+const Converter = require('convert-svg-to-png');
 
 (async() => {
   const sourceFilePath = '/path/to/my-image.svg';
-  const targetFilePath = await convertFile(sourceFilePath);
+  const targetFilePath = await Converter.convertFile(sourceFilePath);
 
   console.log(targetFilePath);
   //=> "/path/to/my-image.png"
 })();
 ```
 
-### `createConverter()`
+### `Converter.VERSION`
+
+The current version of this library.
+
+#### Example
+
+``` javascript
+const Converter = require('convert-svg-to-png');
+
+console.log(Converter.VERSION);
+//=> "0.1.0"
+```
+
+### `Converter`
 
 Creates an instance of `Converter`.
 
@@ -143,14 +156,14 @@ multiple conversions. It's not recommended to keep an instance around for too lo
 #### Example
 
 ``` javascript
-const { createConverter } = require('convert-svg-to-png');
+const Converter = require('convert-svg-to-png');
 const fs = require('fs');
 const util = require('util');
 
 const readdir = util.promisify(fs.readdir);
 
 async function convertSvgFiles(dirPath) {
-  const converter = createConverter();
+  const converter = new Converter();
 
   try {
     const filePaths = await readdir(dirPath);
@@ -162,19 +175,6 @@ async function convertSvgFiles(dirPath) {
     await converter.destroy();
   }
 }
-```
-
-### `version`
-
-The current version of this library.
-
-#### Example
-
-``` javascript
-const { version } = require('convert-svg-to-png');
-
-console.log(version);
-//=> "0.1.0"
 ```
 
 ## Bugs

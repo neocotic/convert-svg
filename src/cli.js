@@ -31,7 +31,7 @@ const glob = require('glob');
 const path = require('path');
 const util = require('util');
 
-const { createConverter } = require('./');
+const Converter = require('./converter');
 const pkg = require('../package.json');
 
 const findFiles = util.promisify(glob);
@@ -113,7 +113,7 @@ class CLI {
    */
   async parse(args = []) {
     const command = this[_command].parse(args);
-    const converter = createConverter();
+    const converter = new Converter();
     const options = {
       baseUrl: command.baseUrl,
       converter,

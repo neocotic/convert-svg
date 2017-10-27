@@ -31,6 +31,8 @@ const puppeteer = require('puppeteer');
 const tmp = require('tmp');
 const util = require('util');
 
+const { version } = require('../package.json');
+
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 
@@ -51,7 +53,7 @@ const _validate = Symbol('validate');
  *
  * It is important to note that, after the first time either {@link Converter#convert} or{@link Converter#convertFile}
  * are called, a headless Chromium instance will remain open until {@link Converter#destroy} is called. This is done
- * automatically when using the main API convert methods, however, when using {@link Converter} directly, it is the
+ * automatically when using the static convert methods, however, when using {@link Converter} directly, it is the
  * responsibility of the caller. Due to the fact that creating browser instances is expensive, this level of control
  * allows callers to reuse a browser for multiple conversions. For example; one could create a {@link Converter} and use
  * it to convert a collection of SVG files to PNG files and then destroy it afterwards. It's not recommended to keep an
@@ -68,6 +70,87 @@ const _validate = Symbol('validate');
  * @public
  */
 class Converter {
+
+  /**
+   * Converts the specified <code>source</code> SVG into a PNG using the <code>options</code> provided via a headless
+   * Chromium instance.
+   *
+   * <code>source</code> can either be a SVG buffer or string.
+   *
+   * If the width and/or height cannot be derived from <code>source</code> then they must be provided via their
+   * corresponding options. This method attempts to derive the dimensions from <code>source</code> via any
+   * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
+   *
+   * This method is resolved with the PNG buffer.
+   *
+   * An error will occur if <code>source</code> does not contain an SVG element or no <code>width</code> and/or
+   * <code>height</code> options were provided and this information could not be derived from <code>source</code>.
+   *
+   * @param {Buffer|string} source - the SVG source to be converted to a PNG
+   * @param {Converter~ConvertOptions} [options] - the options to be used
+   * @return {Promise.<Buffer, Error>} A <code>Promise</code> that is resolved with the PNG buffer.
+   * @public
+   */
+  static async convert(source, options) {
+    const converter = Converter.createConverter();
+    let target;
+
+    try {
+      target = await converter.convert(source, options);
+    } finally {
+      await converter.destroy();
+    }
+
+    return target;
+  }
+
+  /**
+   * Converts the SVG file at the specified path into a PNG using the <code>options</code> provided and writes it to the
+   * the target file.
+   *
+   * The target file is derived from <code>sourceFilePath</code> unless the <code>targetFilePath</code> option is
+   * specified.
+   *
+   * If the width and/or height cannot be derived from the source file then they must be provided via their
+   * corresponding options. This method attempts to derive the dimensions from the source file via any
+   * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
+   *
+   * This method is resolved with the path of the target (PNG) file for reference.
+   *
+   * An error will occur if the source file does not contain an SVG element, no <code>width</code> and/or
+   * <code>height</code> options were provided and this information could not be derived from source file, or a problem
+   * arises while reading the source file or writing the target file.
+   *
+   * @param {string} sourceFilePath - the path of the SVG file to be converted to a PNG file
+   * @param {Converter~ConvertFileOptions} [options] - the options to be used
+   * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the target file path.
+   * @public
+   */
+  static async convertFile(sourceFilePath, options) {
+    const converter = Converter.createConverter();
+    let targetFilePath;
+
+    try {
+      targetFilePath = await converter.convertFile(sourceFilePath, options);
+    } finally {
+      await converter.destroy();
+    }
+
+    return targetFilePath;
+  }
+
+  /**
+   * Creates an instance of {@link Converter}.
+   *
+   * This method is primarily intended for testing purposes and the {@link Converter} constructor is expected to be used
+   * in any real-world scenario.
+   *
+   * @return {Converter} A newly created {@link Converter} instance.
+   * @public
+   */
+  static createConverter() {
+    return new Converter();
+  }
 
   static [_parseOptions](options, sourceFilePath) {
     options = Object.assign({}, options);
@@ -95,6 +178,16 @@ class Converter {
     }
 
     return options;
+  }
+
+  /**
+   * Returns the current version of <code>convert-svg-to-png</code>.
+   *
+   * @return {string} The version.
+   * @public
+   */
+  static get VERSION() {
+    return version;
   }
 
   /**
