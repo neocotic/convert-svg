@@ -34,7 +34,7 @@ const { expect } = chai;
 const readFile = util.promisify(fs.readFile);
 
 const Converter = require('../src/converter');
-const { createTests } = require('./helper');
+const { createConvertFileTests, createConvertTests } = require('./helper');
 
 describe('Converter', () => {
   let converter;
@@ -48,7 +48,7 @@ describe('Converter', () => {
       await converter.destroy();
     });
 
-    createTests(() => converter.convert.bind(converter), 200);
+    createConvertTests(() => converter.convert.bind(converter), 200);
 
     context('when source is a string', function() {
       /* eslint-disable no-invalid-this */
@@ -79,6 +79,27 @@ describe('Converter', () => {
         await converter.destroy();
 
         await expect(converter.convert('<svg></svg>')).to.eventually.be.rejectedWith(Error,
+          'Converter has been destroyed. A new Converter must be created');
+      });
+    });
+  });
+
+  describe('#convertFile', () => {
+    before(() => {
+      converter = new Converter();
+    });
+
+    after(async() => {
+      await converter.destroy();
+    });
+
+    createConvertFileTests(() => converter.convertFile.bind(converter), 250);
+
+    context('when destroyed', () => {
+      it('should thrown an error', async() => {
+        await converter.destroy();
+
+        await expect(converter.convertFile('<svg></svg>')).to.eventually.be.rejectedWith(Error,
           'Converter has been destroyed. A new Converter must be created');
       });
     });
