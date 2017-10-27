@@ -26,7 +26,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 
 const Converter = require('../src/converter');
-const { createTests } = require('./helper');
+const { createConvertFileTests, createConvertTests } = require('./helper');
 const index = require('../src/index');
 const pkg = require('../package.json');
 
@@ -48,7 +48,27 @@ describe('index', () => {
       index.createConverter.restore();
     });
 
-    createTests(() => index.convert, 350);
+    createConvertTests(() => index.convert, 350);
+  });
+
+  describe('.convertFile', () => {
+    let converter;
+
+    beforeEach(() => {
+      converter = new Converter();
+
+      sinon.spy(converter, 'destroy');
+      sinon.stub(index, 'createConverter').returns(converter);
+    });
+
+    afterEach(() => {
+      expect(index.createConverter.callCount).to.equal(1, 'createConverter must be called');
+      expect(converter.destroy.callCount).to.equal(1, 'Converter#destroy must be called');
+
+      index.createConverter.restore();
+    });
+
+    createConvertFileTests(() => index.convertFile, 400);
   });
 
   describe('.createConverter', () => {
