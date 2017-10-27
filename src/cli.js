@@ -40,7 +40,7 @@ const writeFile = util.promisify(fs.writeFile);
 const _baseDir = Symbol('baseDir');
 const _command = Symbol('command');
 const _convertFiles = Symbol('convertFiles');
-const _convertSource = Symbol('convertSource');
+const _convertInput = Symbol('convertInput');
 const _errorStream = Symbol('errorStream');
 const _inputStream = Symbol('inputStream');
 const _outputStream = Symbol('outputStream');
@@ -74,7 +74,7 @@ class CLI {
       .usage('[options] [files...]')
       .option('--no-color', 'disables color output')
       .option('-b, --base-url <url>', 'specify base URL to use for all relative URLs in SVG')
-      .option('-f, --filename <filename>', 'specify name the for target PNG file when processing STDIN')
+      .option('-f, --filename <filename>', 'specify filename the for PNG output when processing STDIN')
       .option('--height <value>', 'specify height for PNG')
       .option('--width <value>', 'specify width for PNG');
   }
@@ -138,9 +138,9 @@ class CLI {
 
         await this[_convertFiles](filePaths, options);
       } else {
-        const source = await getStdin();
+        const input = await getStdin();
 
-        await this[_convertSource](source, options);
+        await this[_convertInput](input, options);
       }
     } finally {
       await converter.destroy();
@@ -148,21 +148,21 @@ class CLI {
   }
 
   async [_convertFiles](filePaths, options) {
-    for (const sourceFilePath of filePaths) {
-      const targetFilePath = await options.converter.convertFile(sourceFilePath, {
+    for (const inputFilePath of filePaths) {
+      const outputFilePath = await options.converter.convertFile(inputFilePath, {
         baseUrl: options.baseUrl,
         height: options.height,
         width: options.width
       });
 
-      this.output(`Converted SVG file to PNG file: ${chalk.blue(sourceFilePath)} -> ${chalk.blue(targetFilePath)}`);
+      this.output(`Converted SVG file to PNG file: ${chalk.blue(inputFilePath)} -> ${chalk.blue(outputFilePath)}`);
     }
 
     this.output(chalk.green('Done!'));
   }
 
-  async [_convertSource](source, options) {
-    const target = await options.converter.convert(source, {
+  async [_convertInput](input, options) {
+    const output = await options.converter.convert(input, {
       baseFile: !options.baseUrl ? this.baseDir : null,
       baseUrl: options.baseUrl,
       height: options.height,
@@ -170,12 +170,12 @@ class CLI {
     });
 
     if (options.filePath) {
-      await writeFile(options.filePath, target);
+      await writeFile(options.filePath, output);
 
       this.output(`Converted SVG input to PNG file: ${chalk.blue(options.filePath)}`);
       this.output(chalk.green('Done!'));
     } else {
-      this[_outputStream].write(target);
+      this[_outputStream].write(output);
     }
   }
 

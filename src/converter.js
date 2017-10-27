@@ -59,7 +59,7 @@ const _validate = Symbol('validate');
  * it to convert a collection of SVG files to PNG files and then destroy it afterwards. It's not recommended to keep an
  * instance around for too long, as it will use up resources.
  *
- * Due constraints within Chromium, the SVG source is first written to a temporary HTML file and then navigated to. This
+ * Due constraints within Chromium, the SVG input is first written to a temporary HTML file and then navigated to. This
  * is because the default page for Chromium is using the <code>chrome</code> protocol so cannot load externally
  * referenced files (e.g. that use the <code>file</code> protocol). This temproary file is reused for the lifespan of
  * each {@link Converter} instance and will be deleted when it is destroyed.
@@ -72,71 +72,71 @@ const _validate = Symbol('validate');
 class Converter {
 
   /**
-   * Converts the specified <code>source</code> SVG into a PNG using the <code>options</code> provided via a headless
+   * Converts the specified <code>input</code> SVG into a PNG using the <code>options</code> provided via a headless
    * Chromium instance.
    *
-   * <code>source</code> can either be a SVG buffer or string.
+   * <code>input</code> can either be a SVG buffer or string.
    *
-   * If the width and/or height cannot be derived from <code>source</code> then they must be provided via their
-   * corresponding options. This method attempts to derive the dimensions from <code>source</code> via any
+   * If the width and/or height cannot be derived from <code>input</code> then they must be provided via their
+   * corresponding options. This method attempts to derive the dimensions from <code>input</code> via any
    * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
    *
    * This method is resolved with the PNG buffer.
    *
-   * An error will occur if <code>source</code> does not contain an SVG element or no <code>width</code> and/or
-   * <code>height</code> options were provided and this information could not be derived from <code>source</code>.
+   * An error will occur if <code>input</code> does not contain an SVG element or no <code>width</code> and/or
+   * <code>height</code> options were provided and this information could not be derived from <code>input</code>.
    *
-   * @param {Buffer|string} source - the SVG source to be converted to a PNG
+   * @param {Buffer|string} input - the SVG input to be converted to a PNG
    * @param {Converter~ConvertOptions} [options] - the options to be used
    * @return {Promise.<Buffer, Error>} A <code>Promise</code> that is resolved with the PNG buffer.
    * @public
    */
-  static async convert(source, options) {
+  static async convert(input, options) {
     const converter = Converter.createConverter();
-    let target;
+    let output;
 
     try {
-      target = await converter.convert(source, options);
+      output = await converter.convert(input, options);
     } finally {
       await converter.destroy();
     }
 
-    return target;
+    return output;
   }
 
   /**
    * Converts the SVG file at the specified path into a PNG using the <code>options</code> provided and writes it to the
-   * the target file.
+   * the output file.
    *
-   * The target file is derived from <code>sourceFilePath</code> unless the <code>targetFilePath</code> option is
+   * The output file is derived from <code>inputFilePath</code> unless the <code>outputFilePath</code> option is
    * specified.
    *
-   * If the width and/or height cannot be derived from the source file then they must be provided via their
-   * corresponding options. This method attempts to derive the dimensions from the source file via any
+   * If the width and/or height cannot be derived from the input file then they must be provided via their corresponding
+   * options. This method attempts to derive the dimensions from the input file via any
    * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
    *
-   * This method is resolved with the path of the target (PNG) file for reference.
+   * This method is resolved with the path of the (PNG) output file for reference.
    *
-   * An error will occur if the source file does not contain an SVG element, no <code>width</code> and/or
-   * <code>height</code> options were provided and this information could not be derived from source file, or a problem
-   * arises while reading the source file or writing the target file.
+   * An error will occur if the input file does not contain an SVG element, no <code>width</code> and/or
+   * <code>height</code> options were provided and this information could not be derived from input file, or a problem
+   * arises while reading the input file or writing the output file.
    *
-   * @param {string} sourceFilePath - the path of the SVG file to be converted to a PNG file
+   * @param {string} inputFilePath - the path of the SVG file to be converted to a PNG file
    * @param {Converter~ConvertFileOptions} [options] - the options to be used
-   * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the target file path.
+   * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the output file path.
    * @public
    */
-  static async convertFile(sourceFilePath, options) {
+  static async convertFile(inputFilePath, options) {
     const converter = Converter.createConverter();
-    let targetFilePath;
+    let outputFilePath;
 
     try {
-      targetFilePath = await converter.convertFile(sourceFilePath, options);
+      outputFilePath = await converter.convertFile(inputFilePath, options);
     } finally {
       await converter.destroy();
     }
 
-    return targetFilePath;
+    return outputFilePath;
   }
 
   /**
@@ -152,14 +152,14 @@ class Converter {
     return new Converter();
   }
 
-  static [_parseOptions](options, sourceFilePath) {
+  static [_parseOptions](options, inputFilePath) {
     options = Object.assign({}, options);
 
-    if (!options.targetFilePath && sourceFilePath) {
-      const targetDirPath = path.dirname(sourceFilePath);
-      const targetFileName = `${path.basename(sourceFilePath, path.extname(sourceFilePath))}.png`;
+    if (!options.outputFilePath && inputFilePath) {
+      const outputDirPath = path.dirname(inputFilePath);
+      const outputFileName = `${path.basename(inputFilePath, path.extname(inputFilePath))}.png`;
 
-      options.targetFilePath = path.join(targetDirPath, targetFileName);
+      options.outputFilePath = path.join(outputDirPath, outputFileName);
     }
 
     if (typeof options.baseFile === 'string') {
@@ -167,7 +167,7 @@ class Converter {
       delete options.baseFile;
     }
     if (!options.baseUrl) {
-      options.baseUrl = fileUrl(sourceFilePath ? path.resolve(sourceFilePath) : process.cwd());
+      options.baseUrl = fileUrl(inputFilePath ? path.resolve(inputFilePath) : process.cwd());
     }
 
     if (typeof options.height === 'string') {
@@ -200,68 +200,68 @@ class Converter {
   }
 
   /**
-   * Converts the specified <code>source</code> SVG into a PNG using the <code>options</code> provided.
+   * Converts the specified <code>input</code> SVG into a PNG using the <code>options</code> provided.
    *
-   * <code>source</code> can either be a SVG buffer or string.
+   * <code>input</code> can either be a SVG buffer or string.
    *
-   * If the width and/or height cannot be derived from <code>source</code> then they must be provided via their
-   * corresponding options. This method attempts to derive the dimensions from <code>source</code> via any
+   * If the width and/or height cannot be derived from <code>input</code> then they must be provided via their
+   * corresponding options. This method attempts to derive the dimensions from <code>input</code> via any
    * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
    *
    * This method is resolved with the PNG buffer.
    *
-   * An error will occur if this {@link Converter} has been destroyed, <code>source</code> does not contain an SVG
+   * An error will occur if this {@link Converter} has been destroyed, <code>input</code> does not contain an SVG
    * element, or no <code>width</code> and/or <code>height</code> options were provided and this information could not
-   * be derived from <code>source</code>.
+   * be derived from <code>input</code>.
    *
-   * @param {Buffer|string} source - the SVG source to be converted to a PNG
+   * @param {Buffer|string} input - the SVG input to be converted to a PNG
    * @param {Converter~ConvertOptions} [options] - the options to be used
    * @return {Promise.<Buffer, Error>} A <code>Promise</code> that is resolved with the PNG buffer.
    * @public
    */
-  async convert(source, options) {
+  async convert(input, options) {
     this[_validate]();
 
     options = Converter[_parseOptions](options);
 
-    const target = await this[_convert](source, options);
+    const output = await this[_convert](input, options);
 
-    return target;
+    return output;
   }
 
   /**
    * Converts the SVG file at the specified path into a PNG using the <code>options</code> provided and writes it to the
-   * the target file.
+   * the output file.
    *
-   * The target file is derived from <code>sourceFilePath</code> unless the <code>targetFilePath</code> option is
+   * The output file is derived from <code>inputFilePath</code> unless the <code>outputFilePath</code> option is
    * specified.
    *
-   * If the width and/or height cannot be derived from the source file then they must be provided via their
-   * corresponding options. This method attempts to derive the dimensions from the source file via any
+   * If the width and/or height cannot be derived from the input file then they must be provided via their corresponding
+   * options. This method attempts to derive the dimensions from the input file via any
    * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
    *
-   * This method is resolved with the path of the target (PNG) file for reference.
+   * This method is resolved with the path of the (PNG) output file for reference.
    *
-   * An error will occur if this {@link Converter} has been destroyed, the source file does not contain an SVG element,
+   * An error will occur if this {@link Converter} has been destroyed, the input file does not contain an SVG element,
    * no <code>width</code> and/or <code>height</code> options were provided and this information could not be derived
-   * from source file, or a problem arises while reading the source file or writing the target file.
+   * from input file, or a problem arises while reading the input file or writing the output file.
    *
-   * @param {string} sourceFilePath - the path of the SVG file to be converted to a PNG file
+   * @param {string} inputFilePath - the path of the SVG file to be converted to a PNG file
    * @param {Converter~ConvertFileOptions} [options] - the options to be used
-   * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the target file path.
+   * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the output file path.
    * @public
    */
-  async convertFile(sourceFilePath, options) {
+  async convertFile(inputFilePath, options) {
     this[_validate]();
 
-    options = Converter[_parseOptions](options, sourceFilePath);
+    options = Converter[_parseOptions](options, inputFilePath);
 
-    const source = await readFile(sourceFilePath);
-    const target = await this[_convert](source, options);
+    const input = await readFile(inputFilePath);
+    const output = await this[_convert](input, options);
 
-    await writeFile(options.targetFilePath, target);
+    await writeFile(options.outputFilePath, output);
 
-    return options.targetFilePath;
+    return options.outputFilePath;
   }
 
   /**
@@ -295,16 +295,16 @@ class Converter {
     }
   }
 
-  async [_convert](source, options) {
-    source = Buffer.isBuffer(source) ? source.toString('utf8') : source;
+  async [_convert](input, options) {
+    input = Buffer.isBuffer(input) ? input.toString('utf8') : input;
 
-    const start = source.indexOf('<svg');
+    const start = input.indexOf('<svg');
 
     let html = `<!DOCTYPE html><base href="${options.baseUrl}"><style>* { margin: 0; padding: 0; }</style>`;
     if (start >= 0) {
-      html += source.substring(start);
+      html += input.substring(start);
     } else {
-      throw new Error('SVG element open tag not found in source. Check the SVG source');
+      throw new Error('SVG element open tag not found in input. Check the SVG input');
     }
 
     const page = await this[_getPage](html);
@@ -321,12 +321,12 @@ class Converter {
       height: Math.round(dimensions.height)
     });
 
-    const target = await page.screenshot({
+    const output = await page.screenshot({
       clip: Object.assign({ x: 0, y: 0 }, dimensions),
       omitBackground: true
     });
 
-    return target;
+    return output;
   }
 
   [_getDimensions](page) {
@@ -449,8 +449,8 @@ module.exports = Converter;
  * The options that can be passed to {@link Converter#convertFile}.
  *
  * @typedef {Converter~ConvertOptions} Converter~ConvertFileOptions
- * @property {string} [targetFilePath] - The path of the file to which the PNG output should be written to. By default,
- * this will be derived from the source file path.
+ * @property {string} [outputFilePath] - The path of the file to which the PNG output should be written to. By default,
+ * this will be derived from the input file path.
  */
 
 /**
@@ -462,7 +462,7 @@ module.exports = Converter;
  * @property {string} [baseUrl] - The base URL to use for all relative URLs contained within the SVG. Ignored if
  * <code>baseFile</code> option is also specified.
  * @property {number|string} [height] - The height of the PNG to be generated. If omitted, an attempt will be made to
- * derive the height from the SVG source.
+ * derive the height from the SVG input.
  * @property {number|string} [width] - The width of the PNG to be generated. If omitted, an attempt will be made to
- * derive the width from the SVG source.
+ * derive the width from the SVG input.
  */

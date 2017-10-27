@@ -136,7 +136,7 @@
   {
     "name": "when invalid.svg",
     "file": "invalid.svg",
-    "error": "SVG element open tag not found in source. Check the SVG source"
+    "error": "SVG element open tag not found in input. Check the SVG input"
   },
   {
     "name": "when no width/height attributes or viewBox attribute; no dimensions passed",

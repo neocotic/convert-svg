@@ -72,16 +72,16 @@ function createConvertFileTests(methodSupplier, slow) {
 
       const message = test.error ? 'should throw an error' : test.message;
 
-      let targetFilePath;
-      let sourceFilePath;
+      let outputFilePath;
+      let inputFilePath;
       let options;
       let expectedFilePath;
       let expected;
 
       before(async() => {
-        targetFilePath = path.resolve(__dirname, 'fixtures', 'actual', `${index}.png`);
-        sourceFilePath = path.resolve(__dirname, 'fixtures', 'source', test.file);
-        options = parseOptions(test, sourceFilePath, targetFilePath);
+        outputFilePath = path.resolve(__dirname, 'fixtures', 'actual', `${index}.png`);
+        inputFilePath = path.resolve(__dirname, 'fixtures', 'input', test.file);
+        options = parseOptions(test, inputFilePath, outputFilePath);
 
         if (!test.error) {
           expectedFilePath = path.resolve(__dirname, 'fixtures', 'expected', `${index}.png`);
@@ -93,12 +93,12 @@ function createConvertFileTests(methodSupplier, slow) {
         const method = methodSupplier();
 
         if (test.error) {
-          await expect(method(sourceFilePath, options)).to.eventually.be.rejectedWith(Error, test.error);
+          await expect(method(inputFilePath, options)).to.eventually.be.rejectedWith(Error, test.error);
         } else {
-          const actualFilePath = await method(sourceFilePath, options);
-          const actual = await readFile(targetFilePath);
+          const actualFilePath = await method(inputFilePath, options);
+          const actual = await readFile(outputFilePath);
 
-          expect(actualFilePath).to.equal(targetFilePath, 'Must match target file path');
+          expect(actualFilePath).to.equal(outputFilePath, 'Must match output file path');
           expect(actual).to.deep.equal(expected, 'Must match PNG buffer');
         }
       });
@@ -123,16 +123,16 @@ function createConvertTests(methodSupplier, slow) {
 
       const message = test.error ? 'should throw an error' : test.message;
 
-      let sourceFilePath;
-      let source;
+      let inputFilePath;
+      let input;
       let options;
       let expectedFilePath;
       let expected;
 
       before(async() => {
-        sourceFilePath = path.resolve(__dirname, 'fixtures', 'source', test.file);
-        source = await readFile(sourceFilePath);
-        options = parseOptions(test, sourceFilePath);
+        inputFilePath = path.resolve(__dirname, 'fixtures', 'input', test.file);
+        input = await readFile(inputFilePath);
+        options = parseOptions(test, inputFilePath);
 
         if (!test.error) {
           expectedFilePath = path.resolve(__dirname, 'fixtures', 'expected', `${index}.png`);
@@ -144,9 +144,9 @@ function createConvertTests(methodSupplier, slow) {
         const method = methodSupplier();
 
         if (test.error) {
-          await expect(method(source, options)).to.eventually.be.rejectedWith(Error, test.error);
+          await expect(method(input, options)).to.eventually.be.rejectedWith(Error, test.error);
         } else {
-          const actual = await method(source, options);
+          const actual = await method(input, options);
 
           expect(actual).to.deep.equal(expected, 'Must match PNG buffer');
         }
@@ -181,12 +181,12 @@ async function createFixtures() {
       continue;
     }
 
-    const sourceFilePath = path.resolve(__dirname, 'fixtures', 'source', test.file);
-    const source = await readFile(sourceFilePath);
-    const options = parseOptions(test, sourceFilePath);
+    const inputFilePath = path.resolve(__dirname, 'fixtures', 'input', test.file);
+    const input = await readFile(inputFilePath);
+    const options = parseOptions(test, inputFilePath);
 
     const actualFilePath = path.resolve(__dirname, 'fixtures', 'actual', `${index}.png`);
-    const actual = await convert(source, options);
+    const actual = await convert(input, options);
 
     try {
       await makeDirectory(path.dirname(actualFilePath));
@@ -204,24 +204,24 @@ async function createFixtures() {
  * Parses the options for the specified <code>test</code> using the file paths provided, where appropriate.
  *
  * @param {Object} test - the test whose options are to be parsed
- * @param {string} sourceFilePath - the path of the file to be used to populate the <code>baseFile</code> and/or
+ * @param {string} inputFilePath - the path of the file to be used to populate the <code>baseFile</code> and/or
  * <code>baseUrl</code> options, if needed
- * @param {string} [targetFilePath] - the path of the file to be usedt to populate the <code>targetFilePath</code>
+ * @param {string} [outputFilePath] - the path of the file to be usedt to populate the <code>outputFilePath</code>
  * option
  * @return {Object} The parsed options for <code>test</code>.
  * @private
  */
-function parseOptions(test, sourceFilePath, targetFilePath) {
+function parseOptions(test, inputFilePath, outputFilePath) {
   const options = Object.assign({}, test.options);
-  if (targetFilePath) {
-    options.targetFilePath = targetFilePath;
+  if (outputFilePath) {
+    options.outputFilePath = outputFilePath;
   }
 
   if (test.includeFile) {
-    options.baseFile = sourceFilePath;
+    options.baseFile = inputFilePath;
   }
   if (test.includeUrl) {
-    options.baseUrl = fileUrl(sourceFilePath);
+    options.baseUrl = fileUrl(inputFilePath);
   }
 
   return options;

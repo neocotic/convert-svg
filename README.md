@@ -42,27 +42,27 @@ $ npm install --global convert-svg-to-png
         -V, --version              output the version number
         --no-color                 disables color output
         -b, --base-url <url>       specify base URL to use for all relative URLs in SVG
-        -f, --filename <filename>  specify name the for target PNG file when processing STDIN
+        -f, --filename <filename>  specify filename the for PNG output when processing STDIN
         --height <value>           specify height for PNG
         --width <value>            specify width for PNG
         -h, --help                 output usage information
 
 ## API
 
-### `Converter.convert(source[, options])`
+### `convert(input[, options])`
 
-Converts the specified `source` SVG into a PNG using the `options` provided via a headless Chromium instance.
+Converts the specified `input` SVG into a PNG using the `options` provided via a headless Chromium instance.
 
-`source` can either be a SVG buffer or string.
+`input` can either be a SVG buffer or string.
 
-If the width and/or height cannot be derived from `source` then they must be provided via their corresponding options.
-This method attempts to derive the dimensions from `source` via any `width`/`height` attributes or its calculated
+If the width and/or height cannot be derived from `input` then they must be provided via their corresponding options.
+This method attempts to derive the dimensions from `input` via any `width`/`height` attributes or its calculated
 `viewBox` attribute.
 
 This method is resolved with the PNG buffer.
 
-An error will occur if `source` does not contain an SVG element or no `width` and/or `height` options were provided and
-this information could not be derived from `source`.
+An error will occur if `input` does not contain an SVG element or no `width` and/or `height` options were provided and
+this information could not be derived from `input`.
 
 #### Options
 
@@ -70,8 +70,8 @@ this information could not be derived from `source`.
 | ---------- | ------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `baseFile` | String        | N/A                     | Path of file to be converted into a file URL to use for all relative URLs contained within SVG. Overrides `baseUrl` option. |
 | `baseUrl`  | String        | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within SVG. Overridden by `baseUrl` option.                                 |
-| `height`   | Number/String | N/A                     | Height of the PNG to be generated. Derived from SVG source if omitted.                                                      |
-| `width`    | Number/String | N/A                     | Width of the PNG to be generated. Derived from SVG source if omitted.                                                       |
+| `height`   | Number/String | N/A                     | Height of the PNG to be generated. Derived from SVG input if omitted.                                                       |
+| `width`    | Number/String | N/A                     | Width of the PNG to be generated. Derived from SVG input if omitted.                                                        |
 
 #### Example
 
@@ -91,30 +91,30 @@ app.post('/convert', async(req, res) => {
 app.listen(3000);
 ```
 
-### `Converter.convertFile(sourceFilePath[, options])`
+### `convertFile(inputFilePath[, options])`
 
-Converts the SVG file at the specified path into a PNG using the `options` provided and writes it to the the target
+Converts the SVG file at the specified path into a PNG using the `options` provided and writes it to the the output
 file.
 
-The target file is derived from `sourceFilePath` unless the `targetFilePath` option is specified.
+The output file is derived from `inputFilePath` unless the `outputFilePath` option is specified.
 
-If the width and/or height cannot be derived from the source file then they must be provided via their corresponding
-options. This method attempts to derive the dimensions from the source file via any `width`/`height` attributes or its
+If the width and/or height cannot be derived from the input file then they must be provided via their corresponding
+options. This method attempts to derive the dimensions from the input file via any `width`/`height` attributes or its
 calculated `viewBox` attribute.
 
-This method is resolved with the path of the target (PNG) file for reference.
+This method is resolved with the path of the (PNG) output file for reference.
 
-An error will occur if the source file does not contain an SVG element, no `width` and/or `height` options were provided
-and this information could not be derived from source file, or a problem arises while reading the source file or writing
-the target file.
+An error will occur if the input file does not contain an SVG element, no `width` and/or `height` options were provided
+and this information could not be derived from input file, or a problem arises while reading the input file or writing
+the output file.
 
 #### Options
 
 Has the same options as the standard `convert` method but also supports the following additional options:
 
-| Option           | Type   | Default                                                | Description                                                   |
-| ---------------- | ------ | ------------------------------------------------------ | ------------------------------------------------------------- |
-| `targetFilePath` | String | `sourceFilePath` with extension replaced with `".png"` | Path of the file to which the PNG output should be written to |
+| Option           | Type   | Default                                               | Description                                                   |
+| ---------------- | ------ | ----------------------------------------------------- | ------------------------------------------------------------- |
+| `outputFilePath` | String | `inputFilePath` with extension replaced with `".png"` | Path of the file to which the PNG output should be written to |
 
 #### Example
 
@@ -122,25 +122,12 @@ Has the same options as the standard `convert` method but also supports the foll
 const Converter = require('convert-svg-to-png');
 
 (async() => {
-  const sourceFilePath = '/path/to/my-image.svg';
-  const targetFilePath = await Converter.convertFile(sourceFilePath);
+  const inputFilePath = '/path/to/my-image.svg';
+  const outputFilePath = await Converter.convertFile(inputFilePath);
 
-  console.log(targetFilePath);
+  console.log(outputFilePath);
   //=> "/path/to/my-image.png"
 })();
-```
-
-### `Converter.VERSION`
-
-The current version of this library.
-
-#### Example
-
-``` javascript
-const Converter = require('convert-svg-to-png');
-
-console.log(Converter.VERSION);
-//=> "0.1.0"
 ```
 
 ### `Converter`
@@ -175,6 +162,19 @@ async function convertSvgFiles(dirPath) {
     await converter.destroy();
   }
 }
+```
+
+### `VERSION`
+
+The current version of this library.
+
+#### Example
+
+``` javascript
+const Converter = require('convert-svg-to-png');
+
+console.log(Converter.VERSION);
+//=> "0.1.0"
 ```
 
 ## Bugs

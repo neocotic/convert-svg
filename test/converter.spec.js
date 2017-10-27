@@ -104,25 +104,25 @@ describe('Converter', () => {
 
     createConvertTests(() => converter.convert.bind(converter), 200);
 
-    context('when source is a string', function() {
+    context('when input is a string', function() {
       /* eslint-disable no-invalid-this */
       this.slow(200);
       /* eslint-enable no-invalid-this */
 
-      let sourceFilePath;
-      let source;
+      let inputFilePath;
+      let input;
       let expectedFilePath;
       let expected;
 
       before(async() => {
-        sourceFilePath = path.resolve(__dirname, 'fixtures', 'source', 'width-height-only.svg');
-        source = await readFile(sourceFilePath, 'utf8');
+        inputFilePath = path.resolve(__dirname, 'fixtures', 'input', 'width-height-only.svg');
+        input = await readFile(inputFilePath, 'utf8');
         expectedFilePath = path.resolve(__dirname, 'fixtures', 'expected', '0.png');
         expected = await readFile(expectedFilePath);
       });
 
-      it('should work', async() => {
-        const actual = await converter.convert(source);
+      it('should convert SVG string to PNG buffer', async() => {
+        const actual = await converter.convert(input);
 
         expect(actual).to.deep.equal(expected, 'Must match PNG buffer');
       });
