@@ -201,13 +201,13 @@ async function createFixtures() {
 }
 
 /**
- * TODO: Document
- * Parses the options for the specified <code>test</code> using the <code>filePath</code> provided, where appropriate.
+ * Parses the options for the specified <code>test</code> using the file paths provided, where appropriate.
  *
  * @param {Object} test - the test whose options are to be parsed
  * @param {string} sourceFilePath - the path of the file to be used to populate the <code>baseFile</code> and/or
  * <code>baseUrl</code> options, if needed
- * @param {string} [targetFilePath] -
+ * @param {string} [targetFilePath] - the path of the file to be usedt to populate the <code>targetFilePath</code>
+ * option
  * @return {Object} The parsed options for <code>test</code>.
  * @private
  */
