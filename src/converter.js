@@ -126,12 +126,14 @@ class Converter {
    * @return {Promise.<Buffer, Error>} A <code>Promise</code> that is resolved with the PNG buffer.
    * @public
    */
-  convert(source, options) {
+  async convert(source, options) {
     this[_validate]();
 
     options = Converter[_parseOptions](options);
 
-    return this[_convert](source, options);
+    const target = await this[_convert](source, options);
+
+    return target;
   }
 
   /**
