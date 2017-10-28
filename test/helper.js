@@ -27,17 +27,133 @@ const chaiAsPromised = require('chai-as-promised');
 const fileUrl = require('file-url');
 const fs = require('fs');
 const path = require('path');
+const rimraf = require('rimraf');
 const util = require('util');
 
 chai.use(chaiAsPromised);
 
 const { expect } = chai;
-const mkdir = util.promisify(fs.mkdir);
+const makeDirectory = util.promisify(fs.mkdir);
 const readFile = util.promisify(fs.readFile);
+const removeFile = util.promisify(rimraf);
 const writeFile = util.promisify(fs.writeFile);
 
 const { convert } = require('../src/index');
 const tests = require('./tests.json');
+
+/**
+ * Describes each test within <code>test/tests.json</code> for the <code>convertFile</code> method.
+ *
+ * @param {Function} methodSupplier - a function that returns the <code>convertFile</code> method to be tested
+ * @param {number} slow - the number of milliseconds to be considered "slow"
+ * @return {void}
+ * @public
+ */
+function createConvertFileTests(methodSupplier, slow) {
+  before(async() => {
+    try {
+      await makeDirectory(path.resolve(__dirname, 'fixtures', 'actual'));
+    } catch (e) {
+      if (e.code !== 'EEXIST') {
+        throw e;
+      }
+    }
+  });
+
+  after(async() => {
+    await removeFile(path.resolve(__dirname, 'fixtures', 'actual'), { glob: false });
+  });
+
+  tests.forEach((test, index) => {
+    context(`(test:${index}) ${test.name}`, function() {
+      /* eslint-disable no-invalid-this */
+      this.slow(slow);
+      /* eslint-enable no-invalid-this */
+
+      const message = test.error ? 'should throw an error' : test.message;
+
+      let outputFilePath;
+      let inputFilePath;
+      let options;
+      let expectedFilePath;
+      let expected;
+
+      before(async() => {
+        outputFilePath = path.resolve(__dirname, 'fixtures', 'actual', `${index}.png`);
+        inputFilePath = path.resolve(__dirname, 'fixtures', 'input', test.file);
+        options = parseOptions(test, inputFilePath, outputFilePath);
+
+        if (!test.error) {
+          expectedFilePath = path.resolve(__dirname, 'fixtures', 'expected', `${index}.png`);
+          expected = await readFile(expectedFilePath);
+        }
+      });
+
+      it(message, async() => {
+        const method = methodSupplier();
+
+        if (test.error) {
+          await expect(method(inputFilePath, options)).to.eventually.be.rejectedWith(Error, test.error);
+        } else {
+          const actualFilePath = await method(inputFilePath, options);
+          const actual = await readFile(outputFilePath);
+
+          expect(actualFilePath).to.equal(outputFilePath, 'Must match output file path');
+          expect(actual).to.deep.equal(expected, 'Must match PNG buffer');
+        }
+      });
+    });
+  });
+}
+
+/**
+ * Describes each test within <code>test/tests.json</code> for the <code>convert</code> method.
+ *
+ * @param {Function} methodSupplier - a function that returns the <code>convert</code> method to be tested
+ * @param {number} slow - the number of milliseconds to be considered "slow"
+ * @return {void}
+ * @public
+ */
+function createConvertTests(methodSupplier, slow) {
+  tests.forEach((test, index) => {
+    context(`(test:${index}) ${test.name}`, function() {
+      /* eslint-disable no-invalid-this */
+      this.slow(slow);
+      /* eslint-enable no-invalid-this */
+
+      const message = test.error ? 'should throw an error' : test.message;
+
+      let inputFilePath;
+      let input;
+      let options;
+      let expectedFilePath;
+      let expected;
+
+      before(async() => {
+        inputFilePath = path.resolve(__dirname, 'fixtures', 'input', test.file);
+        input = await readFile(inputFilePath);
+        options = parseOptions(test, inputFilePath);
+
+        if (!test.error) {
+          expectedFilePath = path.resolve(__dirname, 'fixtures', 'expected', `${index}.png`);
+          expected = await readFile(expectedFilePath);
+        }
+      });
+
+      it(message, async() => {
+        const method = methodSupplier();
+
+        if (test.error) {
+          await expect(method(input, options)).to.eventually.be.rejectedWith(Error, test.error);
+        } else {
+          const actual = await method(input, options);
+
+          expect(actual).to.deep.equal(expected, 'Must match PNG buffer');
+        }
+      });
+    });
+  });
+}
 
 /**
  * Generates files within the <code>test/fixtures/actual/</code> directory for each test within
@@ -51,12 +167,10 @@ const tests = require('./tests.json');
  *
  * An error will occur if any problem arises while trying to read/write any files or convert the SVG into a PNG.
  *
- * @return {Promise.<void, Error>} A <code>Promise</code> for the asynchronous file reading and writing as well as
- * SVG-PNG conversion that is resolved once all files have been generated.
+ * @return {Promise.<void, Error>} A <code>Promise</code> that is resolved once all files have been generated.
  * @public
  */
 async function createFixtures() {
-  /* eslint-disable no-await-in-loop */
   let index = -1;
 
   for (const test of tests) {
@@ -66,15 +180,15 @@ async function createFixtures() {
       continue;
     }
 
-    const sourceFilePath = path.resolve(__dirname, 'fixtures', 'source', test.file);
-    const source = await readFile(sourceFilePath);
-    const options = parseOptions(test, sourceFilePath);
+    const inputFilePath = path.resolve(__dirname, 'fixtures', 'input', test.file);
+    const input = await readFile(inputFilePath);
+    const options = parseOptions(test, inputFilePath);
 
     const actualFilePath = path.resolve(__dirname, 'fixtures', 'actual', `${index}.png`);
-    const actual = await convert(source, options);
+    const actual = await convert(input, options);
 
     try {
-      await mkdir(path.dirname(actualFilePath));
+      await makeDirectory(path.dirname(actualFilePath));
     } catch (e) {
       if (e.code !== 'EEXIST') {
         throw e;
@@ -83,78 +197,37 @@ async function createFixtures() {
 
     await writeFile(actualFilePath, actual);
   }
-  /* eslint-enable no-await-in-loop */
 }
 
 /**
- * Describes each test within <code>test/tests.json</code>.
- *
- * @param {Function} methodSupplier - a function that returns the convert method to be tested
- * @param {number} slow - the number of milliseconds to be considered "slow"
- * @return {void}
- * @public
- */
-function createTests(methodSupplier, slow) {
-  tests.forEach((test, index) => {
-    context(`(test:${index}) ${test.name}`, function() {
-      /* eslint-disable no-invalid-this */
-      this.slow(slow);
-      /* eslint-enable no-invalid-this */
-
-      const message = test.error ? 'should throw an error' : test.message;
-
-      let sourceFilePath;
-      let source;
-      let options;
-      let expectedFilePath;
-      let expected;
-
-      before(async() => {
-        sourceFilePath = path.resolve(__dirname, 'fixtures', 'source', test.file);
-        source = await readFile(sourceFilePath);
-        options = parseOptions(test, sourceFilePath);
-
-        if (!test.error) {
-          expectedFilePath = path.resolve(__dirname, 'fixtures', 'expected', `${index}.png`);
-          expected = await readFile(expectedFilePath);
-        }
-      });
-
-      it(message, async() => {
-        const method = methodSupplier();
-
-        if (test.error) {
-          await expect(method(source, options)).to.eventually.be.rejectedWith(Error, test.error);
-        } else {
-          const actual = await method(source, options);
-
-          expect(actual).to.deep.equal(expected, 'Must match PNG buffer');
-        }
-      });
-    });
-  });
-}
-
-/**
- * Parses the options for the specified <code>test</code> using the <code>filePath</code> provided, where appropriate.
+ * Parses the options for the specified <code>test</code> using the file paths provided, where appropriate.
  *
  * @param {Object} test - the test whose options are to be parsed
- * @param {string} filePath - the path of the file to be used to populate the <code>baseFile</code> and/or
+ * @param {string} inputFilePath - the path of the file to be used to populate the <code>baseFile</code> and/or
  * <code>baseUrl</code> options, if needed
+ * @param {string} [outputFilePath] - the path of the file to be usedt to populate the <code>outputFilePath</code>
+ * option
  * @return {Object} The parsed options for <code>test</code>.
  * @private
  */
-function parseOptions(test, filePath) {
+function parseOptions(test, inputFilePath, outputFilePath) {
   const options = Object.assign({}, test.options);
+  if (outputFilePath) {
+    options.outputFilePath = outputFilePath;
+  }
 
   if (test.includeFile) {
-    options.baseFile = filePath;
+    options.baseFile = inputFilePath;
   }
   if (test.includeUrl) {
-    options.baseUrl = fileUrl(filePath);
+    options.baseUrl = fileUrl(inputFilePath);
   }
 
   return options;
 }
 
-module.exports = { createFixtures, createTests };
+module.exports = {
+  createConvertFileTests,
+  createConvertTests,
+  createFixtures
+};

@@ -26,13 +26,18 @@
 
 const fileUrl = require('file-url');
 const fs = require('fs');
+const path = require('path');
 const puppeteer = require('puppeteer');
 const tmp = require('tmp');
 const util = require('util');
 
+const { version } = require('../package.json');
+
+const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 
 const _browser = Symbol('browser');
+const _convert = Symbol('convert');
 const _destroyed = Symbol('destroyed');
 const _getDimensions = Symbol('getDimensions');
 const _getPage = Symbol('getPage');
@@ -41,19 +46,20 @@ const _page = Symbol('page');
 const _parseOptions = Symbol('parseOptions');
 const _setDimensions = Symbol('setDimensions');
 const _tempFile = Symbol('tempFile');
+const _validate = Symbol('validate');
 
 /**
  * Converts SVG to PNG using a headless Chromium instance.
  *
- * It is important to note that, after the first time {@link Converter#convert} is called, a headless Chromium instance
- * will remain open until {@link Converter#destroy} is called. This is done automatically when using the main API
- * <code>convert</code> method, however, when using {@link Converter} directly, it is the responsibility of the caller.
- * Due to the fact that creating browser instances is expensive, this level of control allows callers to reuse a browser
- * for multiple conversions. For example; one could create a {@link Converter} and use it to convert a collection of
- * SVG files to PNG files and then destroy it afterwards. It's not recommended to keep an instance around for too long,
- * as it will use up resources.
+ * It is important to note that, after the first time either {@link Converter#convert} or{@link Converter#convertFile}
+ * are called, a headless Chromium instance will remain open until {@link Converter#destroy} is called. This is done
+ * automatically when using the static convert methods, however, when using {@link Converter} directly, it is the
+ * responsibility of the caller. Due to the fact that creating browser instances is expensive, this level of control
+ * allows callers to reuse a browser for multiple conversions. For example; one could create a {@link Converter} and use
+ * it to convert a collection of SVG files to PNG files and then destroy it afterwards. It's not recommended to keep an
+ * instance around for too long, as it will use up resources.
  *
- * Due constraints within Chromium, the SVG source is first written to a temporary HTML file and then navigated to. This
+ * Due constraints within Chromium, the SVG input is first written to a temporary HTML file and then navigated to. This
  * is because the default page for Chromium is using the <code>chrome</code> protocol so cannot load externally
  * referenced files (e.g. that use the <code>file</code> protocol). This temproary file is reused for the lifespan of
  * each {@link Converter} instance and will be deleted when it is destroyed.
@@ -65,25 +71,126 @@ const _tempFile = Symbol('tempFile');
  */
 class Converter {
 
-  static [_parseOptions](options) {
+  /**
+   * Converts the specified <code>input</code> SVG into a PNG using the <code>options</code> provided via a headless
+   * Chromium instance.
+   *
+   * <code>input</code> can either be a SVG buffer or string.
+   *
+   * If the width and/or height cannot be derived from <code>input</code> then they must be provided via their
+   * corresponding options. This method attempts to derive the dimensions from <code>input</code> via any
+   * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
+   *
+   * This method is resolved with the PNG buffer.
+   *
+   * An error will occur if <code>input</code> does not contain an SVG element or no <code>width</code> and/or
+   * <code>height</code> options were provided and this information could not be derived from <code>input</code>.
+   *
+   * @param {Buffer|string} input - the SVG input to be converted to a PNG
+   * @param {Converter~ConvertOptions} [options] - the options to be used
+   * @return {Promise.<Buffer, Error>} A <code>Promise</code> that is resolved with the PNG buffer.
+   * @public
+   */
+  static async convert(input, options) {
+    const converter = Converter.createConverter();
+    let output;
+
+    try {
+      output = await converter.convert(input, options);
+    } finally {
+      await converter.destroy();
+    }
+
+    return output;
+  }
+
+  /**
+   * Converts the SVG file at the specified path into a PNG using the <code>options</code> provided and writes it to the
+   * the output file.
+   *
+   * The output file is derived from <code>inputFilePath</code> unless the <code>outputFilePath</code> option is
+   * specified.
+   *
+   * If the width and/or height cannot be derived from the input file then they must be provided via their corresponding
+   * options. This method attempts to derive the dimensions from the input file via any
+   * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
+   *
+   * This method is resolved with the path of the (PNG) output file for reference.
+   *
+   * An error will occur if the input file does not contain an SVG element, no <code>width</code> and/or
+   * <code>height</code> options were provided and this information could not be derived from input file, or a problem
+   * arises while reading the input file or writing the output file.
+   *
+   * @param {string} inputFilePath - the path of the SVG file to be converted to a PNG file
+   * @param {Converter~ConvertFileOptions} [options] - the options to be used
+   * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the output file path.
+   * @public
+   */
+  static async convertFile(inputFilePath, options) {
+    const converter = Converter.createConverter();
+    let outputFilePath;
+
+    try {
+      outputFilePath = await converter.convertFile(inputFilePath, options);
+    } finally {
+      await converter.destroy();
+    }
+
+    return outputFilePath;
+  }
+
+  /**
+   * Creates an instance of {@link Converter}.
+   *
+   * This method is primarily intended for testing purposes and the {@link Converter} constructor is expected to be used
+   * in any real-world scenario.
+   *
+   * @return {Converter} A newly created {@link Converter} instance.
+   * @public
+   */
+  static createConverter() {
+    return new Converter();
+  }
+
+  static [_parseOptions](options, inputFilePath) {
     options = Object.assign({}, options);
+
+    if (!options.outputFilePath && inputFilePath) {
+      const outputDirPath = path.dirname(inputFilePath);
+      const outputFileName = `${path.basename(inputFilePath, path.extname(inputFilePath))}.png`;
+
+      options.outputFilePath = path.join(outputDirPath, outputFileName);
+    }
 
     if (typeof options.baseFile === 'string') {
       options.baseUrl = fileUrl(options.baseFile);
       delete options.baseFile;
     }
     if (!options.baseUrl) {
-      options.baseUrl = fileUrl(process.cwd());
+      options.baseUrl = fileUrl(inputFilePath ? path.resolve(inputFilePath) : process.cwd());
     }
 
     if (typeof options.height === 'string') {
       options.height = parseInt(options.height, 10);
+    }
+    if (options.scale == null) {
+      options.scale = 1;
     }
     if (typeof options.width === 'string') {
       options.width = parseInt(options.width, 10);
     }
 
     return options;
+  }
+
+  /**
+   * Returns the current version of <code>convert-svg-to-png</code>.
+   *
+   * @return {string} The version.
+   * @public
+   */
+  static get VERSION() {
+    return version;
   }
 
   /**
@@ -96,61 +203,68 @@ class Converter {
   }
 
   /**
-   * Converts the specified <code>source</code> SVG into a PNG using the <code>options</code> provided.
+   * Converts the specified <code>input</code> SVG into a PNG using the <code>options</code> provided.
    *
-   * <code>source</code> can either be a SVG buffer or string.
+   * <code>input</code> can either be a SVG buffer or string.
    *
-   * If the width and/or height cannot be derived from <code>source</code> then they must be provided via their
-   * corresponding options. This method attempts to derive the dimensions from <code>source</code> via any
+   * If the width and/or height cannot be derived from <code>input</code> then they must be provided via their
+   * corresponding options. This method attempts to derive the dimensions from <code>input</code> via any
    * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
    *
-   * An error will occur if this {@link Converter} has been destroyed, <code>source</code> does not contain an SVG
-   * element, or no <code>width</code> and/or <code>height</code> options were provided and this information could not
-   * be derived from <code>source</code>.
+   * This method is resolved with the PNG buffer.
    *
-   * @param {Buffer|string} source - the SVG source to be converted to a PNG
+   * An error will occur if this {@link Converter} has been destroyed, <code>input</code> does not contain an SVG
+   * element, or no <code>width</code> and/or <code>height</code> options were provided and this information could not
+   * be derived from <code>input</code>.
+   *
+   * @param {Buffer|string} input - the SVG input to be converted to a PNG
    * @param {Converter~ConvertOptions} [options] - the options to be used
-   * @return {Promise.<Buffer, Error>} A <code>Promise</code> for the asynchronous temporary file creation/writing and
-   * browser interactions that is resolved with the PNG buffer.
+   * @return {Promise.<Buffer, Error>} A <code>Promise</code> that is resolved with the PNG buffer.
    * @public
    */
-  async convert(source, options) {
-    if (this[_destroyed]) {
-      throw new Error('Converter has been destroyed. A new Converter must be created');
-    }
+  async convert(input, options) {
+    this[_validate]();
 
-    source = Buffer.isBuffer(source) ? source.toString('utf8') : source;
     options = Converter[_parseOptions](options);
 
-    const start = source.indexOf('<svg');
+    const output = await this[_convert](input, options);
 
-    let html = `<!DOCTYPE html><base href="${options.baseUrl}"><style>* { margin: 0; padding: 0; }</style>`;
-    if (start >= 0) {
-      html += source.substring(start);
-    } else {
-      throw new Error('SVG element open tag not found in source. Check the SVG source');
-    }
+    return output;
+  }
 
-    const page = await this[_getPage](html);
+  /**
+   * Converts the SVG file at the specified path into a PNG using the <code>options</code> provided and writes it to the
+   * the output file.
+   *
+   * The output file is derived from <code>inputFilePath</code> unless the <code>outputFilePath</code> option is
+   * specified.
+   *
+   * If the width and/or height cannot be derived from the input file then they must be provided via their corresponding
+   * options. This method attempts to derive the dimensions from the input file via any
+   * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
+   *
+   * This method is resolved with the path of the (PNG) output file for reference.
+   *
+   * An error will occur if this {@link Converter} has been destroyed, the input file does not contain an SVG element,
+   * no <code>width</code> and/or <code>height</code> options were provided and this information could not be derived
+   * from input file, or a problem arises while reading the input file or writing the output file.
+   *
+   * @param {string} inputFilePath - the path of the SVG file to be converted to a PNG file
+   * @param {Converter~ConvertFileOptions} [options] - the options to be used
+   * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the output file path.
+   * @public
+   */
+  async convertFile(inputFilePath, options) {
+    this[_validate]();
 
-    await this[_setDimensions](page, options);
+    options = Converter[_parseOptions](options, inputFilePath);
 
-    const dimensions = await this[_getDimensions](page);
-    if (!dimensions) {
-      throw new Error('Unable to derive width and height from SVG. Consider specifying corresponding options');
-    }
+    const input = await readFile(inputFilePath);
+    const output = await this[_convert](input, options);
 
-    await page.setViewport({
-      width: Math.round(dimensions.width),
-      height: Math.round(dimensions.height)
-    });
+    await writeFile(options.outputFilePath, output);
 
-    const target = await page.screenshot({
-      clip: Object.assign({ x: 0, y: 0 }, dimensions),
-      omitBackground: true
-    });
-
-    return target;
+    return options.outputFilePath;
   }
 
   /**
@@ -163,7 +277,8 @@ class Converter {
    *
    * An error will occur if any problem arises while closing the browser, where applicable.
    *
-   * @return {Promise.<void, Error>} A <code>Promise</code> for the asynchronous browser interactions.
+   * @return {Promise.<void, Error>} A <code>Promise</code> that is resolved once this {@link Converter} has been
+   * destroyed.
    * @public
    */
   async destroy() {
@@ -182,6 +297,47 @@ class Converter {
       delete this[_browser];
       delete this[_page];
     }
+  }
+
+  async [_convert](input, options) {
+    input = Buffer.isBuffer(input) ? input.toString('utf8') : input;
+
+    const start = input.indexOf('<svg');
+
+    let html = `<!DOCTYPE html><base href="${options.baseUrl}"><style>* { margin: 0; padding: 0; }</style>`;
+    if (start >= 0) {
+      html += input.substring(start);
+    } else {
+      throw new Error('SVG element open tag not found in input. Check the SVG input');
+    }
+
+    const page = await this[_getPage](html);
+
+    await this[_setDimensions](page, options);
+
+    const dimensions = await this[_getDimensions](page);
+    if (!dimensions) {
+      throw new Error('Unable to derive width and height from SVG. Consider specifying corresponding options');
+    }
+
+    if (options.scale !== 1) {
+      dimensions.height *= options.scale;
+      dimensions.width *= options.scale;
+
+      await this[_setDimensions](page, dimensions);
+    }
+
+    await page.setViewport({
+      height: Math.round(dimensions.height),
+      width: Math.round(dimensions.width)
+    });
+
+    const output = await page.screenshot({
+      clip: Object.assign({ x: 0, y: 0 }, dimensions),
+      omitBackground: true
+    });
+
+    return output;
   }
 
   [_getDimensions](page) {
@@ -279,6 +435,12 @@ class Converter {
     }, dimensions);
   }
 
+  [_validate]() {
+    if (this[_destroyed]) {
+      throw new Error('Converter has been destroyed. A new Converter must be created');
+    }
+  }
+
   /**
    * Returns whether this {@link Converter} has been destroyed.
    *
@@ -295,6 +457,14 @@ class Converter {
 module.exports = Converter;
 
 /**
+ * The options that can be passed to {@link Converter#convertFile}.
+ *
+ * @typedef {Converter~ConvertOptions} Converter~ConvertFileOptions
+ * @property {string} [outputFilePath] - The path of the file to which the PNG output should be written to. By default,
+ * this will be derived from the input file path.
+ */
+
+/**
  * The options that can be passed to {@link Converter#convert}.
  *
  * @typedef {Object} Converter~ConvertOptions
@@ -303,7 +473,9 @@ module.exports = Converter;
  * @property {string} [baseUrl] - The base URL to use for all relative URLs contained within the SVG. Ignored if
  * <code>baseFile</code> option is also specified.
  * @property {number|string} [height] - The height of the PNG to be generated. If omitted, an attempt will be made to
- * derive the height from the SVG source.
+ * derive the height from the SVG input.
+ * @property {number} [scale=1] - The scale to be applied to the width and height (either specified as options or
+ * derived).
  * @property {number|string} [width] - The width of the PNG to be generated. If omitted, an attempt will be made to
- * derive the width from the SVG source.
+ * derive the width from the SVG input.
  */

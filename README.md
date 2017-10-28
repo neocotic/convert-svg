@@ -9,6 +9,7 @@ A [Node.js](https://nodejs.org) module for converting SVG to PNG using headless 
 [![Release](https://img.shields.io/npm/v/convert-svg-to-png.svg?style=flat-square)](https://www.npmjs.com/package/convert-svg-to-png)
 
 * [Install](#install)
+* [CLI](#cli)
 * [API](#api)
 * [Bugs](#bugs)
 * [Contributors](#contributors)
@@ -24,89 +25,140 @@ $ npm install --save convert-svg-to-png
 
 You'll need to have at least [Node.js](https://nodejs.org) 8 or newer.
 
+If you want to use the command line interface you'll most likely want to install it globally so that you can run
+`convert-svg-to-png` from anywhere:
+
+``` bash
+$ npm install --global convert-svg-to-png
+```
+
+## CLI
+
+    Usage: convert-svg-to-png [options] [files...]
+
+
+      Options:
+
+        -V, --version              output the version number
+        --no-color                 disables color output
+        -b, --base-url <url>       specify base URL to use for all relative URLs in SVG
+        -f, --filename <filename>  specify filename the for PNG output when processing STDIN
+        --height <value>           specify height for PNG
+        --scale <value>            specify scale to apply to dimensions [1]
+        --width <value>            specify width for PNG
+        -h, --help                 output usage information
+
 ## API
 
-### `convert(source[, options])`
+### `convert(input[, options])`
 
-Converts the specified `source` SVG into a PNG using the `options` provided via a headless Chromium instance.
+Converts the specified `input` SVG into a PNG using the `options` provided via a headless Chromium instance.
 
-`source` can either be a SVG buffer or string.
+`input` can either be a SVG buffer or string.
 
-If the width and/or height cannot be derived from `source` then they must be provided via their corresponding options.
-This method attempts to derive the dimensions from `source` via any `width`/`height` attributes or its calculated
+If the width and/or height cannot be derived from `input` then they must be provided via their corresponding options.
+This method attempts to derive the dimensions from `input` via any `width`/`height` attributes or its calculated
 `viewBox` attribute.
 
-An error will occur if `source` does not contain an SVG element or no `width` and/or `height` options were provided and
-this information could not be derived from `source`.
+This method is resolved with the PNG buffer.
+
+An error will occur if `input` does not contain an SVG element or no `width` and/or `height` options were provided and
+this information could not be derived from `input`.
 
 #### Options
 
-| Option     | Type          | Default                 | Description |
+| Option     | Type          | Default                 | Description                                                                                                                 |
 | ---------- | ------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `baseFile` | String        | N/A                     | Path of file to be converted into a file URL to use for all relative URLs contained within SVG. Overrides `baseUrl` option. |
 | `baseUrl`  | String        | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within SVG. Overridden by `baseUrl` option.                                 |
-| `height`   | Number/String | N/A                     | Height of the PNG to be generated. Derived from SVG source if omitted.                                                      |
-| `width`    | Number/String | N/A                     | Width of the PNG to be generated. Derived from SVG source if omitted.                                                       |
+| `height`   | Number/String | N/A                     | Height of the PNG to be generated. Derived from SVG input if omitted.                                                       |
+| `scale`    | Number        | `1`                     | Scale to be applied to the width and height (specified as options or derived)                                               |
+| `width`    | Number/String | N/A                     | Width of the PNG to be generated. Derived from SVG input if omitted.                                                        |
 
 #### Example
 
 ``` javascript
-const { convert } = require('convert-svg-to-png');
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
+const Converter = require('convert-svg-to-png');
+const express = require('express');
 
-const readFile = util.promisify(fs.readFile);
-const writeFile = util.promisify(fs.writeFile);
+const app = express();
 
-async function convertSvgFile(filePath) {
-  const dirPath = path.dirname(filePath);
-  const input = await readFile(filePath);
-  const output = await convert(input, { baseFile: dirPath });
+app.post('/convert', async(req, res) => {
+  const png = await Converter.convert(req.body);
 
-  await writeFile(path.join(dirPath, `${path.basename(filePath, '.svg')}.png`), output);
-}
+  res.set('Content-Type', 'image/png');
+  res.send(png);
+});
+
+app.listen(3000);
 ```
 
-### `createConverter()`
+### `convertFile(inputFilePath[, options])`
+
+Converts the SVG file at the specified path into a PNG using the `options` provided and writes it to the the output
+file.
+
+The output file is derived from `inputFilePath` unless the `outputFilePath` option is specified.
+
+If the width and/or height cannot be derived from the input file then they must be provided via their corresponding
+options. This method attempts to derive the dimensions from the input file via any `width`/`height` attributes or its
+calculated `viewBox` attribute.
+
+This method is resolved with the path of the (PNG) output file for reference.
+
+An error will occur if the input file does not contain an SVG element, no `width` and/or `height` options were provided
+and this information could not be derived from input file, or a problem arises while reading the input file or writing
+the output file.
+
+#### Options
+
+Has the same options as the standard `convert` method but also supports the following additional options:
+
+| Option           | Type   | Default                                               | Description                                                   |
+| ---------------- | ------ | ----------------------------------------------------- | ------------------------------------------------------------- |
+| `outputFilePath` | String | `inputFilePath` with extension replaced with `".png"` | Path of the file to which the PNG output should be written to |
+
+#### Example
+
+``` javascript
+const Converter = require('convert-svg-to-png');
+
+(async() => {
+  const inputFilePath = '/path/to/my-image.svg';
+  const outputFilePath = await Converter.convertFile(inputFilePath);
+
+  console.log(outputFilePath);
+  //=> "/path/to/my-image.png"
+})();
+```
+
+### `Converter`
 
 Creates an instance of `Converter`.
 
-It is important to note that, after the first time `Converter#convert` is called, a headless Chromium instance will
-remain open until `Converter#destroy` is called. This is done automatically when using the main API
-[convert](#convertsource-options) method, however, when using `Converter` directly, it is the responsibility of the
-caller. Due to the fact that creating browser instances is expensive, this level of control allows callers to reuse a
-browser for multiple conversions. It's not recommended to keep an instance around for too long, as it will use up
-resources.
+It is important to note that, after the first time either `Converter#convert` or `Converter#convertFile` are called, a
+headless Chromium instance will remain open until `Converter#destroy` is called. This is done automatically when using
+the main API convert methods, however, when using `Converter` directly, it is the responsibility of the caller. Due to
+the fact that creating browser instances is expensive, this level of control allows callers to reuse a browser for
+multiple conversions. It's not recommended to keep an instance around for too long, as it will use up resources.
 
 #### Example
 
 ``` javascript
-const { createConverter } = require('convert-svg-to-png');
+const Converter = require('convert-svg-to-png');
 const fs = require('fs');
-const path = require('path');
 const util = require('util');
 
 const readdir = util.promisify(fs.readdir);
-const readFile = util.promisify(fs.readFile);
-const writeFile = util.promisify(fs.writeFile);
 
 async function convertSvgFiles(dirPath) {
-  const converter = createConverter();
+  const converter = new Converter();
 
   try {
     const filePaths = await readdir(dirPath);
 
     for (const filePath of filePaths) {
-      const extension = path.extname(filePath);
-      if (extension !== '.svg') {
-        continue;
-      }
-
-      const input = await readFile(path.join(dirPath, filePath));
-      const output = await converter.convert(input, { baseFile: dirPath });
-
-      await writeFile(path.join(dirPath, `${path.basename(filePath, extension)}.png`), output);
+      await converter.convertFile(filePath);
     }
   } finally {
     await converter.destroy();
@@ -114,16 +166,16 @@ async function convertSvgFiles(dirPath) {
 }
 ```
 
-### `version`
+### `VERSION`
 
 The current version of this library.
 
 #### Example
 
 ``` javascript
-const { version } = require('convert-svg-to-png');
+const Converter = require('convert-svg-to-png');
 
-version;
+console.log(Converter.VERSION);
 //=> "0.1.0"
 ```
 
