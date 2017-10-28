@@ -44,6 +44,7 @@ $ npm install --global convert-svg-to-png
         -b, --base-url <url>       specify base URL to use for all relative URLs in SVG
         -f, --filename <filename>  specify filename the for PNG output when processing STDIN
         --height <value>           specify height for PNG
+        --scale <value>            specify scale to apply to dimensions [1]
         --width <value>            specify width for PNG
         -h, --help                 output usage information
 
