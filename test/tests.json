@@ -106,20 +106,13 @@
   {
     "name": "when including an external file with <image> (setting baseFile option)",
     "file": "external-file.svg",
-    "includeFile": true,
+    "includeBaseFile": true,
     "message": "should show the kittens"
   },
   {
     "name": "when including an external file with <image> (setting baseUrl option)",
     "file": "external-file.svg",
-    "includeUrl": true,
-    "message": "should show the kittens"
-  },
-  {
-    "name": "when including an external file with <image> (setting baseFile option overrides baseUrl option)",
-    "file": "external-file.svg",
-    "options": { "baseUrl": "http://localhost/" },
-    "includeFile": true,
+    "includeBaseUrl": true,
     "message": "should show the kittens"
   },
   {
@@ -134,9 +127,40 @@
     "message": "text should have diacritics (tête-à-tête)"
   },
   {
+    "name": "when setting scale option to 0.5",
+    "file": "scalable.svg",
+    "options": { "width": 200, "height": 200, "scale": 0.5 },
+    "message": "should shrink image size by half"
+  },
+  {
+    "name": "when setting scale option to 1",
+    "file": "scalable.svg",
+    "options": { "width": 200, "height": 200, "scale": 1 },
+    "message": "should maintain image size"
+  },
+  {
+    "name": "when setting scale option to 2",
+    "file": "scalable.svg",
+    "options": { "width": 200, "height": 200, "scale": 2 },
+    "message": "should double image size"
+  },
+  {
+    "name": "when setting scale option without width/height options",
+    "file": "scalable.svg",
+    "options": { "scale": 3 },
+    "message": "should double image size derived from image"
+  },
+  {
+    "name": "when setting both baseFile and baseUrl options",
+    "file": "external-file.svg",
+    "includeBaseFile": true,
+    "includeBaseUrl": true,
+    "error": "Both baseFile and baseUrl options specified. Use only one"
+  },
+  {
     "name": "when invalid.svg",
     "file": "invalid.svg",
-    "error": "SVG element open tag not found in source. Check the SVG source"
+    "error": "SVG element open tag not found in input. Check the SVG input"
   },
   {
     "name": "when no width/height attributes or viewBox attribute; no dimensions passed",

@@ -2,5 +2,6 @@ test/
 .*
 *.log
 AUTHORS.md
+CHANGES.md
 CONTRIBUTING.md
 README.md
