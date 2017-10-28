@@ -2,8 +2,5 @@
   "extends": "notninja/es8",
   "env": {
     "node": true
-  },
-  "rules": {
-    "no-await-in-loop": "off"
   }
 }

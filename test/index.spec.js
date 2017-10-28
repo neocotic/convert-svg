@@ -23,12 +23,47 @@
 'use strict';
 
 const { expect } = require('chai');
+const sinon = require('sinon');
 
 const Converter = require('../src/converter');
+const { createTests } = require('./helper');
 const index = require('../src/index');
+const pkg = require('../package.json');
 
 describe('index', () => {
-  it('should be Converter constructor', () => {
-    expect(index).to.equal(Converter, 'Must be Converter');
+  describe('.convert', () => {
+    let converter;
+
+    beforeEach(() => {
+      converter = new Converter();
+
+      sinon.spy(converter, 'destroy');
+      sinon.stub(index, 'createConverter').returns(converter);
+    });
+
+    afterEach(() => {
+      expect(index.createConverter.callCount).to.equal(1, 'createConverter must be called');
+      expect(converter.destroy.callCount).to.equal(1, 'Converter#destroy must be called');
+
+      index.createConverter.restore();
+    });
+
+    createTests(() => index.convert, 350);
+  });
+
+  describe('.createConverter', () => {
+    it('should return Converter instance', () => {
+      expect(index.createConverter()).to.be.an.instanceOf(Converter, 'Must return a Converter');
+    });
+
+    it('should never return same instance', () => {
+      expect(index.createConverter()).to.not.equal(index.createConverter(), 'Must return unique instances');
+    });
+  });
+
+  describe('.version', () => {
+    it('should match version in package.json', () => {
+      expect(index.version).to.equal(pkg.version, 'Must match package version');
+    });
   });
 });
