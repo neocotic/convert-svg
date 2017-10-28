@@ -76,6 +76,7 @@ class CLI {
       .option('-b, --base-url <url>', 'specify base URL to use for all relative URLs in SVG')
       .option('-f, --filename <filename>', 'specify filename the for PNG output when processing STDIN')
       .option('--height <value>', 'specify height for PNG')
+      .option('--scale <value>', 'specify scale to apply to dimensions [1]', parseInt)
       .option('--width <value>', 'specify width for PNG');
   }
 
@@ -107,8 +108,7 @@ class CLI {
    * An error will occur if any problem arises.
    *
    * @param {string[]} [args] - the arguments to be parsed
-   * @return {Promise.<void, Error>} A <code>Promise</code> for any asynchronous file traversal and/or buffer reading
-   * and writing.
+   * @return {Promise.<void, Error>} A <code>Promise</code> that is resolved once all actions have been completed.
    * @public
    */
   async parse(args = []) {
@@ -119,6 +119,7 @@ class CLI {
       converter,
       filePath: command.filename ? path.resolve(this.baseDir, command.filename) : null,
       height: command.height,
+      scale: command.scale,
       width: command.width
     };
 
@@ -152,6 +153,7 @@ class CLI {
       const outputFilePath = await options.converter.convertFile(inputFilePath, {
         baseUrl: options.baseUrl,
         height: options.height,
+        scale: options.scale,
         width: options.width
       });
 
@@ -166,6 +168,7 @@ class CLI {
       baseFile: !options.baseUrl ? this.baseDir : null,
       baseUrl: options.baseUrl,
       height: options.height,
+      scale: options.scale,
       width: options.width
     });
 

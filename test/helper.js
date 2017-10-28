@@ -167,8 +167,7 @@ function createConvertTests(methodSupplier, slow) {
  *
  * An error will occur if any problem arises while trying to read/write any files or convert the SVG into a PNG.
  *
- * @return {Promise.<void, Error>} A <code>Promise</code> for the asynchronous file reading and writing as well as
- * SVG-PNG conversion that is resolved once all files have been generated.
+ * @return {Promise.<void, Error>} A <code>Promise</code> that is resolved once all files have been generated.
  * @public
  */
 async function createFixtures() {

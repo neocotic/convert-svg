@@ -71,6 +71,7 @@ this information could not be derived from `input`.
 | `baseFile` | String        | N/A                     | Path of file to be converted into a file URL to use for all relative URLs contained within SVG. Overrides `baseUrl` option. |
 | `baseUrl`  | String        | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within SVG. Overridden by `baseUrl` option.                                 |
 | `height`   | Number/String | N/A                     | Height of the PNG to be generated. Derived from SVG input if omitted.                                                       |
+| `scale`    | Number        | `1`                     | Scale to be applied to the width and height (specified as options or derived)                                               |
 | `width`    | Number/String | N/A                     | Width of the PNG to be generated. Derived from SVG input if omitted.                                                        |
 
 #### Example

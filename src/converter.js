@@ -173,6 +173,9 @@ class Converter {
     if (typeof options.height === 'string') {
       options.height = parseInt(options.height, 10);
     }
+    if (options.scale == null) {
+      options.scale = 1;
+    }
     if (typeof options.width === 'string') {
       options.width = parseInt(options.width, 10);
     }
@@ -274,7 +277,8 @@ class Converter {
    *
    * An error will occur if any problem arises while closing the browser, where applicable.
    *
-   * @return {Promise.<void, Error>} A <code>Promise</code> for the asynchronous browser interactions.
+   * @return {Promise.<void, Error>} A <code>Promise</code> that is resolved once this {@link Converter} has been
+   * destroyed.
    * @public
    */
   async destroy() {
@@ -316,9 +320,16 @@ class Converter {
       throw new Error('Unable to derive width and height from SVG. Consider specifying corresponding options');
     }
 
+    if (options.scale !== 1) {
+      dimensions.height *= options.scale;
+      dimensions.width *= options.scale;
+
+      await this[_setDimensions](page, dimensions);
+    }
+
     await page.setViewport({
-      width: Math.round(dimensions.width),
-      height: Math.round(dimensions.height)
+      height: Math.round(dimensions.height),
+      width: Math.round(dimensions.width)
     });
 
     const output = await page.screenshot({
@@ -463,6 +474,8 @@ module.exports = Converter;
  * <code>baseFile</code> option is also specified.
  * @property {number|string} [height] - The height of the PNG to be generated. If omitted, an attempt will be made to
  * derive the height from the SVG input.
+ * @property {number} [scale=1] - The scale to be applied to the width and height (either specified as options or
+ * derived).
  * @property {number|string} [width] - The width of the PNG to be generated. If omitted, an attempt will be made to
  * derive the width from the SVG input.
  */
