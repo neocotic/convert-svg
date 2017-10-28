@@ -216,10 +216,10 @@ function parseOptions(test, inputFilePath, outputFilePath) {
     options.outputFilePath = outputFilePath;
   }
 
-  if (test.includeFile) {
+  if (test.includeBaseFile) {
     options.baseFile = inputFilePath;
   }
-  if (test.includeUrl) {
+  if (test.includeBaseUrl) {
     options.baseUrl = fileUrl(inputFilePath);
   }
 

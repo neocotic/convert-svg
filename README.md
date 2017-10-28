@@ -62,18 +62,19 @@ This method attempts to derive the dimensions from `input` via any `width`/`heig
 
 This method is resolved with the PNG buffer.
 
-An error will occur if `input` does not contain an SVG element or no `width` and/or `height` options were provided and
-this information could not be derived from `input`.
+An error will occur if both the `baseFile` and `baseUrl` options have been provided, `input` does not contain an SVG
+element or no `width` and/or `height` options were provided and this information could not be derived from `input`.
 
 #### Options
 
-| Option     | Type          | Default                 | Description                                                                                                                 |
-| ---------- | ------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `baseFile` | String        | N/A                     | Path of file to be converted into a file URL to use for all relative URLs contained within SVG. Overrides `baseUrl` option. |
-| `baseUrl`  | String        | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within SVG. Overridden by `baseUrl` option.                                 |
-| `height`   | Number/String | N/A                     | Height of the PNG to be generated. Derived from SVG input if omitted.                                                       |
-| `scale`    | Number        | `1`                     | Scale to be applied to the width and height (specified as options or derived)                                               |
-| `width`    | Number/String | N/A                     | Width of the PNG to be generated. Derived from SVG input if omitted.                                                        |
+| Option     | Type          | Default                 | Description                                                                                                                                                      |
+| ---------- | ------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `baseFile` | String        | N/A                     | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option. |
+| `baseUrl`  | String        | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in
+* conjunction with the `baseFile` option.                                                                                                                                                                                 |
+| `height`   | Number/String | N/A                     | Height of the PNG to be generated. Derived from SVG input if omitted.                                                                                            |
+| `scale`    | Number        | `1`                     | Scale to be applied to the width and height (specified as options or derived)                                                                                    |
+| `width`    | Number/String | N/A                     | Width of the PNG to be generated. Derived from SVG input if omitted.                                                                                             |
 
 #### Example
 
@@ -106,9 +107,9 @@ calculated `viewBox` attribute.
 
 This method is resolved with the path of the (PNG) output file for reference.
 
-An error will occur if the input file does not contain an SVG element, no `width` and/or `height` options were provided
-and this information could not be derived from input file, or a problem arises while reading the input file or writing
-the output file.
+An error will occur if both the `baseFile` and `baseUrl` options have been provided, the input file does not contain an
+SVG element, no `width` and/or `height` options were provided and this information could not be derived from input file,
+or a problem arises while reading the input file or writing the output file.
 
 #### Options
 

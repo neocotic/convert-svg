@@ -106,20 +106,13 @@
   {
     "name": "when including an external file with <image> (setting baseFile option)",
     "file": "external-file.svg",
-    "includeFile": true,
+    "includeBaseFile": true,
     "message": "should show the kittens"
   },
   {
     "name": "when including an external file with <image> (setting baseUrl option)",
     "file": "external-file.svg",
-    "includeUrl": true,
-    "message": "should show the kittens"
-  },
-  {
-    "name": "when including an external file with <image> (setting baseFile option overrides baseUrl option)",
-    "file": "external-file.svg",
-    "options": { "baseUrl": "http://localhost/" },
-    "includeFile": true,
+    "includeBaseUrl": true,
     "message": "should show the kittens"
   },
   {
@@ -156,6 +149,13 @@
     "file": "scalable.svg",
     "options": { "scale": 3 },
     "message": "should double image size derived from image"
+  },
+  {
+    "name": "when setting both baseFile and baseUrl options",
+    "file": "external-file.svg",
+    "includeBaseFile": true,
+    "includeBaseUrl": true,
+    "error": "Both baseFile and baseUrl options specified. Use only one"
   },
   {
     "name": "when invalid.svg",

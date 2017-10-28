@@ -83,8 +83,9 @@ class Converter {
    *
    * This method is resolved with the PNG buffer.
    *
-   * An error will occur if <code>input</code> does not contain an SVG element or no <code>width</code> and/or
-   * <code>height</code> options were provided and this information could not be derived from <code>input</code>.
+   * An error will occur if both the <code>baseFile</code> and <code>baseUrl</code> options have been provided,
+   * <code>input</code> does not contain an SVG element or no <code>width</code> and/or <code>height</code> options were
+   * provided and this information could not be derived from <code>input</code>.
    *
    * @param {Buffer|string} input - the SVG input to be converted to a PNG
    * @param {Converter~ConvertOptions} [options] - the options to be used
@@ -117,9 +118,10 @@ class Converter {
    *
    * This method is resolved with the path of the (PNG) output file for reference.
    *
-   * An error will occur if the input file does not contain an SVG element, no <code>width</code> and/or
-   * <code>height</code> options were provided and this information could not be derived from input file, or a problem
-   * arises while reading the input file or writing the output file.
+   * An error will occur if both the <code>baseFile</code> and <code>baseUrl</code> options have been provided, the
+   * input file does not contain an SVG element, no <code>width</code> and/or <code>height</code> options were provided
+   * and this information could not be derived from input file, or a problem arises while reading the input file or
+   * writing the output file.
    *
    * @param {string} inputFilePath - the path of the SVG file to be converted to a PNG file
    * @param {Converter~ConvertFileOptions} [options] - the options to be used
@@ -162,6 +164,9 @@ class Converter {
       options.outputFilePath = path.join(outputDirPath, outputFileName);
     }
 
+    if (options.baseFile != null && options.baseUrl != null) {
+      throw new Error('Both baseFile and baseUrl options specified. Use only one');
+    }
     if (typeof options.baseFile === 'string') {
       options.baseUrl = fileUrl(options.baseFile);
       delete options.baseFile;
@@ -213,9 +218,10 @@ class Converter {
    *
    * This method is resolved with the PNG buffer.
    *
-   * An error will occur if this {@link Converter} has been destroyed, <code>input</code> does not contain an SVG
-   * element, or no <code>width</code> and/or <code>height</code> options were provided and this information could not
-   * be derived from <code>input</code>.
+   * An error will occur if this {@link Converter} has been destroyed, both the <code>baseFile</code> and
+   * <code>baseUrl</code> options have been provided, <code>input</code> does not contain an SVG element, or no
+   * <code>width</code> and/or <code>height</code> options were provided and this information could not be derived from
+   * <code>input</code>.
    *
    * @param {Buffer|string} input - the SVG input to be converted to a PNG
    * @param {Converter~ConvertOptions} [options] - the options to be used
@@ -245,9 +251,10 @@ class Converter {
    *
    * This method is resolved with the path of the (PNG) output file for reference.
    *
-   * An error will occur if this {@link Converter} has been destroyed, the input file does not contain an SVG element,
-   * no <code>width</code> and/or <code>height</code> options were provided and this information could not be derived
-   * from input file, or a problem arises while reading the input file or writing the output file.
+   * An error will occur if this {@link Converter} has been destroyed, both the <code>baseFile</code> and
+   * <code>baseUrl</code> options have been provided, the input file does not contain an SVG element, no
+   * <code>width</code> and/or <code>height</code> options were provided and this information could not be derived from
+   * input file, or a problem arises while reading the input file or writing the output file.
    *
    * @param {string} inputFilePath - the path of the SVG file to be converted to a PNG file
    * @param {Converter~ConvertFileOptions} [options] - the options to be used
@@ -469,9 +476,9 @@ module.exports = Converter;
  *
  * @typedef {Object} Converter~ConvertOptions
  * @property {string} [baseFile] - The path of the file to be converted into a file URL to use for all relative URLs
- * contained within the SVG. When specified, this will always take precedence over the <code>baseUrl</code> option.
- * @property {string} [baseUrl] - The base URL to use for all relative URLs contained within the SVG. Ignored if
- * <code>baseFile</code> option is also specified.
+ * contained within the SVG. Cannot be used in conjunction with the <code>baseUrl</code> option.
+ * @property {string} [baseUrl] - The base URL to use for all relative URLs contained within the SVG. Cannot be used in
+ * conjunction with the <code>baseFile</code> option.
  * @property {number|string} [height] - The height of the PNG to be generated. If omitted, an attempt will be made to
  * derive the height from the SVG input.
  * @property {number} [scale=1] - The scale to be applied to the width and height (either specified as options or
