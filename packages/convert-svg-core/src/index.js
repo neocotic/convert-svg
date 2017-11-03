@@ -22,13 +22,14 @@
 
 'use strict';
 
-const { expect } = require('chai');
+const API = require('./API');
+const CLI = require('./CLI');
+const Converter = require('./Converter');
+const Provider = require('./Provider');
 
-const Converter = require('../src/converter');
-const index = require('../src/index');
-
-describe('index', () => {
-  it('should be Converter constructor', () => {
-    expect(index).to.equal(Converter, 'Must be Converter');
-  });
-});
+module.exports = {
+  API,
+  CLI,
+  Converter,
+  Provider
+};
