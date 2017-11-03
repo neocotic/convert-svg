@@ -38,15 +38,15 @@ $ npm install --global convert-svg-to-jpeg
 
       Options:
 
-        -V, --version              output the version number
-        --no-color                 disables color output
-        -b, --base-url <url>       specify base URL to use for all relative URLs in SVG
-        -f, --filename <filename>  specify filename for the JPEG output when processing STDIN
-        --height <value>           specify height for JPEG
-        --scale <value>            specify scale to apply to dimensions [1]
-        --width <value>            specify width for JPEG
-        --quality <value>          specify quality for JPEG [100]
-        -h, --help                 output usage information
+        -V, --version          output the version number
+        --no-color             disables color output
+        --base-url <url>       specify base URL to use for all relative URLs in SVG
+        --filename <filename>  specify filename for the JPEG output when processing STDIN
+        --height <value>       specify height for JPEG
+        --scale <value>        specify scale to apply to dimensions [1]
+        --width <value>        specify width for JPEG
+        --quality <value>      specify quality for JPEG [100]
+        -h, --help             output usage information
 
 The CLI can be used in the following ways:
 

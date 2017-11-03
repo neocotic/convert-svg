@@ -83,11 +83,11 @@ class CLI {
         description: 'disables color output'
       },
       {
-        flags: '-b, --base-url <url>',
+        flags: '--base-url <url>',
         description: 'specify base URL to use for all relative URLs in SVG'
       },
       {
-        flags: '-f, --filename <filename>',
+        flags: '--filename <filename>',
         description: `specify filename for the ${format} output when processing STDIN`
       },
       {
