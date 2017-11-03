@@ -40,8 +40,16 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
   });
 
   describe('#getBackgroundColor', () => {
-    it('should return white color', () => {
-      expect(provider.getBackgroundColor()).to.equal('#FFF');
+    context('when background option was not specified', () => {
+      it('should return white color', () => {
+        expect(provider.getBackgroundColor({})).to.equal('#FFF');
+      });
+    });
+
+    context('when background option was specified', () => {
+      it('should return background', () => {
+        expect(provider.getBackgroundColor({ background: '#000' })).to.equal('#000');
+      });
     });
   });
 
@@ -75,6 +83,7 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
         expect(provider.getScreenshotOptions({})).to.deep.equal({});
       });
     });
+
     context('when quality option was specified', () => {
       it('should return puppeteer screenshot options including quality', () => {
         expect(provider.getScreenshotOptions({ quality: 50 })).to.deep.equal({ quality: 50 });

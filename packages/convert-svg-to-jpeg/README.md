@@ -40,6 +40,7 @@ $ npm install --global convert-svg-to-jpeg
 
         -V, --version          output the version number
         --no-color             disables color output
+        --background <color>   specify background color for transparent regions in SVG
         --base-url <url>       specify base URL to use for all relative URLs in SVG
         --filename <filename>  specify filename for the JPEG output when processing STDIN
         --height <value>       specify height for JPEG
@@ -77,14 +78,15 @@ element or no `width` and/or `height` options were provided and this information
 
 #### Options
 
-| Option     | Type          | Default                 | Description                                                                                                                                                      |
-| ---------- | ------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `baseFile` | String        | N/A                     | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option. |
-| `baseUrl`  | String        | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                        |
-| `height`   | Number/String | N/A                     | Height of the output to be generated. Derived from SVG input if omitted.                                                                                         |
-| `quality`  | Number        | `100`                   | Quality of the output to be generated.                                                                                                                           |
-| `scale`    | Number        | `1`                     | Scale to be applied to the width and height (specified as options or derived).                                                                                   |
-| `width`    | Number/String | N/A                     | Width of the output to be generated. Derived from SVG input if omitted.                                                                                          |
+| Option       | Type          | Default                 | Description                                                                                                                                                      |
+| ------------ | ------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `background` | String        | N/A                     | Background color to be used to fill transparent regions within the SVG. White will be used if omitted.                                                           |
+| `baseFile`   | String        | N/A                     | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option. |
+| `baseUrl`    | String        | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                        |
+| `height`     | Number/String | N/A                     | Height of the output to be generated. Derived from SVG input if omitted.                                                                                         |
+| `quality`    | Number        | `100`                   | Quality of the output to be generated.                                                                                                                           |
+| `scale`      | Number        | `1`                     | Scale to be applied to the width and height (specified as options or derived).                                                                                   |
+| `width`      | Number/String | N/A                     | Width of the output to be generated. Derived from SVG input if omitted.                                                                                          |
 
 #### Example
 

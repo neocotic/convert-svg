@@ -40,8 +40,16 @@ describe('[convert-svg-to-png] PNGProvider', () => {
   });
 
   describe('#getBackgroundColor', () => {
-    it('should return transparent color', () => {
-      expect(provider.getBackgroundColor()).to.equal('transparent');
+    context('when background option was not specified', () => {
+      it('should return transparent color', () => {
+        expect(provider.getBackgroundColor({})).to.equal('transparent');
+      });
+    });
+
+    context('when background option was specified', () => {
+      it('should return background', () => {
+        expect(provider.getBackgroundColor({ background: '#000' })).to.equal('#000');
+      });
     });
   });
 
@@ -64,8 +72,16 @@ describe('[convert-svg-to-png] PNGProvider', () => {
   });
 
   describe('#getScreenshotOptions', () => {
-    it('should return puppeteer screenshot options with background omitted', () => {
-      expect(provider.getScreenshotOptions()).to.deep.equal({ omitBackground: true });
+    context('when background option was not specified', () => {
+      it('should return puppeteer screenshot options with background omitted', () => {
+        expect(provider.getScreenshotOptions({})).to.deep.equal({ omitBackground: true });
+      });
+    });
+
+    context('when background option was specified', () => {
+      it('should return puppeteer screenshot options with background', () => {
+        expect(provider.getScreenshotOptions({ background: '#000' })).to.deep.equal({ omitBackground: false });
+      });
     });
   });
 

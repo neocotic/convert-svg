@@ -38,7 +38,7 @@ class JPEGProvider extends Provider {
    * @override
    */
   getBackgroundColor(options) {
-    return '#FFF';
+    return options.background || '#FFF';
   }
 
   /**

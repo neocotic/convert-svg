@@ -404,6 +404,8 @@ module.exports = Converter;
  * The options that can be passed to {@link Converter#convert}.
  *
  * @typedef {Object} Converter~ConvertOptions
+ * @property {string} [background] - The background color to be used to fill transparent regions within the SVG. If
+ * omitted, the {@link Provider} will determine the default background color.
  * @property {string} [baseFile] - The path of the file to be converted into a file URL to use for all relative URLs
  * contained within the SVG. Cannot be used in conjunction with the <code>baseUrl</code> option.
  * @property {string} [baseUrl] - The base URL to use for all relative URLs contained within the SVG. Cannot be used in

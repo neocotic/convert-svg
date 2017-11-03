@@ -83,6 +83,10 @@ class CLI {
         description: 'disables color output'
       },
       {
+        flags: '--background <color>',
+        description: 'specify background color for transparent regions in SVG'
+      },
+      {
         flags: '--base-url <url>',
         description: 'specify base URL to use for all relative URLs in SVG'
       },
@@ -212,6 +216,7 @@ class CLI {
   [_parseOptions]() {
     const command = this[_command];
     const options = {
+      background: command.background,
       baseUrl: command.baseUrl,
       height: command.height,
       scale: command.scale,

@@ -38,7 +38,7 @@ class PNGProvider extends Provider {
    * @override
    */
   getBackgroundColor(options) {
-    return 'transparent';
+    return options.background || 'transparent';
   }
 
   /**
@@ -54,7 +54,7 @@ class PNGProvider extends Provider {
    * @override
    */
   getScreenshotOptions(options) {
-    return { omitBackground: true };
+    return { omitBackground: !options.background };
   }
 
   /**
