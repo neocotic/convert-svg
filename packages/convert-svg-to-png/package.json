@@ -1,6 +1,6 @@
 {
   "name": "convert-svg-to-png",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Converts SVG to PNG using headless Chromium",
   "homepage": "https://github.com/NotNinja/convert-svg",
   "bugs": {
@@ -25,7 +25,7 @@
     "url": "https://github.com/NotNinja/convert-svg.git"
   },
   "dependencies": {
-    "convert-svg-core": "^0.3.0"
+    "convert-svg-core": "^0.3.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",

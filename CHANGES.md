@@ -1,3 +1,7 @@
+## Version 0.3.1, 2017.11.03
+
+* Error thrown as context is lost for API methods when using destructuring imports [#22](https://github.com/NotNinja/convert-svg/issues/22)
+
 ## Version 0.3.0, 2017.11.03
 
 * Add option to control background color [#14](https://github.com/NotNinja/convert-svg/issues/14)
