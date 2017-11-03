@@ -41,6 +41,11 @@ class API {
    */
   constructor(provider) {
     this[_provider] = provider;
+
+    // Workaround for #22 by ensuring all public methods are bound to this instance
+    this.convert = this.convert.bind(this);
+    this.convertFile = this.convertFile.bind(this);
+    this.createConverter = this.createConverter.bind(this);
   }
 
   /**
