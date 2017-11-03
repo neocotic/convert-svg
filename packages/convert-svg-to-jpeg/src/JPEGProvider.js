@@ -60,12 +60,7 @@ class JPEGProvider extends Provider {
    * @override
    */
   getScreenshotOptions(options) {
-    const result = {};
-    if (typeof options.quality === 'number') {
-      result.quality = options.quality;
-    }
-
-    return result;
+    return { quality: options.quality };
   }
 
   /**
@@ -91,6 +86,9 @@ class JPEGProvider extends Provider {
   parseAPIOptions(options, inputFilePath) {
     if (typeof options.quality === 'number' && (options.quality < 0 || options.quality > 100)) {
       throw new Error('Value for quality option out of range. Use value between 0-100 (inclusive)');
+    }
+    if (options.quality == null) {
+      options.quality = 100;
     }
   }
 

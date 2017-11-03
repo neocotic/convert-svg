@@ -78,16 +78,8 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
   });
 
   describe('#getScreenshotOptions', () => {
-    context('when quality option was not specified', () => {
-      it('should return puppeteer screenshot options excluding quality', () => {
-        expect(provider.getScreenshotOptions({})).to.deep.equal({});
-      });
-    });
-
-    context('when quality option was specified', () => {
-      it('should return puppeteer screenshot options including quality', () => {
-        expect(provider.getScreenshotOptions({ quality: 50 })).to.deep.equal({ quality: 50 });
-      });
+    it('should return puppeteer screenshot options with quality option', () => {
+      expect(provider.getScreenshotOptions({ quality: 50 })).to.deep.equal({ quality: 50 });
     });
   });
 
@@ -105,12 +97,12 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
 
   describe('#parseAPIOptions', () => {
     context('when quality option is missing', () => {
-      it('should do nothing', () => {
+      it('should populate default value for quality option', () => {
         const options = {};
 
         provider.parseAPIOptions(options);
 
-        expect(options).to.deep.equal({});
+        expect(options).to.deep.equal({ quality: 100 });
       });
     });
 
