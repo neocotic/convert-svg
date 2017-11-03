@@ -2,9 +2,9 @@
 
 A [Node.js](https://nodejs.org) package for converting SVG to PNG using headless Chromium.
 
-[![Build Status](https://img.shields.io/travis/NotNinja/convert-svg-to-png/develop.svg?style=flat-square)](https://travis-ci.org/NotNinja/convert-svg-to-png)
-[![License](https://img.shields.io/github/license/NotNinja/convert-svg-to-png.svg?style=flat-square)](https://github.com/NotNinja/convert-svg-to-png/blob/master/LICENSE.md)
-[![Release](https://img.shields.io/github/release/NotNinja/convert-svg-to-png.svg?style=flat-square)](https://github.com/NotNinja/convert-svg-to-png/tree/master/packages/convert-svg-to-png)
+[![Build Status](https://img.shields.io/travis/NotNinja/convert-svg/develop.svg?style=flat-square)](https://travis-ci.org/NotNinja/convert-svg)
+[![License](https://img.shields.io/github/license/NotNinja/convert-svg.svg?style=flat-square)](https://github.com/NotNinja/convert-svg/blob/master/LICENSE.md)
+[![Release](https://img.shields.io/github/release/NotNinja/convert-svg.svg?style=flat-square)](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-to-png)
 
 * [Install](#install)
 * [CLI](#cli)
@@ -178,25 +178,23 @@ async function convertSvgFiles(dirPath) {
 
 If you would like to convert a SVG into a format other than PNG, check out our other converter packages below:
 
-https://github.com/NotNinja/convert-svg-to-png
+https://github.com/NotNinja/convert-svg
 
 ## Bugs
 
 If you have any problems with this package or would like to see changes currently in development you can do so
-[here](https://github.com/NotNinja/convert-svg-to-png/issues).
+[here](https://github.com/NotNinja/convert-svg/issues).
 
 ## Contributors
 
 If you want to contribute, you're a legend! Information on how you can do so can be found in
-[CONTRIBUTING.md](https://github.com/NotNinja/convert-svg-to-png/blob/master/CONTRIBUTING.md). We want your suggestions
-and pull requests!
+[CONTRIBUTING.md](https://github.com/NotNinja/convert-svg/blob/master/CONTRIBUTING.md). We want your suggestions and
+pull requests!
 
-A list of all contributors can be found in
-[AUTHORS.md](https://github.com/NotNinja/convert-svg-to-png/blob/master/AUTHORS.md).
+A list of all contributors can be found in [AUTHORS.md](https://github.com/NotNinja/convert-svg/blob/master/AUTHORS.md).
 
 ## License
 
-See [LICENSE.md](https://github.com/NotNinja/convert-svg-to-png/raw/master/LICENSE.md) for more information on our MIT
-license.
+See [LICENSE.md](https://github.com/NotNinja/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.
 
 [![Copyright !ninja](https://cdn.rawgit.com/NotNinja/branding/master/assets/copyright/base/not-ninja-copyright-186x25.png)](https://not.ninja)

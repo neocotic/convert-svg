@@ -1,16 +1,15 @@
 # convert-svg
 
-[![Build Status](https://img.shields.io/travis/NotNinja/convert-svg-to-png/develop.svg?style=flat-square)](https://travis-ci.org/NotNinja/convert-svg-to-png)
-[![Dev Dependency Status](https://img.shields.io/david/dev/NotNinja/convert-svg-to-png.svg?style=flat-square)](https://david-dm.org/NotNinja/convert-svg-to-png?type=dev)
-[![License](https://img.shields.io/github/license/NotNinja/convert-svg-to-png.svg?style=flat-square)](https://github.com/NotNinja/convert-svg-to-png/blob/master/LICENSE.md)
-[![Release](https://img.shields.io/github/release/NotNinja/convert-svg-to-png.svg?style=flat-square)](https://github.com/NotNinja/convert-svg-to-png)
+[![Build Status](https://img.shields.io/travis/NotNinja/convert-svg/develop.svg?style=flat-square)](https://travis-ci.org/NotNinja/convert-svg)
+[![License](https://img.shields.io/github/license/NotNinja/convert-svg.svg?style=flat-square)](https://github.com/NotNinja/convert-svg/blob/master/LICENSE.md)
+[![Release](https://img.shields.io/github/release/NotNinja/convert-svg.svg?style=flat-square)](https://github.com/NotNinja/convert-svg)
 
 This monorepo contains the following [Node.js](https://nodejs.org) packages that can convert a SVG into another format
 using headless Chromium:
 
-* [convert-svg-core](https://github.com/NotNinja/convert-svg-to-png/tree/master/packages/convert-svg-core)
-* [convert-svg-test-helper](https://github.com/NotNinja/convert-svg-to-png/tree/master/packages/convert-svg-test-helper)
-* [convert-svg-to-png](https://github.com/NotNinja/convert-svg-to-png/tree/master/packages/convert-svg-to-png)
+* [convert-svg-core](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-core)
+* [convert-svg-test-helper](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-test-helper)
+* [convert-svg-to-png](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-to-png)
 
 The first two packages are core dependencies for SVG converters, which make up the remainder of the packages, trying to
 adhere to the following naming convention:
@@ -29,8 +28,7 @@ them.
 
 ## License
 
-See [LICENSE.md](https://github.com/NotNinja/convert-svg-to-png/raw/master/LICENSE.md) for more information on our MIT
-license.
+See [LICENSE.md](https://github.com/NotNinja/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.
 
 [![Copyright !ninja](https://cdn.rawgit.com/NotNinja/branding/master/assets/copyright/base/not-ninja-copyright-186x25.png)](https://not.ninja)
 

@@ -2,9 +2,9 @@
   "name": "convert-svg-core",
   "version": "0.2.0",
   "description": "Supports converting SVG into another format using headless Chromium",
-  "homepage": "https://github.com/NotNinja/convert-svg-to-png",
+  "homepage": "https://github.com/NotNinja/convert-svg",
   "bugs": {
-    "url": "https://github.com/NotNinja/convert-svg-to-png/issues"
+    "url": "https://github.com/NotNinja/convert-svg/issues"
   },
   "author": {
     "name": "Alasdair Mercer",
@@ -22,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/NotNinja/convert-svg-to-png.git"
+    "url": "https://github.com/NotNinja/convert-svg.git"
   },
   "dependencies": {
     "chalk": "^2.3.0",
