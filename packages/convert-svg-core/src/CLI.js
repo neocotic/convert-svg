@@ -31,53 +31,80 @@ const glob = require('glob');
 const path = require('path');
 const util = require('util');
 
-const Converter = require('./converter');
-const pkg = require('../package.json');
+const Converter = require('./Converter');
 
 const findFiles = util.promisify(glob);
 const writeFile = util.promisify(fs.writeFile);
 
+const _applyOptions = Symbol('applyOptions');
 const _baseDir = Symbol('baseDir');
 const _command = Symbol('command');
 const _convertFiles = Symbol('convertFiles');
 const _convertInput = Symbol('convertInput');
 const _errorStream = Symbol('errorStream');
-const _inputStream = Symbol('inputStream');
 const _outputStream = Symbol('outputStream');
+const _parseOptions = Symbol('parseOptions');
+const _provider = Symbol('provider');
 
 /**
- * The command-line interface for <code>convert-svg-to-png</code>.
+ * The command line interface for a SVG converter {@link Provider}.
  *
  * While technically part of the API, this is not expected to be used outside of this package as it's only intended use
- * is by <code>bin/convert-svg-to-png</code>.
+ * is by <code>bin/convert-svg-to-*</code>.
  *
  * @public
  */
 class CLI {
 
   /**
-   * Creates an instance of {@link CLI} using the <code>options</code> provided.
+   * Creates an instance of {@link CLI} with the specified <code>provider</code>.
    *
    * <code>options</code> is primarily intended for testing purposes and it's not expected to be supplied in any
    * real-world scenario.
    *
+   * @param {Provider} provider - the {@link Provider} to be used
    * @param {CLI~Options} [options] - the options to be used
    * @public
    */
-  constructor(options = {}) {
+  constructor(provider, options = {}) {
+    this[_provider] = provider;
     this[_baseDir] = options.baseDir || process.cwd();
     this[_errorStream] = options.errorStream || process.stderr;
-    this[_inputStream] = options.inputStream || process.stdin;
     this[_outputStream] = options.outputStream || process.stdout;
     this[_command] = new Command()
-      .version(pkg.version)
-      .usage('[options] [files...]')
-      .option('--no-color', 'disables color output')
-      .option('-b, --base-url <url>', 'specify base URL to use for all relative URLs in SVG')
-      .option('-f, --filename <filename>', 'specify filename the for PNG output when processing STDIN')
-      .option('--height <value>', 'specify height for PNG')
-      .option('--scale <value>', 'specify scale to apply to dimensions [1]', parseInt)
-      .option('--width <value>', 'specify width for PNG');
+      .version(provider.getVersion())
+      .usage('[options] [files...]');
+
+    const format = provider.getFormat();
+
+    this[_applyOptions]([
+      {
+        flags: '--no-color',
+        description: 'disables color output'
+      },
+      {
+        flags: '-b, --base-url <url>',
+        description: 'specify base URL to use for all relative URLs in SVG'
+      },
+      {
+        flags: '-f, --filename <filename>',
+        description: `specify filename for the ${format} output when processing STDIN`
+      },
+      {
+        flags: '--height <value>',
+        description: `specify height for ${format}`
+      },
+      {
+        flags: '--scale <value>',
+        description: 'specify scale to apply to dimensions [1]',
+        transformer: parseInt
+      },
+      {
+        flags: '--width <value>',
+        description: `specify width for ${format}`
+      }
+    ]);
+    this[_applyOptions](provider.getCLIOptions());
   }
 
   /**
@@ -114,14 +141,7 @@ class CLI {
   async parse(args = []) {
     const command = this[_command].parse(args);
     const converter = new Converter();
-    const options = {
-      baseUrl: command.baseUrl,
-      converter,
-      filePath: command.filename ? path.resolve(this.baseDir, command.filename) : null,
-      height: command.height,
-      scale: command.scale,
-      width: command.width
-    };
+    const options = this[_parseOptions]();
 
     try {
       if (command.args.length) {
@@ -130,66 +150,87 @@ class CLI {
         for (const arg of command.args) {
           const files = await findFiles(arg, {
             absolute: true,
-            cwd: this.baseDir,
+            cwd: this[_baseDir],
             nodir: true
           });
 
           filePaths.push(...files);
         }
 
-        await this[_convertFiles](filePaths, options);
+        await this[_convertFiles](converter, filePaths, options);
       } else {
         const input = await getStdin();
 
-        await this[_convertInput](input, options);
+        await this[_convertInput](converter, input, options,
+          command.filename ? path.resolve(this[_baseDir], command.filename) : null);
       }
     } finally {
       await converter.destroy();
     }
   }
 
-  async [_convertFiles](filePaths, options) {
-    for (const inputFilePath of filePaths) {
-      const outputFilePath = await options.converter.convertFile(inputFilePath, {
-        baseUrl: options.baseUrl,
-        height: options.height,
-        scale: options.scale,
-        width: options.width
-      });
+  [_applyOptions](options) {
+    if (!options) {
+      return;
+    }
 
-      this.output(`Converted SVG file to PNG file: ${chalk.blue(inputFilePath)} -> ${chalk.blue(outputFilePath)}`);
+    for (const option of options) {
+      this[_command].option(option.flags, option.description, option.transformer);
+    }
+  }
+
+  async [_convertFiles](converter, filePaths, options) {
+    const format = this[_provider].getFormat();
+
+    for (const inputFilePath of filePaths) {
+      const outputFilePath = await converter.convertFile(inputFilePath, options);
+
+      this.output(`Converted SVG file to ${format} file: ` +
+       `${chalk.blue(inputFilePath)} -> ${chalk.blue(outputFilePath)}`);
     }
 
     this.output(chalk.green('Done!'));
   }
 
-  async [_convertInput](input, options) {
-    const output = await options.converter.convert(input, {
-      baseFile: !options.baseUrl ? this.baseDir : null,
-      baseUrl: options.baseUrl,
-      height: options.height,
-      scale: options.scale,
-      width: options.width
-    });
+  async [_convertInput](converter, input, options, filePath) {
+    if (!options.baseUrl) {
+      options.baseFile = this[_baseDir];
+    }
 
-    if (options.filePath) {
-      await writeFile(options.filePath, output);
+    const output = await converter.convert(input, options);
 
-      this.output(`Converted SVG input to PNG file: ${chalk.blue(options.filePath)}`);
+    if (filePath) {
+      await writeFile(filePath, output);
+
+      this.output(`Converted SVG input to ${this[_provider].getFormat()} file: ${chalk.blue(filePath)}`);
       this.output(chalk.green('Done!'));
     } else {
       this[_outputStream].write(output);
     }
   }
 
+  [_parseOptions]() {
+    const command = this[_command];
+    const options = {
+      baseUrl: command.baseUrl,
+      height: command.height,
+      scale: command.scale,
+      width: command.width
+    };
+
+    this[_provider].parseCLIOptions(options, command);
+
+    return options;
+  }
+
   /**
-   * Returns the base directory for this {@link CLI}.
+   * Returns the {@link Provider} for this {@link CLI}.
    *
-   * @return {string} The base directory.
+   * @return {Provider} The provider.
    * @public
    */
-  get baseDir() {
-    return this[_baseDir];
+  get provider() {
+    return this[_provider];
   }
 
 }
@@ -197,11 +238,20 @@ class CLI {
 module.exports = CLI;
 
 /**
+ * Describes a CLI option.
+ *
+ * @typedef {Object} CLI~Option
+ * @property {string} description - The description to be used when displaying help information for this option.
+ * @property {string} flags - The flags to be accepted by this option.
+ * @property {Function} [transformer] - The function to be used to transform the argument of this option, where
+ * applicable. When omitted, the argument string value will be used as-is.
+ */
+
+/**
  * The options that can be passed to the {@link CLI} constructor.
  *
  * @typedef {Object} CLI~Options
  * @property {string} [baseDir=process.cwd()] - The base directory to be used.
  * @property {Writable} [errorStream=process.stderr] - The stream for error messages to be written to.
- * @property {Readable} [inputStream=process.stdin] - The stream for input to be read from.
  * @property {Writable} [outputStream=process.stdout] - The stream for output messages to be written to.
  */

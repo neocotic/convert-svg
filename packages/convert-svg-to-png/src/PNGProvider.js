@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /*
  * Copyright (C) 2017 Alasdair Mercer, !ninja
  *
@@ -24,16 +22,69 @@
 
 'use strict';
 
-const CLI = require('../src/cli');
+const { Provider } = require('convert-svg-core');
 
-(async() => {
-  const cli = new CLI();
+const { version } = require('../package.json');
 
-  try {
-    await cli.parse(process.argv);
-  } catch (e) {
-    cli.error(`convert-svg-to-png failed: ${e.stack}`);
+/**
+ * A {@link Provider} implementation to support PNG as an output format for SVG conversion.
+ *
+ * @public
+ */
+class PNGProvider extends Provider {
 
-    process.exit(1);
+  /**
+   * @inheritdoc
+   * @override
+   */
+  getBackgroundColor(options) {
+    return 'transparent';
   }
-})();
+
+  /**
+   * @inheritdoc
+   * @override
+   */
+  getCLIOptions() {
+    return null;
+  }
+
+  /**
+   * @inheritdoc
+   * @override
+   */
+  getScreenshotOptions(options) {
+    return { omitBackground: true };
+  }
+
+  /**
+   * @inheritdoc
+   * @override
+   */
+  getType() {
+    return 'png';
+  }
+
+  /**
+   * @inheritdoc
+   * @override
+   */
+  getVersion() {
+    return version;
+  }
+
+  /**
+   * @inheritdoc
+   * @override
+   */
+  parseAPIOptions(options, inputFilePath) {}
+
+  /**
+   * @inheritdoc
+   * @override
+   */
+  parseCLIOptions(options, command) {}
+
+}
+
+module.exports = PNGProvider;

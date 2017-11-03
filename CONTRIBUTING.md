@@ -12,12 +12,12 @@ All unit tests should be updated and passing as well. All of this can easily be 
 ``` bash
 # install/update package dependencies
 $ npm install
+$ npm run bootstrap
 # run test suite
 $ npm test
 ```
 
-You must have at least [Node.js](https://nodejs.org) version 8 or newer and [npm](https://npmjs.com) version 5 or newer
-installed.
+You must have at least [Node.js](https://nodejs.org) version 8 or newer installed.
 
 Some of the test fixtures include Microsoft-based fonts so, if you're a non-Windows user, you will have to ensure that
 you have Microsoft fonts installed. For example; Ubuntu users can do the following:
