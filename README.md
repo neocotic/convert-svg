@@ -9,6 +9,7 @@ using headless Chromium:
 
 * [convert-svg-core](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-core)
 * [convert-svg-test-helper](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-test-helper)
+* [convert-svg-to-jpeg](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-to-jpeg)
 * [convert-svg-to-png](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-to-png)
 
 The first two packages are core dependencies for SVG converters, which make up the remainder of the packages, trying to
