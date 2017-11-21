@@ -84,9 +84,13 @@ element or no `width` and/or `height` options were provided and this information
 | `baseFile`   | String        | N/A                     | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option. |
 | `baseUrl`    | String        | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                        |
 | `height`     | Number/String | N/A                     | Height of the output to be generated. Derived from SVG input if omitted.                                                                                         |
+| `puppeteer`  | Object        | N/A                     | Options that are to be passed directly to `puppeteer.launch` when creating the `Browser` instance.                                                               |
 | `quality`    | Number        | `100`                   | Quality of the output to be generated.                                                                                                                           |
 | `scale`      | Number        | `1`                     | Scale to be applied to the width and height (specified as options or derived).                                                                                   |
 | `width`      | Number/String | N/A                     | Width of the output to be generated. Derived from SVG input if omitted.                                                                                          |
+
+The `puppeteer` option is not available when calling this method on a `Converter` instance created using
+`createConverter`.
 
 #### Example
 
@@ -144,15 +148,21 @@ const { convertFile}  = require('convert-svg-to-jpeg');
 })();
 ```
 
-### `createConverter()`
+### `createConverter([options])`
 
-Creates an instance of `Converter`.
+Creates an instance of `Converter` using the `options` provided.
 
 It is important to note that, after the first time either `Converter#convert` or `Converter#convertFile` are called, a
 headless Chromium instance will remain open until `Converter#destroy` is called. This is done automatically when using
 the `API` convert methods, however, when using `Converter` directly, it is the responsibility of the caller. Due to the
 fact that creating browser instances is expensive, this level of control allows callers to reuse a browser for multiple
 conversions. It's not recommended to keep an instance around for too long, as it will use up resources.
+
+#### Options
+
+| Option      | Type   | Default | Description                                                                                        |
+| ----------- | ------ | ------- | -------------------------------------------------------------------------------------------------- |
+| `puppeteer` | Object | N/A     | Options that are to be passed directly to `puppeteer.launch` when creating the `Browser` instance. |
 
 #### Example
 
