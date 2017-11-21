@@ -144,7 +144,7 @@ class CLI {
    */
   async parse(args = []) {
     const command = this[_command].parse(args);
-    const converter = new Converter();
+    const converter = new Converter(this[_provider]);
     const options = this[_parseOptions]();
 
     try {
