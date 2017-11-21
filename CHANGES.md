@@ -1,3 +1,9 @@
+## Version 0.3.2, 2017.11.21
+
+* Error being thrown caused by lost context for CLI [#24](https://github.com/NotNinja/convert-svg/issues/24)
+* Pass custom arguments to puppeteer [#25](https://github.com/NotNinja/convert-svg/issues/25) [#27](https://github.com/NotNinja/convert-svg/issues/27)
+* Bump puppeteer to v0.13.0 [#26](https://github.com/NotNinja/convert-svg/issues/26)
+
 ## Version 0.3.1, 2017.11.03
 
 * Error thrown as context is lost for API methods when using destructuring imports [#22](https://github.com/NotNinja/convert-svg/issues/22)

@@ -1,6 +1,6 @@
 {
   "name": "convert-svg-test-helper",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "Helper for testing convert-svg-core implementations",
   "homepage": "https://github.com/NotNinja/convert-svg",
   "bugs": {
@@ -33,7 +33,7 @@
     "lodash.clonedeep": "^4.5.0",
     "mocha": "^4.0.1",
     "rimraf": "^2.6.2",
-    "sinon": "^4.0.2"
+    "sinon": "^4.1.2"
   },
   "main": "src/index.js",
   "engines": {

@@ -22,6 +22,9 @@
 
 'use strict';
 
+const omit = require('lodash.omit');
+const pick = require('lodash.pick');
+
 const Converter = require('./Converter');
 
 const _provider = Symbol('provider');
@@ -65,16 +68,16 @@ class API {
    * provided and this information could not be derived from <code>input</code>.
    *
    * @param {Buffer|string} input - the SVG input to be converted to another format
-   * @param {Converter~ConvertOptions} [options] - the options to be used
+   * @param {API~ConvertOptions} [options] - the options to be used
    * @return {Promise.<Buffer, Error>} A <code>Promise</code> that is resolved with the converted output buffer.
    * @public
    */
   async convert(input, options) {
-    const converter = this.createConverter();
+    const converter = this.createConverter(pick(options, 'puppeteer'));
     let output;
 
     try {
-      output = await converter.convert(input, options);
+      output = await converter.convert(input, omit(options, 'puppeteer'));
     } finally {
       await converter.destroy();
     }
@@ -101,16 +104,16 @@ class API {
    * writing the output file.
    *
    * @param {string} inputFilePath - the path of the SVG file to be converted to another file format
-   * @param {Converter~ConvertFileOptions} [options] - the options to be used
+   * @param {API~ConvertFileOptions} [options] - the options to be used
    * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the output file path.
    * @public
    */
   async convertFile(inputFilePath, options) {
-    const converter = this.createConverter();
+    const converter = this.createConverter(pick(options, 'puppeteer'));
     let outputFilePath;
 
     try {
-      outputFilePath = await converter.convertFile(inputFilePath, options);
+      outputFilePath = await converter.convertFile(inputFilePath, omit(options, 'puppeteer'));
     } finally {
       await converter.destroy();
     }
@@ -119,7 +122,7 @@ class API {
   }
 
   /**
-   * Creates an instance of {@link Converter}.
+   * Creates an instance of {@link Converter} using the <code>options</code> provided.
    *
    * It is important to note that, after the first time either {@link Converter#convert} or
    * {@link Converter#convertFile} are called, a headless Chromium instance will remain open until
@@ -130,11 +133,12 @@ class API {
    * files in another format and then destroy it afterwards. It's not recommended to keep an instance around for too
    * long, as it will use up resources.
    *
+   * @param {API~CreateConverterOptions} [options] - the options to be used
    * @return {Converter} A newly created {@link Converter} instance.
    * @public
    */
-  createConverter() {
-    return new Converter(this.provider);
+  createConverter(options) {
+    return new Converter(this.provider, options);
   }
 
   /**
@@ -160,3 +164,27 @@ class API {
 }
 
 module.exports = API;
+
+/**
+ * The options that can be passed to {@link API#convertFile}.
+ *
+ * @typedef {Converter~ConvertFileOptions} API~ConvertFileOptions
+ * @property {Object} [puppeteer] - The options that are to be passed directly to <code>puppeteer.launch</code> when
+ * creating the <code>Browser</code> instance.
+ */
+
+/**
+ * The options that can be passed to {@link API#convert}.
+ *
+ * @typedef {Converter~ConvertOptions} API~ConvertOptions
+ * @property {Object} [puppeteer] - The options that are to be passed directly to <code>puppeteer.launch</code> when
+ * creating the <code>Browser</code> instance.
+ */
+
+/**
+ * The options that can be passed to {@link API#createConverter}.
+ *
+ * @typedef {Converter~Options} API~CreateConverterOptions
+ * @property {Object} [puppeteer] - The options that are to be passed directly to <code>puppeteer.launch</code> when
+ * creating the <code>Browser</code> instance.
+ */

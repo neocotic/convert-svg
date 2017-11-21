@@ -40,6 +40,7 @@ const _destroyed = Symbol('destroyed');
 const _getDimensions = Symbol('getDimensions');
 const _getPage = Symbol('getPage');
 const _getTempFile = Symbol('getTempFile');
+const _options = Symbol('options');
 const _page = Symbol('page');
 const _parseOptions = Symbol('parseOptions');
 const _provider = Symbol('provider');
@@ -71,13 +72,16 @@ const _validate = Symbol('validate');
 class Converter {
 
   /**
-   * Creates an instance of {@link Converter} using the specified <code>provider</code>.
+   * Creates an instance of {@link Converter} using the specified <code>provider</code> and the <code>options</code>
+   * provided.
    *
    * @param {Provider} provider - the {@link Provider} to be used
+   * @param {Converter~Options} [options] - the options to be used
    * @public
    */
-  constructor(provider) {
+  constructor(provider, options) {
     this[_provider] = provider;
+    this[_options] = Object.assign({}, options);
     this[_destroyed] = false;
   }
 
@@ -266,7 +270,7 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
 
   async [_getPage](html) {
     if (!this[_browser]) {
-      this[_browser] = await puppeteer.launch();
+      this[_browser] = await puppeteer.launch(this[_options].puppeteer);
       this[_page] = await this[_browser].newPage();
     }
 
@@ -416,4 +420,12 @@ module.exports = Converter;
  * derived).
  * @property {number|string} [width] - The width of the output to be generated. If omitted, an attempt will be made to
  * derive the width from the SVG input.
+ */
+
+/**
+ * The options that can be passed to {@link Converter}.
+ *
+ * @typedef {Object} Converter~Options
+ * @property {Object} [puppeteer] - The options that are to be passed directly to <code>puppeteer.launch</code> when
+ * creating the <code>Browser</code> instance.
  */
