@@ -30,6 +30,8 @@
     "file-url": "^2.0.2",
     "get-stdin": "^5.0.1",
     "glob": "^7.1.2",
+    "lodash.omit": "^4.5.0",
+    "lodash.pick": "^4.4.0",
     "pollock": "^0.1.0",
     "puppeteer": "^0.12.0",
     "tmp": "0.0.33"
