@@ -44,6 +44,7 @@ $ npm install --global convert-svg-to-jpeg
         --base-url <url>       specify base URL to use for all relative URLs in SVG
         --filename <filename>  specify filename for the JPEG output when processing STDIN
         --height <value>       specify height for JPEG
+        --puppeteer <json>     specify a json object for puppeteer.launch options
         --scale <value>        specify scale to apply to dimensions [1]
         --width <value>        specify width for JPEG
         --quality <value>      specify quality for JPEG [100]

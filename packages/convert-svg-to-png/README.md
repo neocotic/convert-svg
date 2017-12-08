@@ -44,6 +44,7 @@ $ npm install --global convert-svg-to-png
         --base-url <url>       specify base URL to use for all relative URLs in SVG
         --filename <filename>  specify filename for the PNG output when processing STDIN
         --height <value>       specify height for PNG
+        --puppeteer <json>     specify a json object for puppeteer.launch options
         --scale <value>        specify scale to apply to dimensions [1]
         --width <value>        specify width for PNG
         -h, --help             output usage information
