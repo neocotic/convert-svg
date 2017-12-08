@@ -1,3 +1,7 @@
+## Version 0.3.3, 2017.12.08
+
+* Add puppeteer.launch options available into CLI [#29](https://github.com/NotNinja/convert-svg/issues/29)
+
 ## Version 0.3.2, 2017.11.21
 
 * Error being thrown caused by lost context for CLI [#24](https://github.com/NotNinja/convert-svg/issues/24)

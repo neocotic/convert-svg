@@ -28,7 +28,9 @@ const { EOL } = require('os');
 const fs = require('fs');
 const getStdin = require('get-stdin').buffer;
 const glob = require('glob');
+const omit = require('lodash.omit');
 const path = require('path');
+const pick = require('lodash.pick');
 const util = require('util');
 
 const Converter = require('./Converter');
@@ -99,6 +101,11 @@ class CLI {
         description: `specify height for ${format}`
       },
       {
+        flags: '--puppeteer <json>',
+        description: 'specify a json object for puppeteer.launch options',
+        transformer: JSON.parse
+      },
+      {
         flags: '--scale <value>',
         description: 'specify scale to apply to dimensions [1]',
         transformer: parseInt
@@ -144,8 +151,9 @@ class CLI {
    */
   async parse(args = []) {
     const command = this[_command].parse(args);
-    const converter = new Converter(this[_provider]);
     const options = this[_parseOptions]();
+
+    const converter = new Converter(this[_provider], pick(options, 'puppeteer'));
 
     try {
       if (command.args.length) {
@@ -161,11 +169,11 @@ class CLI {
           filePaths.push(...files);
         }
 
-        await this[_convertFiles](converter, filePaths, options);
+        await this[_convertFiles](converter, filePaths, omit(options, 'puppeteer'));
       } else {
         const input = await getStdin();
 
-        await this[_convertInput](converter, input, options,
+        await this[_convertInput](converter, input, omit(options, 'puppeteer'),
           command.filename ? path.resolve(this[_baseDir], command.filename) : null);
       }
     } finally {
@@ -219,6 +227,7 @@ class CLI {
       background: command.background,
       baseUrl: command.baseUrl,
       height: command.height,
+      puppeteer: command.puppeteer,
       scale: command.scale,
       width: command.width
     };
