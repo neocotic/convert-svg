@@ -8,10 +8,6 @@
     "bootstrap": {
       "hoist": true,
       "nohoist": "puppeteer"
-    },
-    "publish": {
-      "skipGit": true,
-      "skipNpm": true
     }
   },
   "npmClientArgs": [
