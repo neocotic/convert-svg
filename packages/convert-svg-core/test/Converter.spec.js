@@ -22,16 +22,11 @@
 
 'use strict';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
+const assert = require('assert');
 const sinon = require('sinon');
 
 const Converter = require('../src/Converter');
 const Provider = require('../src/Provider');
-
-chai.use(chaiAsPromised);
-
-const { expect } = chai;
 
 describe('[convert-svg-core] Converter', () => {
   let converter;
@@ -53,8 +48,13 @@ describe('[convert-svg-core] Converter', () => {
       it('should thrown an error', async() => {
         await converter.destroy();
 
-        await expect(converter.convert('<svg></svg>')).to.eventually.be.rejectedWith(Error,
-          'Converter has been destroyed. A new Converter must be created');
+        try {
+          await converter.convert('<svg></svg>');
+          // Should have thrown
+          assert.fail();
+        } catch (e) {
+          assert.equal(e.message, 'Converter has been destroyed. A new Converter must be created');
+        }
       });
     });
   });
@@ -66,35 +66,40 @@ describe('[convert-svg-core] Converter', () => {
       it('should thrown an error', async() => {
         await converter.destroy();
 
-        await expect(converter.convertFile('foo.svg')).to.eventually.be.rejectedWith(Error,
-          'Converter has been destroyed. A new Converter must be created');
+        try {
+          await converter.convertFile('foo.svg');
+          // Should have thrown
+          assert.fail();
+        } catch (e) {
+          assert.equal(e.message, 'Converter has been destroyed. A new Converter must be created');
+        }
       });
     });
   });
 
   describe('#destroy', () => {
     it('should destroy the converter', async() => {
-      expect(converter.destroyed).to.equal(false);
+      assert.equal(converter.destroyed, false);
 
       await converter.destroy();
 
-      expect(converter.destroyed).to.equal(true);
+      assert.equal(converter.destroyed, true);
     });
   });
 
   describe('#destroyed', () => {
     it('should indicate whether converter has been destroyed', async() => {
-      expect(converter.destroyed).to.equal(false);
+      assert.equal(converter.destroyed, false);
 
       await converter.destroy();
 
-      expect(converter.destroyed).to.equal(true);
+      assert.equal(converter.destroyed, true);
     });
   });
 
   describe('#provider', () => {
     it('should return provider', () => {
-      expect(converter.provider).to.equal(provider);
+      assert.strictEqual(converter.provider, provider);
     });
   });
 });

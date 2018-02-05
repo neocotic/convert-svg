@@ -22,7 +22,7 @@
 
 'use strict';
 
-const { expect } = require('chai');
+const assert = require('assert');
 
 const Provider = require('../src/Provider');
 
@@ -53,8 +53,12 @@ describe('[convert-svg-core] Provider', () => {
       it('should throw an error by default', () => {
         const provider = new Provider();
 
-        expect(() => provider[methodName]()).to.throw(Error,
-          `Provider#${methodName} abstract method is not implemented`);
+        assert.throws(() => {
+          provider[methodName]();
+        }, (error) => {
+          return error instanceof Error &&
+              error.message === `Provider#${methodName} abstract method is not implemented`;
+        });
       });
     });
   });
@@ -63,7 +67,7 @@ describe('[convert-svg-core] Provider', () => {
     it('should return Provider#getType transformed into lower case by default', () => {
       const provider = new TestProviderImpl();
 
-      expect(provider.getExtension()).to.equal('type');
+      assert.equal(provider.getExtension(), 'type');
     });
   });
 
@@ -71,7 +75,7 @@ describe('[convert-svg-core] Provider', () => {
     it('should return Provider#getType transformed into upper case by default', () => {
       const provider = new TestProviderImpl();
 
-      expect(provider.getFormat()).to.equal('TYPE');
+      assert.equal(provider.getFormat(), 'TYPE');
     });
   });
 });
