@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Alasdair Mercer, !ninja
+ * Copyright (C) 2018 Alasdair Mercer, !ninja
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 
 'use strict';
 
-const { expect } = require('chai');
+const assert = require('assert');
 const { EOL } = require('os');
 const sinon = require('sinon');
 const { Writable } = require('stream');
@@ -54,9 +54,11 @@ describe('[convert-svg-core] CLI', () => {
     it('should write message to error stream', () => {
       cli.error('foo');
 
-      expect(outputStream.write.callCount).to.equal(0);
-      expect(errorStream.write.callCount).to.equal(1);
-      expect(errorStream.write.args[0]).to.deep.equal([ `foo${EOL}` ]);
+      assert.equal(outputStream.write.callCount, 0);
+      assert.equal(errorStream.write.callCount, 1);
+      assert.deepEqual(errorStream.write.args, [
+        [ `foo${EOL}` ]
+      ]);
     });
   });
 
@@ -64,9 +66,11 @@ describe('[convert-svg-core] CLI', () => {
     it('should write message to output stream', () => {
       cli.output('foo');
 
-      expect(errorStream.write.callCount).to.equal(0);
-      expect(outputStream.write.callCount).to.equal(1);
-      expect(outputStream.write.args[0]).to.deep.equal([ `foo${EOL}` ]);
+      assert.equal(errorStream.write.callCount, 0);
+      assert.equal(outputStream.write.callCount, 1);
+      assert.deepEqual(outputStream.write.args, [
+        [ `foo${EOL}` ]
+      ]);
     });
   });
 
@@ -76,7 +80,7 @@ describe('[convert-svg-core] CLI', () => {
 
   describe('#provider', () => {
     it('should return provider', () => {
-      expect(cli.provider).to.equal(provider);
+      assert.strictEqual(cli.provider, provider);
     });
   });
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Alasdair Mercer, !ninja
+ * Copyright (C) 2018 Alasdair Mercer, !ninja
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 
 'use strict';
 
-const { expect } = require('chai');
+const assert = require('assert');
 const { Provider } = require('convert-svg-core');
 
 const pkg = require('../package.json');
@@ -36,64 +36,64 @@ describe('[convert-svg-to-png] PNGProvider', () => {
   });
 
   it('should extend Provider', () => {
-    expect(provider).to.be.an.instanceOf(Provider);
+    assert.ok(provider instanceof Provider);
   });
 
   describe('#getBackgroundColor', () => {
     context('when background option was not specified', () => {
       it('should return transparent color', () => {
-        expect(provider.getBackgroundColor({})).to.equal('transparent');
+        assert.equal(provider.getBackgroundColor({}), 'transparent');
       });
     });
 
     context('when background option was specified', () => {
       it('should return background', () => {
-        expect(provider.getBackgroundColor({ background: '#000' })).to.equal('#000');
+        assert.equal(provider.getBackgroundColor({ background: '#000' }), '#000');
       });
     });
   });
 
   describe('#getCLIOptions', () => {
     it('should return null', () => {
-      expect(provider.getCLIOptions()).to.be.null;
+      assert.strictEqual(provider.getCLIOptions(), null);
     });
   });
 
   describe('#getExtension', () => {
     it('should return output file extension', () => {
-      expect(provider.getExtension()).to.equal('png');
+      assert.equal(provider.getExtension(), 'png');
     });
   });
 
   describe('#getFormat', () => {
     it('should return output format', () => {
-      expect(provider.getFormat()).to.equal('PNG');
+      assert.equal(provider.getFormat(), 'PNG');
     });
   });
 
   describe('#getScreenshotOptions', () => {
     context('when background option was not specified', () => {
       it('should return puppeteer screenshot options with background omitted', () => {
-        expect(provider.getScreenshotOptions({})).to.deep.equal({ omitBackground: true });
+        assert.deepEqual(provider.getScreenshotOptions({}), { omitBackground: true });
       });
     });
 
     context('when background option was specified', () => {
       it('should return puppeteer screenshot options with background', () => {
-        expect(provider.getScreenshotOptions({ background: '#000' })).to.deep.equal({ omitBackground: false });
+        assert.deepEqual(provider.getScreenshotOptions({ background: '#000' }), { omitBackground: false });
       });
     });
   });
 
   describe('#getType', () => {
     it('should return output type supported as supported by puppeteer screenshots', () => {
-      expect(provider.getType()).to.equal('png');
+      assert.equal(provider.getType(), 'png');
     });
   });
 
   describe('#getVersion', () => {
     it('should return version in package.json', () => {
-      expect(provider.getVersion()).to.equal(pkg.version);
+      assert.equal(provider.getVersion(), pkg.version);
     });
   });
 
@@ -103,7 +103,7 @@ describe('[convert-svg-to-png] PNGProvider', () => {
 
       provider.parseAPIOptions(options);
 
-      expect(options).to.deep.equal({});
+      assert.deepEqual(options, {});
     });
   });
 
@@ -113,7 +113,7 @@ describe('[convert-svg-to-png] PNGProvider', () => {
 
       provider.parseCLIOptions(options);
 
-      expect(options).to.deep.equal({});
+      assert.deepEqual(options, {});
     });
   });
 });

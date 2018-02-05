@@ -1,3 +1,8 @@
+## Version 0.4.0, 2018.02.05
+
+* Bump Puppeteer to v1 [#32](https://github.com/NotNinja/convert-svg/issues/32)
+* Replace chai with assert [#34](https://github.com/NotNinja/convert-svg/issues/34)
+
 ## Version 0.3.3, 2017.12.08
 
 * Add puppeteer.launch options available into CLI [#29](https://github.com/NotNinja/convert-svg/issues/29)
