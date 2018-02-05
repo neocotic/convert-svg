@@ -33,7 +33,7 @@
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "pollock": "^0.1.0",
-    "puppeteer": "^0.13.0",
+    "puppeteer": "^1.0.0",
     "tmp": "0.0.33"
   },
   "devDependencies": {
