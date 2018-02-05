@@ -169,7 +169,9 @@ class Helper {
       afterEach(() => {
         expect(api.createConverter.callCount).to.equal(1);
         expect(converter.destroy.callCount).to.equal(1);
+      });
 
+      afterEach(() => {
         api.createConverter.restore();
       });
     } else {
@@ -252,7 +254,9 @@ class Helper {
       afterEach(() => {
         expect(api.createConverter.callCount).to.equal(1);
         expect(converter.destroy.callCount).to.equal(1);
+      });
 
+      afterEach(() => {
         api.createConverter.restore();
       });
     } else {
