@@ -4,6 +4,7 @@
     "mocha": true
   },
   "rules": {
+    "no-undefined": "off",
     "no-unused-expressions": "off"
   }
 }

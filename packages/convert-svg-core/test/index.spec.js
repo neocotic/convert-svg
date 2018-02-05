@@ -22,7 +22,7 @@
 
 'use strict';
 
-const { expect } = require('chai');
+const assert = require('assert');
 
 const API = require('../src/API');
 const CLI = require('../src/CLI');
@@ -33,25 +33,25 @@ const Provider = require('../src/Provider');
 describe('[convert-svg-core] index', () => {
   describe('.API', () => {
     it('should be a reference to API constructor', () => {
-      expect(index.API).to.equal(API, 'Must be API constructor');
+      assert.strictEqual(index.API, API, 'Must be API constructor');
     });
   });
 
   describe('.CLI', () => {
     it('should be a reference to CLI constructor', () => {
-      expect(index.CLI).to.equal(CLI, 'Must be CLI constructor');
+      assert.strictEqual(index.CLI, CLI, 'Must be CLI constructor');
     });
   });
 
   describe('.Converter', () => {
     it('should be a reference to Converter constructor', () => {
-      expect(index.Converter).to.equal(Converter, 'Must be Converter constructor');
+      assert.strictEqual(index.Converter, Converter, 'Must be Converter constructor');
     });
   });
 
   describe('.Provider', () => {
     it('should be a reference to Provider constructor', () => {
-      expect(index.Provider).to.equal(Provider, 'Must be Provider constructor');
+      assert.strictEqual(index.Provider, Provider, 'Must be Provider constructor');
     });
   });
 });

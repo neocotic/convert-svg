@@ -22,7 +22,7 @@
 
 'use strict';
 
-const { expect } = require('chai');
+const assert = require('assert');
 const sinon = require('sinon');
 
 const API = require('../src/API');
@@ -50,26 +50,28 @@ describe('[convert-svg-core] API', () => {
     it('should return Converter instance using provider', () => {
       const converter = api.createConverter();
 
-      expect(converter).to.be.an.instanceOf(Converter);
-      expect(converter.provider).to.equal(provider);
+      assert.ok(converter instanceof Converter);
+      assert.strictEqual(converter.provider, provider);
     });
 
     it('should never return same instance', () => {
-      expect(api.createConverter()).to.not.equal(api.createConverter());
+      assert.notStrictEqual(api.createConverter(), api.createConverter());
     });
   });
 
   describe('#provider', () => {
     it('should return provider', () => {
-      expect(api.provider).to.equal(provider);
+      assert.strictEqual(api.provider, provider);
     });
   });
 
   describe('#version', () => {
     it('should return provider version', () => {
-      provider.getVersion.returns('0.0.0');
+      const version = '0.0.0';
 
-      expect(api.version).to.equal('0.0.0');
+      provider.getVersion.returns(version);
+
+      assert.equal(api.version, version);
     });
   });
 });

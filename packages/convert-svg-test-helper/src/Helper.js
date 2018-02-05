@@ -22,8 +22,7 @@
 
 'use strict';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
+const assert = require('assert');
 const cloneDeep = require('lodash.clonedeep');
 const fileUrl = require('file-url');
 const fs = require('fs');
@@ -34,9 +33,6 @@ const util = require('util');
 
 const coreTests = require('./tests.json');
 
-chai.use(chaiAsPromised);
-
-const { expect } = chai;
 const makeDirectory = util.promisify(fs.mkdir);
 const readFile = util.promisify(fs.readFile);
 const removeFile = util.promisify(rimraf);
@@ -167,8 +163,8 @@ class Helper {
       });
 
       afterEach(() => {
-        expect(api.createConverter.callCount).to.equal(1);
-        expect(converter.destroy.callCount).to.equal(1);
+        assert.equal(api.createConverter.callCount, 1);
+        assert.equal(converter.destroy.callCount, 1);
       });
 
       afterEach(() => {
@@ -214,13 +210,19 @@ class Helper {
           const method = testAPI ? api.convertFile.bind(api) : converter.convertFile.bind(converter);
 
           if (test.error) {
-            await expect(method(inputFilePath, options)).to.eventually.be.rejectedWith(Error, test.error);
+            try {
+              await method(inputFilePath, options);
+              // Should have thrown
+              assert.fail();
+            } catch (e) {
+              assert.equal(e.message, test.error);
+            }
           } else {
             const actualFilePath = await method(inputFilePath, options);
             const actual = await readFile(outputFilePath);
 
-            expect(actualFilePath).to.equal(outputFilePath);
-            expect(actual).to.deep.equal(expected);
+            assert.equal(actualFilePath, outputFilePath);
+            assert.deepEqual(actual, expected);
           }
         });
       });
@@ -252,8 +254,8 @@ class Helper {
       });
 
       afterEach(() => {
-        expect(api.createConverter.callCount).to.equal(1);
-        expect(converter.destroy.callCount).to.equal(1);
+        assert.equal(api.createConverter.callCount, 1);
+        assert.equal(converter.destroy.callCount, 1);
       });
 
       afterEach(() => {
@@ -299,11 +301,17 @@ class Helper {
           const method = testAPI ? api.convert.bind(api) : converter.convert.bind(converter);
 
           if (test.error) {
-            await expect(method(input, options)).to.eventually.be.rejectedWith(Error, test.error);
+            try {
+              await method(input, options);
+              // Should have thrown
+              assert.fail();
+            } catch (e) {
+              assert.equal(e.message, test.error);
+            }
           } else {
             const actual = await method(input, options);
 
-            expect(actual).to.deep.equal(expected);
+            assert.deepEqual(actual, expected);
           }
         });
       });
@@ -333,7 +341,7 @@ class Helper {
         const method = testAPI ? api.convert.bind(api) : converter.convert.bind(converter);
         const actual = await method(input);
 
-        expect(actual).to.deep.equal(expected);
+        assert.deepEqual(actual, expected);
       });
     });
   }

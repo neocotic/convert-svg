@@ -22,7 +22,7 @@
 
 'use strict';
 
-const { expect } = require('chai');
+const assert = require('assert');
 const { Provider } = require('convert-svg-core');
 
 const pkg = require('../package.json');
@@ -36,26 +36,26 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
   });
 
   it('should extend Provider', () => {
-    expect(provider).to.be.an.instanceOf(Provider);
+    assert.ok(provider instanceof Provider);
   });
 
   describe('#getBackgroundColor', () => {
     context('when background option was not specified', () => {
       it('should return white color', () => {
-        expect(provider.getBackgroundColor({})).to.equal('#FFF');
+        assert.equal(provider.getBackgroundColor({}), '#FFF');
       });
     });
 
     context('when background option was specified', () => {
       it('should return background', () => {
-        expect(provider.getBackgroundColor({ background: '#000' })).to.equal('#000');
+        assert.equal(provider.getBackgroundColor({ background: '#000' }), '#000');
       });
     });
   });
 
   describe('#getCLIOptions', () => {
     it('should return CLI options', () => {
-      expect(provider.getCLIOptions()).to.deep.equal([
+      assert.deepEqual(provider.getCLIOptions(), [
         {
           flags: '--quality <value>',
           description: 'specify quality for JPEG [100]',
@@ -67,31 +67,31 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
 
   describe('#getExtension', () => {
     it('should return output file extension', () => {
-      expect(provider.getExtension()).to.equal('jpeg');
+      assert.equal(provider.getExtension(), 'jpeg');
     });
   });
 
   describe('#getFormat', () => {
     it('should return output format', () => {
-      expect(provider.getFormat()).to.equal('JPEG');
+      assert.equal(provider.getFormat(), 'JPEG');
     });
   });
 
   describe('#getScreenshotOptions', () => {
     it('should return puppeteer screenshot options with quality option', () => {
-      expect(provider.getScreenshotOptions({ quality: 50 })).to.deep.equal({ quality: 50 });
+      assert.deepEqual(provider.getScreenshotOptions({ quality: 50 }), { quality: 50 });
     });
   });
 
   describe('#getType', () => {
     it('should return output type supported as supported by puppeteer screenshots', () => {
-      expect(provider.getType()).to.equal('jpeg');
+      assert.equal(provider.getType(), 'jpeg');
     });
   });
 
   describe('#getVersion', () => {
     it('should return version in package.json', () => {
-      expect(provider.getVersion()).to.equal(pkg.version);
+      assert.equal(provider.getVersion(), pkg.version);
     });
   });
 
@@ -102,7 +102,7 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
 
         provider.parseAPIOptions(options);
 
-        expect(options).to.deep.equal({ quality: 100 });
+        assert.deepEqual(options, { quality: 100 });
       });
     });
 
@@ -112,28 +112,37 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
 
         provider.parseAPIOptions(options);
 
-        expect(options).to.deep.equal({ quality: 0 });
+        assert.deepEqual(options, { quality: 0 });
 
         options.quality = 50;
 
         provider.parseAPIOptions(options);
 
-        expect(options).to.deep.equal({ quality: 50 });
+        assert.deepEqual(options, { quality: 50 });
 
         options.quality = 100;
 
         provider.parseAPIOptions(options);
 
-        expect(options).to.deep.equal({ quality: 100 });
+        assert.deepEqual(options, { quality: 100 });
       });
     });
 
     context('when quality option is out of range', () => {
       it('should throw an error', () => {
-        expect(() => provider.parseAPIOptions({ quality: -1 })).to.throw(Error,
-          'Value for quality option out of range. Use value between 0-100 (inclusive)');
-        expect(() => provider.parseAPIOptions({ quality: 101 })).to.throw(Error,
-          'Value for quality option out of range. Use value between 0-100 (inclusive)');
+        assert.throws(() => {
+          provider.parseAPIOptions({ quality: -1 });
+        }, (error) => {
+          return error instanceof Error &&
+              error.message === 'Value for quality option out of range. Use value between 0-100 (inclusive)';
+        });
+
+        assert.throws(() => {
+          provider.parseAPIOptions({ quality: 101 });
+        }, (error) => {
+          return error instanceof Error &&
+              error.message === 'Value for quality option out of range. Use value between 0-100 (inclusive)';
+        });
       });
     });
   });
@@ -144,11 +153,11 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
 
       provider.parseCLIOptions(options, {});
 
-      expect(options.quality).to.be.undefined;
+      assert.strictEqual(options.quality, undefined);
 
       provider.parseCLIOptions(options, { quality: 50 });
 
-      expect(options.quality).to.equal(50);
+      assert.equal(options.quality, 50);
     });
   });
 });
