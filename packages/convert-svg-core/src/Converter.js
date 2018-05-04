@@ -278,16 +278,16 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
 
     await writeFile(tempFile.path, html);
 
-    this[_page].on('requestfinished', msg => {
-      let resource = msg.url();
-      let statusCode = msg.response().status();
+    this[_page].on('requestfinished', (msg) => {
+      const resource = msg.url();
+      const statusCode = msg.response().status();
       if (statusCode >= 400) {
         throw new Error(`A request to ${resource} failed with ${statusCode}`);
       }
     });
 
-    this[_page].on('requestfailed', msg => {
-      let resource = msg.url();
+    this[_page].on('requestfailed', (msg) => {
+      const resource = msg.url();
       throw new Error(`Unable to load resource: ${resource}`);
     });
 

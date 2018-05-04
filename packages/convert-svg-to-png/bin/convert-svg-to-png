@@ -31,7 +31,7 @@ const PNGProvider = require('../src/PNGProvider');
 
 (async() => {
   const cli = new CLI(new PNGProvider());
-  process.on('unhandledRejection', e => {
+  process.on('unhandledRejection', (e) => {
     cli.error(`convert-svg-to-png failed: ${e.stack}`);
     process.exit(1);
   })
