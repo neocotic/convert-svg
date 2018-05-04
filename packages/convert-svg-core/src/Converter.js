@@ -287,7 +287,8 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
     });
 
     this[_page].on('requestfailed', msg => {
-      throw new Error('Unable to load a resource.');
+      let resource = msg.url();
+      throw new Error(`Unable to load resource: ${resource}`);
     });
 
     await this[_page].goto(fileUrl(tempFile.path));
