@@ -113,7 +113,13 @@ class CLI {
       {
         flags: '--width <value>',
         description: `specify width for ${format}`
-      }
+      },
+      {
+        flags: '--timeout <value>',
+        description: `specify timeout in seconds for goto request ${format}`,
+        transformer: parseInt
+      },
+
     ]);
     this[_applyOptions](provider.getCLIOptions());
   }
@@ -153,7 +159,7 @@ class CLI {
     const command = this[_command].parse(args);
     const options = this[_parseOptions]();
 
-    const converter = new Converter(this[_provider], pick(options, 'puppeteer'));
+    const converter = new Converter(this[_provider], pick(options, ['puppeteer','timeout']));
 
     try {
       if (command.args.length) {
@@ -229,7 +235,8 @@ class CLI {
       height: command.height,
       puppeteer: command.puppeteer,
       scale: command.scale,
-      width: command.width
+      width: command.width,
+      timeout: command.timeout
     };
 
     this[_provider].parseCLIOptions(options, command);
