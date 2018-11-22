@@ -83,7 +83,7 @@ class JPEGProvider extends Provider {
    * @inheritdoc
    * @override
    */
-  parseAPIOptions(options, inputFilePath) {
+  parseAPIOptions(options) {
     if (typeof options.quality === 'number' && (options.quality < 0 || options.quality > 100)) {
       throw new Error('Value for quality option out of range. Use value between 0-100 (inclusive)');
     }

@@ -77,13 +77,13 @@ class PNGProvider extends Provider {
    * @inheritdoc
    * @override
    */
-  parseAPIOptions(options, inputFilePath) {}
+  parseAPIOptions() {}
 
   /**
    * @inheritdoc
    * @override
    */
-  parseCLIOptions(options, command) {}
+  parseCLIOptions() {}
 
 }
 
