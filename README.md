@@ -1,16 +1,16 @@
 # convert-svg
 
-[![Build Status](https://img.shields.io/travis/NotNinja/convert-svg/develop.svg?style=flat-square)](https://travis-ci.org/NotNinja/convert-svg)
-[![License](https://img.shields.io/github/license/NotNinja/convert-svg.svg?style=flat-square)](https://github.com/NotNinja/convert-svg/blob/master/LICENSE.md)
-[![Release](https://img.shields.io/github/release/NotNinja/convert-svg.svg?style=flat-square)](https://github.com/NotNinja/convert-svg)
+[![Build Status](https://img.shields.io/travis/neocotic/convert-svg/develop.svg?style=flat-square)](https://travis-ci.org/neocotic/convert-svg)
+[![License](https://img.shields.io/github/license/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/blob/master/LICENSE.md)
+[![Release](https://img.shields.io/github/release/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg)
 
 This monorepo contains the following [Node.js](https://nodejs.org) packages that can convert a SVG into another format
 using headless Chromium:
 
-* [convert-svg-core](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-core)
-* [convert-svg-test-helper](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-test-helper)
-* [convert-svg-to-jpeg](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-to-jpeg)
-* [convert-svg-to-png](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-to-png)
+* [convert-svg-core](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-core)
+* [convert-svg-test-helper](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-test-helper)
+* [convert-svg-to-jpeg](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-to-jpeg)
+* [convert-svg-to-png](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-to-png)
 
 The first two packages are core dependencies for SVG converters, which make up the remainder of the packages, trying to
 adhere to the following naming convention:
@@ -29,7 +29,6 @@ them.
 
 ## License
 
-See [LICENSE.md](https://github.com/NotNinja/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.
+Copyright © 2018 Alasdair Mercer
 
-[![Copyright !ninja](https://cdn.rawgit.com/NotNinja/branding/master/assets/copyright/base/not-ninja-copyright-186x25.png)](https://not.ninja)
-
+See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.

@@ -2,14 +2,14 @@
   "name": "convert-svg-test-helper",
   "version": "0.4.0",
   "description": "Helper for testing convert-svg-core implementations",
-  "homepage": "https://github.com/NotNinja/convert-svg",
+  "homepage": "https://github.com/neocotic/convert-svg",
   "bugs": {
-    "url": "https://github.com/NotNinja/convert-svg/issues"
+    "url": "https://github.com/neocotic/convert-svg/issues"
   },
   "author": {
     "name": "Alasdair Mercer",
     "email": "mercer.alasdair@gmail.com",
-    "url": "https://not.ninja"
+    "url": "https://neocotic.com"
   },
   "license": "MIT",
   "keywords": [
@@ -24,7 +24,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/NotNinja/convert-svg.git"
+    "url": "https://github.com/neocotic/convert-svg.git"
   },
   "dependencies": {
     "file-url": "^2.0.2",
