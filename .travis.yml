@@ -3,7 +3,8 @@ dist: trusty
 language: node_js
 node_js:
   - "8"
-  - "9"
+  - "10"
+  - "11"
 before_install:
   - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
   - sudo apt-get -qq update
