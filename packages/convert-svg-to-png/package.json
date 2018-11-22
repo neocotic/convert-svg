@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "convert-svg-test-helper": "^0.4.0",
-    "mocha": "^5.0.0"
+    "mocha": "^5.2.0"
   },
   "bin": {
     "convert-svg-to-png": "bin/convert-svg-to-png"
