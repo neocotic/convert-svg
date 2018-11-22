@@ -2,10 +2,10 @@
   "name": "convert-svg",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^4.17.0",
-    "eslint-config-notninja": "^0.2.3",
-    "lerna": "^2.8.0",
-    "mocha": "^5.0.0"
+    "eslint": "^5.9.0",
+    "eslint-config-notninja": "^0.4.0",
+    "lerna": "^3.4.3",
+    "mocha": "^5.2.0"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
