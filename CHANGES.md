@@ -1,6 +1,5 @@
 ## Version 0.5.0, 2018.11.23
 
-* added package-lock.json file to enable "npm audit" [7935495](https://github.com/neocotic/convert-svg/commit/793549517657ca903ab927c7e1d907c805921aaf)
 * moved from !ninja to neocotic [ad5aa55](https://github.com/neocotic/convert-svg/commit/ad5aa559daa04a4276fc025e0a37d0d9768eab28)
 * modified CI to now target Node.js 8, 10, and 11 [63fcb27](https://github.com/neocotic/convert-svg/commit/63fcb2702cba03ec12f7998c0c0ee0b84b862986)
 * bump dependencies [6daedb1](https://github.com/neocotic/convert-svg/commit/6daedb1d27f56455d7797628bbff90aa59597565)
