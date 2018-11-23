@@ -1,3 +1,14 @@
+## Version 0.5.0, 2018.11.23
+
+* added package-lock.json file to enable "npm audit" [7935495](https://github.com/neocotic/convert-svg/commit/793549517657ca903ab927c7e1d907c805921aaf)
+* moved from !ninja to neocotic [ad5aa55](https://github.com/neocotic/convert-svg/commit/ad5aa559daa04a4276fc025e0a37d0d9768eab28)
+* modified CI to now target Node.js 8, 10, and 11 [63fcb27](https://github.com/neocotic/convert-svg/commit/63fcb2702cba03ec12f7998c0c0ee0b84b862986)
+* bump dependencies [6daedb1](https://github.com/neocotic/convert-svg/commit/6daedb1d27f56455d7797628bbff90aa59597565)
+* bumped devDependenices [3a8ae85](https://github.com/neocotic/convert-svg/commit/3a8ae8528939819a90f2754adacc82864475d967)
+* lerna now updates package-lock.json for hoisted dependencies [d58aef8](https://github.com/neocotic/convert-svg/commit/d58aef8a899b141003a620d1ad3d0ee98d777a40)
+* fixed linting errors [96e7e06](https://github.com/neocotic/convert-svg/commit/96e7e061abb75b83b92ca675f2d1bb68e76f28ae)
+* fixed broken tests by regenerating expected fixtures [bf34770](https://github.com/neocotic/convert-svg/commit/bf34770a5707903849cd8005a7b82d735ee3c281)
+
 ## Version 0.4.0, 2018.02.05
 
 * Bump Puppeteer to v1 [#32](https://github.com/neocotic/convert-svg/issues/32)
