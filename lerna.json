@@ -6,6 +6,7 @@
   ],
   "command": {
     "bootstrap": {
+      "ci": false,
       "hoist": true,
       "nohoist": "puppeteer"
     }
