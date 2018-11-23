@@ -2,9 +2,9 @@
 
 A [Node.js](https://nodejs.org) package for converting SVG to JPEG using headless Chromium.
 
-[![Build Status](https://img.shields.io/travis/NotNinja/convert-svg/develop.svg?style=flat-square)](https://travis-ci.org/NotNinja/convert-svg)
-[![License](https://img.shields.io/github/license/NotNinja/convert-svg.svg?style=flat-square)](https://github.com/NotNinja/convert-svg/blob/master/LICENSE.md)
-[![Release](https://img.shields.io/github/release/NotNinja/convert-svg.svg?style=flat-square)](https://github.com/NotNinja/convert-svg/tree/master/packages/convert-svg-to-jpeg)
+[![Build Status](https://img.shields.io/travis/neocotic/convert-svg/develop.svg?style=flat-square)](https://travis-ci.org/neocotic/convert-svg)
+[![License](https://img.shields.io/github/license/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/blob/master/LICENSE.md)
+[![Release](https://img.shields.io/github/release/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-to-jpeg)
 
 * [Install](#install)
 * [CLI](#cli)
@@ -193,23 +193,23 @@ async function convertSvgFiles(dirPath) {
 
 If you would like to convert a SVG into a format other than JPEG, check out our other converter packages below:
 
-https://github.com/NotNinja/convert-svg
+https://github.com/neocotic/convert-svg
 
 ## Bugs
 
 If you have any problems with this package or would like to see changes currently in development you can do so
-[here](https://github.com/NotNinja/convert-svg/issues).
+[here](https://github.com/neocotic/convert-svg/issues).
 
 ## Contributors
 
 If you want to contribute, you're a legend! Information on how you can do so can be found in
-[CONTRIBUTING.md](https://github.com/NotNinja/convert-svg/blob/master/CONTRIBUTING.md). We want your suggestions and
+[CONTRIBUTING.md](https://github.com/neocotic/convert-svg/blob/master/CONTRIBUTING.md). We want your suggestions and
 pull requests!
 
-A list of all contributors can be found in [AUTHORS.md](https://github.com/NotNinja/convert-svg/blob/master/AUTHORS.md).
+A list of all contributors can be found in [AUTHORS.md](https://github.com/neocotic/convert-svg/blob/master/AUTHORS.md).
 
 ## License
 
-See [LICENSE.md](https://github.com/NotNinja/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.
+Copyright © 2018 Alasdair Mercer
 
-[![Copyright !ninja](https://cdn.rawgit.com/NotNinja/branding/master/assets/copyright/base/not-ninja-copyright-186x25.png)](https://not.ninja)
+See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.

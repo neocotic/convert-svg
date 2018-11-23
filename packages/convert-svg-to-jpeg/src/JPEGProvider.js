@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Alasdair Mercer, !ninja
+ * Copyright (C) 2018 Alasdair Mercer
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -83,7 +83,7 @@ class JPEGProvider extends Provider {
    * @inheritdoc
    * @override
    */
-  parseAPIOptions(options, inputFilePath) {
+  parseAPIOptions(options) {
     if (typeof options.quality === 'number' && (options.quality < 0 || options.quality > 100)) {
       throw new Error('Value for quality option out of range. Use value between 0-100 (inclusive)');
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Alasdair Mercer, !ninja
+ * Copyright (C) 2018 Alasdair Mercer
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,7 @@ const writeFile = util.promisify(fs.writeFile);
 
 const _api = Symbol('api');
 const _baseDir = Symbol('baseDir');
+const _getContext = Symbol('getContext');
 const _parseOptions = Symbol('parseOptions');
 const _provider = Symbol('provider');
 const _tests = Symbol('tests');
@@ -50,6 +51,10 @@ const _tests = Symbol('tests');
  * @public
  */
 class Helper {
+
+  static [_getContext](test) {
+    return test.skip ? context.skip : context;
+  }
 
   /**
    * Creates an instance of {@link Helper} using the <code>options</code> provided.
@@ -181,7 +186,7 @@ class Helper {
     }
 
     this[_tests].forEach((test, index) => {
-      context(`(test:${index}) ${test.name}`, function() {
+      Helper[_getContext](test)(`(test:${index}) ${test.name}`, function() {
         /* eslint-disable no-invalid-this */
         this.slow(testAPI ? 600 : 250);
         /* eslint-enable no-invalid-this */
@@ -272,7 +277,7 @@ class Helper {
     }
 
     this[_tests].forEach((test, index) => {
-      context(`(test:${index}) ${test.name}`, function() {
+      Helper[_getContext](test)(`(test:${index}) ${test.name}`, function() {
         /* eslint-disable no-invalid-this */
         this.slow(testAPI ? 550 : 200);
         /* eslint-enable no-invalid-this */

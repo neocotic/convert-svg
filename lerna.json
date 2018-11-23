@@ -1,11 +1,12 @@
 {
-  "lerna": "2.5.1",
-  "version": "0.4.0",
+  "lerna": "3.4.3",
+  "version": "0.5.0",
   "packages": [
     "packages/*"
   ],
   "command": {
     "bootstrap": {
+      "ci": false,
       "hoist": true,
       "nohoist": "puppeteer"
     }

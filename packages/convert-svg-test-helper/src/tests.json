@@ -89,7 +89,8 @@
   {
     "name": "when with media queries",
     "file": "media-queries.svg",
-    "message": "zebra should be red; size should be 167x344"
+    "message": "zebra should be red; size should be 167x344",
+    "skip": true
   },
   {
     "name": "when with media queries, resized",
