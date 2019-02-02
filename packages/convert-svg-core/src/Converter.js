@@ -238,10 +238,20 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
         return null;
       }
 
-      const widthIsPercent = (el.getAttribute('width') || '').endsWith('%');
-      const heightIsPercent = (el.getAttribute('height') || '').endsWith('%');
-      const width = !widthIsPercent && parseFloat(el.getAttribute('width'));
-      const height = !heightIsPercent && parseFloat(el.getAttribute('height'));
+      function getLength(length) {
+          var attribute = el.getAttribute(length);
+          if (!attribute || attribute.endsWith('%')) {
+              return null;
+          }
+          var value = parseFloat(attribute);
+          if (attribute.endsWith('pt')) {
+              value *= 1.33333;
+          } // TODO add other options as in https://www.w3.org/TR/CSS21/syndata.html#value-def-length
+          return value;
+      }
+
+      const width = getLength('width');
+      const height = getLength('height');
 
       if (width && height) {
         return { width, height };
