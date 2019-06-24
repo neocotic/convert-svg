@@ -218,9 +218,12 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
       await this[_setDimensions](page, dimensions);
     }
 
+    dimensions.height = Math.ceil(dimensions.height);
+    dimensions.width = Math.ceil(dimensions.width);
+
     await page.setViewport({
-      height: Math.round(dimensions.height),
-      width: Math.round(dimensions.width)
+      height: dimensions.height,
+      width: dimensions.width
     });
 
     const output = await page.screenshot(Object.assign({
