@@ -195,6 +195,7 @@ class Converter {
 <style>
 * { margin: 0; padding: 0; }
 html { background-color: ${provider.getBackgroundColor(options)}; }
+svg { vertical-align: top; }
 </style>`;
     if (start >= 0) {
       html += input.substring(start);
