@@ -69,7 +69,7 @@ class API {
    *
    * @param {Buffer|string} input - the SVG input to be converted to another format
    * @param {API~ConvertOptions} [options] - the options to be used
-   * @return {Promise.<Buffer, Error>} A <code>Promise</code> that is resolved with the converted output buffer.
+   * @return {Promise<Buffer>} A <code>Promise</code> that is resolved with the converted output buffer.
    * @public
    */
   async convert(input, options) {
@@ -105,7 +105,7 @@ class API {
    *
    * @param {string} inputFilePath - the path of the SVG file to be converted to another file format
    * @param {API~ConvertFileOptions} [options] - the options to be used
-   * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the output file path.
+   * @return {Promise<string>} A <code>Promise</code> that is resolved with the output file path.
    * @public
    */
   async convertFile(inputFilePath, options) {

@@ -91,7 +91,7 @@ class Helper {
    * An error will occur if any problem arises while loading the tests or trying to read/write any files or convert an
    * SVG into another format.
    *
-   * @return {Promise.<void, Error>} A <code>Promise</code> that is resolved once all fixture files have been created.
+   * @return {Promise<void>} A <code>Promise</code> that is resolved once all fixture files have been created.
    * @public
    */
   async createFixtures() {
@@ -418,7 +418,7 @@ module.exports = Helper;
  * @property {API} api - The {@link API} to be tested.
  * @property {string} baseDir - The path of the base directory of the tests.
  * @property {Provider} provider - The {@link Provider} to be tested.
- * @property {?Array.<Helper~Test>} [tests] - The tests to be ran after the core tests.
+ * @property {?Array<Helper~Test>} [tests] - The tests to be ran after the core tests.
  */
 
 /**

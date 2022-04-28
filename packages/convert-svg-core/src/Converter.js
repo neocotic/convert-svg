@@ -45,6 +45,8 @@ const _options = Symbol('options');
 const _page = Symbol('page');
 const _parseOptions = Symbol('parseOptions');
 const _provider = Symbol('provider');
+const _roundDimension = Symbol('roundDimension');
+const _roundDimensions = Symbol('roundDimensions');
 const _setDimensions = Symbol('setDimensions');
 const _tempFile = Symbol('tempFile');
 const _validate = Symbol('validate');
@@ -104,7 +106,7 @@ class Converter {
    *
    * @param {Buffer|string} input - the SVG input to be converted to another format
    * @param {Converter~ConvertOptions} [options] - the options to be used
-   * @return {Promise.<Buffer, Error>} A <code>Promise</code> that is resolved with the converted output buffer.
+   * @return {Promise<Buffer>} A <code>Promise</code> that is resolved with the converted output buffer.
    * @public
    */
   async convert(input, options) {
@@ -137,7 +139,7 @@ class Converter {
    *
    * @param {string} inputFilePath - the path of the SVG file to be converted to another file format
    * @param {Converter~ConvertFileOptions} [options] - the options to be used
-   * @return {Promise.<string, Error>} A <code>Promise</code> that is resolved with the output file path.
+   * @return {Promise<string>} A <code>Promise</code> that is resolved with the output file path.
    * @public
    */
   async convertFile(inputFilePath, options) {
@@ -163,7 +165,7 @@ class Converter {
    *
    * An error will occur if any problem arises while closing the browser, where applicable.
    *
-   * @return {Promise.<void, Error>} A <code>Promise</code> that is resolved once this {@link Converter} has been
+   * @return {Promise<void>} A <code>Promise</code> that is resolved once this {@link Converter} has been
    * destroyed.
    * @public
    */
@@ -213,10 +215,7 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
 
     await this[_setDimensions](page, options);
 
-    const dimensions = await this[_getDimensions](page);
-    if (!dimensions) {
-      throw new Error('Unable to derive width and height from SVG. Consider specifying corresponding options');
-    }
+    const dimensions = await this[_getDimensions](page, options);
 
     if (options.scale !== 1) {
       dimensions.height *= options.scale;
@@ -225,10 +224,7 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
       await this[_setDimensions](page, dimensions);
     }
 
-    await page.setViewport({
-      height: Math.round(dimensions.height),
-      width: Math.round(dimensions.width)
-    });
+    await page.setViewport(dimensions);
 
     const output = await page.screenshot(Object.assign({
       type: provider.getType(),
@@ -238,8 +234,8 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
     return output;
   }
 
-  [_getDimensions](page) {
-    return page.evaluate(() => {
+  async [_getDimensions](page, options) {
+    const dimensions = await page.evaluate(() => {
       const el = document.querySelector('svg');
       if (!el) {
         return null;
@@ -289,6 +285,11 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
 
       return null;
     });
+    if (!dimensions) {
+      throw new Error('Unable to derive width and height from SVG. Consider specifying corresponding options');
+    }
+
+    return this[_roundDimensions](dimensions, options.rounding);
   }
 
   async [_getPage](html) {
@@ -351,9 +352,15 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
     if (typeof options.height === 'string') {
       options.height = parseInt(options.height, 10);
     }
+
+    if (typeof options.rounding !== 'string' || !['ceil', 'floor', 'round'].includes(options.rounding)) {
+      options.rounding = 'round';
+    }
+
     if (options.scale == null) {
       options.scale = 1;
     }
+
     if (typeof options.width === 'string') {
       options.width = parseInt(options.width, 10);
     }
@@ -361,6 +368,25 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
     provider.parseAPIOptions(options, inputFilePath);
 
     return options;
+  }
+
+  [_roundDimension](dimension, rounding) {
+    switch (rounding) {
+      case 'ceil':
+        return Math.ceil(dimension);
+      case 'floor':
+        return Math.floor(dimension);
+      case 'round':
+      default:
+        return Math.round(dimension);
+    }
+  }
+
+  [_roundDimensions](dimensions, rounding) {
+    return {
+      width: this[_roundDimension](dimensions.width, rounding),
+      height: this[_roundDimension](dimensions.height, rounding),
+    };
   }
 
   async [_setDimensions](page, dimensions) {
@@ -439,6 +465,8 @@ module.exports = Converter;
  * conjunction with the <code>baseFile</code> option.
  * @property {number|string} [height] - The height of the output to be generated. If omitted, an attempt will be made to
  * derive the height from the SVG input.
+ * @property {Converter~Rounding} [rounding] - The type of rounding to be applied to the width and height. If omitted,
+ * the dimensions with be rounded to the nearest integer.
  * @property {number} [scale=1] - The scale to be applied to the width and height (either specified as options or
  * derived).
  * @property {number|string} [width] - The width of the output to be generated. If omitted, an attempt will be made to
@@ -451,4 +479,10 @@ module.exports = Converter;
  * @typedef {Object} Converter~Options
  * @property {Object} [puppeteer] - The options that are to be passed directly to <code>puppeteer.launch</code> when
  * creating the <code>Browser</code> instance.
+ */
+
+/**
+ * The type of rounding to be applied to the width and height during a conversion.
+ *
+ * @typedef {'ceil'|'floor'|'round'} Converter~Rounding
  */

@@ -45,6 +45,7 @@ $ npm install --global convert-svg-to-png
         --filename <filename>  specify filename for the PNG output when processing STDIN
         --height <value>       specify height for PNG
         --puppeteer <json>     specify a json object for puppeteer.launch options
+        --rounding <type>      specify type of rounding to apply to dimensions
         --scale <value>        specify scale to apply to dimensions [1]
         --width <value>        specify width for PNG
         -h, --help             output usage information
@@ -78,15 +79,16 @@ element or no `width` and/or `height` options were provided and this information
 
 #### Options
 
-| Option       | Type          | Default                 | Description                                                                                                                                                      |
-| ------------ | ------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `background` | String        | N/A                     | Background color to be used to fill transparent regions within the SVG. Will remain transparent if omitted.                                                      |
-| `baseFile`   | String        | N/A                     | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option. |
-| `baseUrl`    | String        | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                        |
-| `height`     | Number/String | N/A                     | Height of the output to be generated. Derived from SVG input if omitted.                                                                                         |
-| `puppeteer`  | Object        | N/A                     | Options that are to be passed directly to `puppeteer.launch` when creating the `Browser` instance.                                                               |
-| `scale`      | Number        | `1`                     | Scale to be applied to the width and height (specified as options or derived).                                                                                   |
-| `width`      | Number/String | N/A                     | Width of the output to be generated. Derived from SVG input if omitted.                                                                                          |
+| Option       | Type                   | Default                 | Description                                                                                                                                                      |
+|--------------|------------------------|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `background` | String                 | N/A                     | Background color to be used to fill transparent regions within the SVG. Will remain transparent if omitted.                                                      |
+| `baseFile`   | String                 | N/A                     | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option. |
+| `baseUrl`    | String                 | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                        |
+| `height`     | Number/String          | N/A                     | Height of the output to be generated. Derived from SVG input if omitted.                                                                                         |
+| `puppeteer`  | Object                 | N/A                     | Options that are to be passed directly to `puppeteer.launch` when creating the `Browser` instance.                                                               |
+| `rounding`   | `ceil`/`floor`/`round` | `"round"`               | Type of rounding to be applied to the width and height.                                                                                                          |
+| `scale`      | Number                 | `1`                     | Scale to be applied to the width and height (specified as options or derived).                                                                                   |
+| `width`      | Number/String          | N/A                     | Width of the output to be generated. Derived from SVG input if omitted.                                                                                          |
 
 The `puppeteer` option is not available when calling this method on a `Converter` instance created using
 `createConverter`.
@@ -130,7 +132,7 @@ or a problem arises while reading the input file or writing the output file.
 Has the same options as the standard `convert` method but also supports the following additional options:
 
 | Option           | Type   | Default | Description                                                                                             |
-| ---------------- | ------ | ------- | ------------------------------------------------------------------------------------------------------- |
+|------------------|--------|---------|---------------------------------------------------------------------------------------------------------|
 | `outputFilePath` | String | N/A     | Path of the file to which the PNG output should be written to. Derived from input file path if omitted. |
 
 #### Example
@@ -160,7 +162,7 @@ conversions. It's not recommended to keep an instance around for too long, as it
 #### Options
 
 | Option      | Type   | Default | Description                                                                                        |
-| ----------- | ------ | ------- | -------------------------------------------------------------------------------------------------- |
+|-------------|--------|---------|----------------------------------------------------------------------------------------------------|
 | `puppeteer` | Object | N/A     | Options that are to be passed directly to `puppeteer.launch` when creating the `Browser` instance. |
 
 #### Example

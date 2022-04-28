@@ -106,6 +106,10 @@ class CLI {
         transformer: JSON.parse
       },
       {
+        flags: '--rounding <type>',
+        description: 'specify type of rounding to apply to dimensions'
+      },
+      {
         flags: '--scale <value>',
         description: 'specify scale to apply to dimensions [1]',
         transformer: parseInt
@@ -146,7 +150,7 @@ class CLI {
    * An error will occur if any problem arises.
    *
    * @param {string[]} [args] - the arguments to be parsed
-   * @return {Promise.<void, Error>} A <code>Promise</code> that is resolved once all actions have been completed.
+   * @return {Promise<void>} A <code>Promise</code> that is resolved once all actions have been completed.
    * @public
    */
   async parse(args = []) {

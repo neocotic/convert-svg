@@ -86,7 +86,7 @@ pollock(Provider, 'getBackgroundColor');
  *
  * All implementations of {@link Provider} <b>must</b> override this method.
  *
- * @return {?Array.<CLI~Option>} Any additional CLI options or <code>null</code> if there are none.
+ * @return {?Array<CLI~Option>} Any additional CLI options or <code>null</code> if there are none.
  * @public
  * @abstract
  * @memberof Provider#
