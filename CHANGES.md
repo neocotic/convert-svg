@@ -1,6 +1,7 @@
 ## Version 0.6.0, 2022.04.28
 
 * **Breaking Change:** All packages now require Node.js version 12.20.0 or newer
+* Support UTF-8 characters in SVG
 * Fix [CVE-2021-23631](https://nvd.nist.gov/vuln/detail/CVE-2021-23631) by improving input validation
 * Bump dependencies (incl. major for Puppeteer)
 * Bump devDependencies

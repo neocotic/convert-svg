@@ -191,14 +191,20 @@ class Converter {
     const { provider } = this;
     const svg = cheerio.html(cheerio.load(input, null, false)('svg'));
 
-    let html = `<!DOCTYPE html>
+    let html = '';
+    if (svg) {
+      html += `<!DOCTYPE html>
+<html>
+<head>
 <base href="${options.baseUrl}">
+<meta charset="utf-8">
 <style>
 * { margin: 0; padding: 0; }
 html { background-color: ${provider.getBackgroundColor(options)}; }
-</style>`;
-    if (svg) {
-      html += svg;
+</style>
+</head>
+<body>${svg}</body>
+</html>`;
     } else {
       throw new Error('SVG element not found in input. Check the SVG input');
     }
