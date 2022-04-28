@@ -11,6 +11,16 @@
     "email": "mercer.alasdair@gmail.com",
     "url": "https://neocotic.com"
   },
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/neocotic"
+    },
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/neocotic"
+    }
+  ],
   "license": "MIT",
   "keywords": [
     "convert",
