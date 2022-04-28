@@ -2,18 +2,19 @@
   "name": "convert-svg",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^5.9.0",
+    "eslint": "^8.14.0",
     "eslint-config-notninja": "^0.4.0",
-    "lerna": "^3.4.3",
-    "mocha": "^5.2.0"
+    "lerna": "^4.0.0",
+    "mocha": "^9.2.2"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
+    "packages:outdated": "lerna exec --stream --no-bail \"npm outdated\"",
     "pretest": "eslint .",
-    "test": "mocha -R list \"packages/*/test/**/*.spec.js\""
+    "test": "mocha -O maxDiffSize=32 -R list \"packages/*/test/**/*.spec.js\""
   },
   "engines": {
-    "node": ">=8"
+    "node": "^12.20.0 || >=14"
   },
   "private": true
 }

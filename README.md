@@ -29,6 +29,6 @@ them.
 
 ## License
 
-Copyright © 2018 Alasdair Mercer
+Copyright © 2022 neocotic
 
 See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.

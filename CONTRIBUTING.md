@@ -17,7 +17,7 @@ $ npm run bootstrap
 $ npm test
 ```
 
-You must have at least [Node.js](https://nodejs.org) version 8 or newer installed.
+You must have at least [Node.js](https://nodejs.org) version 12.20.0 or newer installed.
 
 Some of the test fixtures include Microsoft-based fonts so, if you're a non-Windows user, you will have to ensure that
 you have Microsoft fonts installed. For example; Ubuntu users can do the following:

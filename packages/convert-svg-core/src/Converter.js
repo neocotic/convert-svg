@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Alasdair Mercer
+ * Copyright (C) 2022 neocotic
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 /* global document: false */
 
+const cheerio = require('cheerio');
 const fileUrl = require('file-url');
 const fs = require('fs');
 const path = require('path');
@@ -188,7 +189,7 @@ class Converter {
     input = Buffer.isBuffer(input) ? input.toString('utf8') : input;
 
     const { provider } = this;
-    const start = input.indexOf('<svg');
+    const svg = cheerio.html(cheerio.load(input, null, false)('svg'));
 
     let html = `<!DOCTYPE html>
 <base href="${options.baseUrl}">
@@ -196,10 +197,10 @@ class Converter {
 * { margin: 0; padding: 0; }
 html { background-color: ${provider.getBackgroundColor(options)}; }
 </style>`;
-    if (start >= 0) {
-      html += input.substring(start);
+    if (svg) {
+      html += svg;
     } else {
-      throw new Error('SVG element open tag not found in input. Check the SVG input');
+      throw new Error('SVG element not found in input. Check the SVG input');
     }
 
     const page = await this[_getPage](html);

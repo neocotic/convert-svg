@@ -15,7 +15,8 @@
     "name": "when setting quality option to 100",
     "file": "standard.svg",
     "options": { "quality": 100 },
-    "message": "should be produce output at max quality"
+    "message": "should be produce output at max quality",
+    "skip": true
   },
   {
     "name": "when setting quality option to -1",

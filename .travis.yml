@@ -1,10 +1,8 @@
 sudo: required
-dist: trusty
+dist: bionic
 language: node_js
 node_js:
-  - "8"
-  - "10"
-  - "11"
+  - "14"
 before_install:
   - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
   - sudo apt-get -qq update

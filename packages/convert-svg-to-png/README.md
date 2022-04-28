@@ -208,6 +208,6 @@ A list of all contributors can be found in [AUTHORS.md](https://github.com/neoco
 
 ## License
 
-Copyright © 2018 Alasdair Mercer
+Copyright © 2022 neocotic
 
 See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.
