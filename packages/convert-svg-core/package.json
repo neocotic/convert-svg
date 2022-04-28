@@ -10,6 +10,16 @@
     "name": "neocotic",
     "url": "https://github.com/neocotic"
   },
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/neocotic"
+    },
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/neocotic"
+    }
+  ],
   "license": "MIT",
   "keywords": [
     "convert",
