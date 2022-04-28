@@ -3,6 +3,7 @@
 * **Breaking Change:** All packages now require Node.js version 12.20.0 or newer
 * Support UTF-8 characters in SVG
 * Fix [CVE-2021-23631](https://nvd.nist.gov/vuln/detail/CVE-2021-23631) by improving input validation
+* `quality` CLI option for JPEG not passed correctly [#65](https://github.com/neocotic/convert-svg/issues/65)
 * Bump dependencies (incl. major for Puppeteer)
 * Bump devDependencies
 * Skip inconsistent tests

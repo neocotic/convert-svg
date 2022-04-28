@@ -50,7 +50,7 @@ class JPEGProvider extends Provider {
       {
         flags: '--quality <value>',
         description: `specify quality for ${this.getFormat()} [100]`,
-        parseInt
+        transformer: parseInt
       }
     ];
   }

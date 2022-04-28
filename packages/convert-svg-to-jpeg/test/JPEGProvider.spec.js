@@ -59,7 +59,7 @@ describe('[convert-svg-to-jpeg] JPEGProvider', () => {
         {
           flags: '--quality <value>',
           description: 'specify quality for JPEG [100]',
-          parseInt
+          transformer: parseInt
         }
       ]);
     });
