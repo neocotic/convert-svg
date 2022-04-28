@@ -1,3 +1,15 @@
+## Version 0.6.0, 2022.04.28
+
+* **Breaking Change:** All packages now require Node.js version 12.20.0 or newer
+* Support UTF-8 characters in SVG
+* Support SVG dimensions (width, height) that use `pt` units
+* Add `rounding` API and CLI option to control how dimensions are rounded (defaults to `"round"`)
+* Fix [CVE-2021-23631](https://nvd.nist.gov/vuln/detail/CVE-2021-23631) by improving input validation
+* `quality` CLI option for JPEG not passed correctly [#65](https://github.com/neocotic/convert-svg/issues/65)
+* Bump dependencies (incl. major for Puppeteer)
+* Bump devDependencies
+* Skip inconsistent tests
+
 ## Version 0.5.0, 2018.11.23
 
 * moved from !ninja to neocotic [ad5aa55](https://github.com/neocotic/convert-svg/commit/ad5aa559daa04a4276fc025e0a37d0d9768eab28)

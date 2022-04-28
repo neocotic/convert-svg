@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Alasdair Mercer
+ * Copyright (C) 2022 neocotic
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -86,7 +86,7 @@ pollock(Provider, 'getBackgroundColor');
  *
  * All implementations of {@link Provider} <b>must</b> override this method.
  *
- * @return {?Array.<CLI~Option>} Any additional CLI options or <code>null</code> if there are none.
+ * @return {?Array<CLI~Option>} Any additional CLI options or <code>null</code> if there are none.
  * @public
  * @abstract
  * @memberof Provider#

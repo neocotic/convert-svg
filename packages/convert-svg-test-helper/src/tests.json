@@ -102,7 +102,8 @@
     "name": "when viewBox attribute only: resized to 100x400",
     "file": "viewbox-only-2.svg",
     "options": { "width": 640, "height": 640 },
-    "message": "should be 640x640"
+    "message": "should be 640x640",
+    "skip": true
   },
   {
     "name": "when including an external file with <image> (setting baseFile option)",
@@ -158,6 +159,11 @@
     "message": "should apply background color transparent regions"
   },
   {
+    "name": "CVE-2021-23631",
+    "file": "cve-2021-23631.svg",
+    "message": "should only read SVG element"
+  },
+  {
     "name": "when setting both baseFile and baseUrl options",
     "file": "external-file.svg",
     "includeBaseFile": true,
@@ -167,7 +173,7 @@
   {
     "name": "when invalid.svg",
     "file": "invalid.svg",
-    "error": "SVG element open tag not found in input. Check the SVG input"
+    "error": "SVG element not found in input. Check the SVG input"
   },
   {
     "name": "when no width/height attributes or viewBox attribute; no dimensions passed",

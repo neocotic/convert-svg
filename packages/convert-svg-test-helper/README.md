@@ -3,7 +3,7 @@
 A [Node.js](https://nodejs.org) package for testing SVG converters implementing using
 [convert-svg-core](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-core).
 
-[![Build Status](https://img.shields.io/github/workflow/status/neocotic/convert-svg/ci.yml?style=flat-square)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
+[![Build Status](https://img.shields.io/github/workflow/status/neocotic/convert-svg/CI/develop?style=flat-square)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/blob/master/LICENSE.md)
 [![Release](https://img.shields.io/github/release/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-test-helper)
 
@@ -56,6 +56,6 @@ A list of all contributors can be found in [AUTHORS.md](https://github.com/neoco
 
 ## License
 
-Copyright © 2018 Alasdair Mercer
+Copyright © 2022 neocotic
 
 See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.

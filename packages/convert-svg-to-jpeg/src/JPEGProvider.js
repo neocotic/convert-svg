@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Alasdair Mercer
+ * Copyright (C) 2022 neocotic
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,7 @@ class JPEGProvider extends Provider {
       {
         flags: '--quality <value>',
         description: `specify quality for ${this.getFormat()} [100]`,
-        parseInt
+        transformer: parseInt
       }
     ];
   }
