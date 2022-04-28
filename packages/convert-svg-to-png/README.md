@@ -2,7 +2,7 @@
 
 A [Node.js](https://nodejs.org) package for converting SVG to PNG using headless Chromium.
 
-[![Build Status](https://img.shields.io/github/workflow/status/neocotic/convert-svg/ci.yml?style=flat-square)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
+[![Build Status](https://img.shields.io/github/workflow/status/neocotic/convert-svg/CI?style=flat-square)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/blob/master/LICENSE.md)
 [![Release](https://img.shields.io/github/release/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-to-png)
 
