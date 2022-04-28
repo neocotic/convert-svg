@@ -245,10 +245,26 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
         return null;
       }
 
-      const widthIsPercent = (el.getAttribute('width') || '').endsWith('%');
-      const heightIsPercent = (el.getAttribute('height') || '').endsWith('%');
-      const width = !widthIsPercent && parseFloat(el.getAttribute('width'));
-      const height = !heightIsPercent && parseFloat(el.getAttribute('height'));
+      function parseAttributeDimension(attributeName) {
+        const attributeValue = el.getAttribute(attributeName);
+        if (!attributeValue || attributeValue.endsWith('%')) {
+          return null;
+        }
+
+        const dimension = parseFloat(attributeValue);
+        if (Number.isNaN(dimension)) {
+          return null;
+        }
+
+        if (attributeValue.endsWith('pt')) {
+          return dimension * 1.33333;
+        }
+
+        return dimension;
+      }
+
+      const width = parseAttributeDimension('width');
+      const height = parseAttributeDimension('height');
 
       if (width && height) {
         return { width, height };
