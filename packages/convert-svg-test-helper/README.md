@@ -21,7 +21,7 @@ Install using [npm](https://www.npmjs.com):
 $ npm install --save-dev convert-svg-test-helper
 ```
 
-You'll need to have at least [Node.js](https://nodejs.org) 8 or newer.
+You'll need to have at least [Node.js](https://nodejs.org) 12.20.0 or newer.
 
 If you're looking to create a converter for a new format, we'd urge you to consider contributing to this framework so
 that it can be easily integrated and maintained. Read the [Contributors](#contributors) section for information on how
