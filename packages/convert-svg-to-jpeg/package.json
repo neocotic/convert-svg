@@ -1,6 +1,6 @@
 {
   "name": "convert-svg-to-jpeg",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Converts SVG to JPEG using headless Chromium",
   "homepage": "https://github.com/neocotic/convert-svg",
   "bugs": {
@@ -35,10 +35,10 @@
     "url": "https://github.com/neocotic/convert-svg.git"
   },
   "dependencies": {
-    "convert-svg-core": "^0.6.0"
+    "convert-svg-core": "^0.6.1"
   },
   "devDependencies": {
-    "convert-svg-test-helper": "^0.6.0",
+    "convert-svg-test-helper": "^0.6.1",
     "mocha": "^9.2.2"
   },
   "bin": {

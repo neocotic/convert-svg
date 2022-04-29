@@ -1,3 +1,7 @@
+## Version 0.6.1, 2022.04.29
+
+* Bump cheerio dependency to latest v1 RC avoid vulnerable dependency
+
 ## Version 0.6.0, 2022.04.28
 
 * **Breaking Change:** All packages now require Node.js version 12.20.0 or newer
