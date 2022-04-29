@@ -22,7 +22,7 @@ Install using [npm](https://www.npmjs.com):
 $ npm install --save convert-svg-to-png
 ```
 
-You'll need to have at least [Node.js](https://nodejs.org) 8 or newer.
+You'll need to have at least [Node.js](https://nodejs.org) 12.20.0 or newer.
 
 If you want to use the command line interface you'll most likely want to install it globally so that you can run
 `convert-svg-to-png` from anywhere:

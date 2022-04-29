@@ -191,7 +191,7 @@ class Converter {
     input = Buffer.isBuffer(input) ? input.toString('utf8') : input;
 
     const { provider } = this;
-    const svg = cheerio.html(cheerio.load(input, null, false)('svg'));
+    const svg = cheerio.default.html(cheerio.load(input, null, false)('svg'));
 
     let html = '';
     if (svg) {
