@@ -11,6 +11,7 @@ using headless Chromium:
 * [convert-svg-test-helper](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-test-helper)
 * [convert-svg-to-jpeg](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-jpeg)
 * [convert-svg-to-png](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-png)
+* [convert-svg-to-webp](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-webp)
 
 The first two packages are core dependencies for SVG converters, which make up the remainder of the packages, trying to
 adhere to the following naming convention:
