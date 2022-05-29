@@ -47,6 +47,7 @@ const _parseOptions = Symbol('parseOptions');
 const _provider = Symbol('provider');
 const _roundDimension = Symbol('roundDimension');
 const _roundDimensions = Symbol('roundDimensions');
+const _sanitize = Symbol('sanitize');
 const _setDimensions = Symbol('setDimensions');
 const _tempFile = Symbol('tempFile');
 const _validate = Symbol('validate');
@@ -114,9 +115,7 @@ class Converter {
 
     options = this[_parseOptions](options);
 
-    const output = await this[_convert](input, options);
-
-    return output;
+    return await this[_convert](input, options);
   }
 
   /**
@@ -191,11 +190,13 @@ class Converter {
     input = Buffer.isBuffer(input) ? input.toString('utf8') : input;
 
     const { provider } = this;
-    const svg = cheerio.default.html(cheerio.load(input, null, false)('svg'));
+    const svg = cheerio.default.html(this[_sanitize](cheerio.load(input, null, false)('svg')));
 
-    let html = '';
-    if (svg) {
-      html += `<!DOCTYPE html>
+    if (!svg) {
+      throw new Error('SVG element not found in input. Check the SVG input');
+    }
+
+    const html = `<!DOCTYPE html>
 <html>
 <head>
 <base href="${options.baseUrl}">
@@ -207,9 +208,6 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
 </head>
 <body>${svg}</body>
 </html>`;
-    } else {
-      throw new Error('SVG element not found in input. Check the SVG input');
-    }
 
     const page = await this[_getPage](html);
 
@@ -226,12 +224,10 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
 
     await page.setViewport(dimensions);
 
-    const output = await page.screenshot(Object.assign({
+    return await page.screenshot(Object.assign({
       type: provider.getType(),
       clip: Object.assign({ x: 0, y: 0 }, dimensions)
     }, provider.getScreenshotOptions(options)));
-
-    return output;
   }
 
   async [_getDimensions](page, options) {
@@ -387,6 +383,10 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
       width: this[_roundDimension](dimensions.width, rounding),
       height: this[_roundDimension](dimensions.height, rounding),
     };
+  }
+
+  [_sanitize](svg) {
+    return svg.removeAttr('onload');
   }
 
   async [_setDimensions](page, dimensions) {
