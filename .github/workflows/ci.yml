@@ -3,11 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - develop
-      - master
+      - main
 
   workflow_dispatch:
 
@@ -18,14 +17,15 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node: [ 14 ]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node }}
       - name: Install Microsoft fonts
         run: |
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
@@ -36,5 +36,7 @@ jobs:
         run: |
           npm install
           npm run bootstrap
+      - name: Lint packages
+        run: npm run lint
       - name: Test packages
         run: npm test

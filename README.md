@@ -1,16 +1,16 @@
 # convert-svg
 
-[![Build Status](https://img.shields.io/github/workflow/status/neocotic/convert-svg/CI/develop?style=flat-square)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/blob/master/LICENSE.md)
+[![Build Status](https://img.shields.io/github/workflow/status/neocotic/convert-svg/CI/main?style=flat-square)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/blob/main/LICENSE.md)
 [![Release](https://img.shields.io/github/release/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg)
 
 This monorepo contains the following [Node.js](https://nodejs.org) packages that can convert a SVG into another format
 using headless Chromium:
 
-* [convert-svg-core](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-core)
-* [convert-svg-test-helper](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-test-helper)
-* [convert-svg-to-jpeg](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-to-jpeg)
-* [convert-svg-to-png](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-to-png)
+* [convert-svg-core](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-core)
+* [convert-svg-test-helper](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-test-helper)
+* [convert-svg-to-jpeg](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-jpeg)
+* [convert-svg-to-png](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-png)
 
 The first two packages are core dependencies for SVG converters, which make up the remainder of the packages, trying to
 adhere to the following naming convention:
@@ -31,4 +31,4 @@ them.
 
 Copyright © 2022 neocotic
 
-See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.
+See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/main/LICENSE.md) for more information on our MIT license.

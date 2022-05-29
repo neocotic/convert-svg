@@ -13,14 +13,14 @@ All unit tests should be updated and passing as well. All of this can easily be 
 # install/update package dependencies
 $ npm install
 $ npm run bootstrap
-# run test suite
-$ npm test
+# run all checks
+$ npm run verify
 ```
 
 You must have at least [Node.js](https://nodejs.org) version 12.20.0 or newer installed.
 
-Some of the test fixtures include Microsoft-based fonts so, if you're a non-Windows user, you will have to ensure that
-you have Microsoft fonts installed. For example; Ubuntu users can do the following:
+Some test fixtures include Microsoft-based fonts so, if you're a non-Windows user, you will have to ensure that you have
+Microsoft fonts installed. For example; Ubuntu users can do the following:
 
 ``` bash
 $ sudo apt-get update
@@ -28,8 +28,8 @@ $ sudo apt-get install ttf-mscorefonts-installer -y
 $ sudo fc-cache -fv
 ```
 
-All pull requests should be made to the `develop` branch.
+All pull requests should be made to the `main` branch.
 
 Don't forget to add your details to the list of
-[AUTHORS.md](https://github.com/neocotic/convert-svg/blob/master/AUTHORS.md) if you want your contribution to be
+[AUTHORS.md](https://github.com/neocotic/convert-svg/blob/main/AUTHORS.md) if you want your contribution to be
 recognized by others.

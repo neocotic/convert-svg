@@ -2,9 +2,9 @@
 
 A [Node.js](https://nodejs.org) package for converting SVG to JPEG using headless Chromium.
 
-[![Build Status](https://img.shields.io/github/workflow/status/neocotic/convert-svg/CI/develop?style=flat-square)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/blob/master/LICENSE.md)
-[![Release](https://img.shields.io/github/release/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/tree/master/packages/convert-svg-to-jpeg)
+[![Build Status](https://img.shields.io/github/workflow/status/neocotic/convert-svg/CI/main?style=flat-square)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/blob/main/LICENSE.md)
+[![Release](https://img.shields.io/github/release/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-jpeg)
 
 * [Install](#install)
 * [CLI](#cli)
@@ -193,7 +193,7 @@ async function convertSvgFiles(dirPath) {
 
 ## Other Formats
 
-If you would like to convert a SVG into a format other than JPEG, check out our other converter packages below:
+If you would like to convert an SVG into a format other than JPEG, check out our other converter packages below:
 
 https://github.com/neocotic/convert-svg
 
@@ -205,13 +205,13 @@ If you have any problems with this package or would like to see changes currentl
 ## Contributors
 
 If you want to contribute, you're a legend! Information on how you can do so can be found in
-[CONTRIBUTING.md](https://github.com/neocotic/convert-svg/blob/master/CONTRIBUTING.md). We want your suggestions and
+[CONTRIBUTING.md](https://github.com/neocotic/convert-svg/blob/main/CONTRIBUTING.md). We want your suggestions and
 pull requests!
 
-A list of all contributors can be found in [AUTHORS.md](https://github.com/neocotic/convert-svg/blob/master/AUTHORS.md).
+A list of all contributors can be found in [AUTHORS.md](https://github.com/neocotic/convert-svg/blob/main/AUTHORS.md).
 
 ## License
 
 Copyright © 2022 neocotic
 
-See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/master/LICENSE.md) for more information on our MIT license.
+See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/main/LICENSE.md) for more information on our MIT license.

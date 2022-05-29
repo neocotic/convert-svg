@@ -31,7 +31,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/neocotic/convert-svg.git"
+    "url": "https://github.com/neocotic/convert-svg.git",
+    "directory": "packages/convert-svg-core"
   },
   "dependencies": {
     "chalk": "^4.1.2",

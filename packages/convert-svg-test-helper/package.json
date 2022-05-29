@@ -33,7 +33,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/neocotic/convert-svg.git"
+    "url": "https://github.com/neocotic/convert-svg.git",
+    "directory": "packages/convert-svg-test-helper"
   },
   "dependencies": {
     "file-url": "^3.0.0",

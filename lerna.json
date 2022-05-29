@@ -10,8 +10,5 @@
       "hoist": true,
       "nohoist": "puppeteer"
     }
-  },
-  "npmClientArgs": [
-    "--no-package-lock"
-  ]
+  }
 }
