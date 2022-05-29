@@ -1,3 +1,8 @@
+## Version 0.6.2, 2022.05.29
+
+* Add convert-svg-to-webp package [812ea66](https://github.com/neocotic/convert-svg/commit/812ea6673b0a478c47f877d2be7afdc412669690)
+* Strip onload attribute from SVG input [#81](https://github.com/neocotic/convert-svg/issues/81) [7e6031a](https://github.com/neocotic/convert-svg/commit/7e6031ac7427cf82cf312cb4a25040f2e6efe7a5)
+
 ## Version 0.6.1, 2022.04.29
 
 * Bump cheerio dependency to latest v1 RC avoid vulnerable dependency
