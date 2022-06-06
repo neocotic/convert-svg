@@ -1,3 +1,7 @@
+## Version 0.6.3, 2022.06.06
+
+* Retain only allowed attributes from SVG input [#84](https://github.com/neocotic/convert-svg/issues/84) [a43dffa](https://github.com/neocotic/convert-svg/commit/a43dffaab0f1e419d5be84e2e7356b86ffac3cf1)
+
 ## Version 0.6.2, 2022.05.29
 
 * Add convert-svg-to-webp package [812ea66](https://github.com/neocotic/convert-svg/commit/812ea6673b0a478c47f877d2be7afdc412669690)

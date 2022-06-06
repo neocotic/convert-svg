@@ -1,6 +1,6 @@
 {
   "name": "convert-svg-core",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Supports converting SVG into another format using headless Chromium",
   "homepage": "https://github.com/neocotic/convert-svg",
   "bugs": {
