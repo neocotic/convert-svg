@@ -18,6 +18,9 @@
     "outdated:packages": "lerna exec --stream --no-bail \"npm outdated\"",
     "publish:packages": "lerna publish from-package",
     "test": "mocha -O maxDiffSize=32 -R list \"packages/*/test/**/*.spec.js\"",
+    "test:jpeg": "npm test -- --grep convert-svg-to-jpeg",
+    "test:png": "npm test -- --grep convert-svg-to-png",
+    "test:webp": "npm test -- --grep convert-svg-to-webp",
     "verify": "npm run bootstrap && npm run lint && npm test",
     "version:packages": "lerna version --no-git-tag-version --no-push"
   },

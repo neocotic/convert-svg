@@ -67,11 +67,15 @@ The CLI can be used in the following ways:
 
 Converts the specified `input` SVG into a JPEG using the `options` provided via a headless Chromium instance.
 
-`input` can either be a SVG buffer or string.
+`input` can either be an SVG buffer or string.
 
 If the width and/or height cannot be derived from `input` then they must be provided via their corresponding options.
 This method attempts to derive the dimensions from `input` via any `width`/`height` attributes or its calculated
 `viewBox` attribute.
+
+Only standard SVG element attributes (excl. event attributes) are allowed and others are stripped from the SVG before
+being converted. This includes deprecated attributes unless the `allowDeprecatedAttributes` option is disabled. This is
+primarily for security purposes to ensure that malicious code cannot be injected.
 
 This method is resolved with the JPEG output buffer.
 
@@ -80,17 +84,18 @@ element or no `width` and/or `height` options were provided and this information
 
 #### Options
 
-| Option       | Type                   | Default                 | Description                                                                                                                                                      |
-|--------------|------------------------|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `background` | String                 | N/A                     | Background color to be used to fill transparent regions within the SVG. White will be used if omitted.                                                           |
-| `baseFile`   | String                 | N/A                     | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option. |
-| `baseUrl`    | String                 | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                        |
-| `height`     | Number/String          | N/A                     | Height of the output to be generated. Derived from SVG input if omitted.                                                                                         |
-| `puppeteer`  | Object                 | N/A                     | Options that are to be passed directly to `puppeteer.launch` when creating the `Browser` instance.                                                               |
-| `quality`    | Number                 | `100`                   | Quality of the output to be generated.                                                                                                                           |
-| `rounding`   | `ceil`/`floor`/`round` | `"round"`               | Type of rounding to be applied to the width and height.                                                                                                          |
-| `scale`      | Number                 | `1`                     | Scale to be applied to the width and height (specified as options or derived).                                                                                   |
-| `width`      | Number/String          | N/A                     | Width of the output to be generated. Derived from SVG input if omitted.                                                                                          |
+| Option                      | Type                   | Default                 | Description                                                                                                                                                      |
+|-----------------------------|------------------------|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `allowDeprecatedAttributes` | Boolean                | `true`                  | Whether deprecated SVG element attributes should be retained in the SVG during conversion.                                                                       |
+| `background`                | String                 | N/A                     | Background color to be used to fill transparent regions within the SVG. White will be used if omitted.                                                           |
+| `baseFile`                  | String                 | N/A                     | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option. |
+| `baseUrl`                   | String                 | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                        |
+| `height`                    | Number/String          | N/A                     | Height of the output to be generated. Derived from SVG input if omitted.                                                                                         |
+| `puppeteer`                 | Object                 | N/A                     | Options that are to be passed directly to `puppeteer.launch` when creating the `Browser` instance.                                                               |
+| `quality`                   | Number                 | `100`                   | Quality of the output to be generated.                                                                                                                           |
+| `rounding`                  | `ceil`/`floor`/`round` | `"round"`               | Type of rounding to be applied to the width and height.                                                                                                          |
+| `scale`                     | Number                 | `1`                     | Scale to be applied to the width and height (specified as options or derived).                                                                                   |
+| `width`                     | Number/String          | N/A                     | Width of the output to be generated. Derived from SVG input if omitted.                                                                                          |
 
 The `puppeteer` option is not available when calling this method on a `Converter` instance created using
 `createConverter`.
@@ -122,6 +127,10 @@ The output file is derived from `inputFilePath` unless the `outputFilePath` opti
 If the width and/or height cannot be derived from the input file then they must be provided via their corresponding
 options. This method attempts to derive the dimensions from the input file via any `width`/`height` attributes or its
 calculated `viewBox` attribute.
+
+Only standard SVG element attributes (excl. event attributes) are allowed and others are stripped from the SVG before
+being converted. This includes deprecated attributes unless the `allowDeprecatedAttributes` option is disabled. This is
+primarily for security purposes to ensure that malicious code cannot be injected.
 
 This method is resolved with the path of the JPEG output file for reference.
 

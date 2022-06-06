@@ -35,13 +35,13 @@ you can contribute.
 
 ## Implementation
 
-In order to create a new SVG converter that uses `convert-svg-core`, you'll need to create a new sub-directory for your
+In order to create a new SVG converter that uses `convert-svg-core`, you'll need to create a new subdirectory for your
 package under the [packages](https://github.com/neocotic/convert-svg/tree/main/packages) directory. Try to follow the
 `convert-svg-to-<FORMAT>` naming convention for the converter package name.
 
-Take a look at the other packages in this directory to setup the new package directory. They are all very similar, by
-design, as the you should just need to provide the minimal amount of information required to support your intended
-output format.
+Take a look at the other packages in this directory to set up the new package directory. They are all very similar, by
+design, as you should just need to provide the minimal amount of information required to support your intended output
+format.
 
 The most important thing that's needed is a implementation of
 [convert-svg-core/src/Provider](https://github.com/neocotic/convert-svg/blob/main/packages/convert-svg-core/src/Provider.js).
@@ -63,7 +63,7 @@ const MyFormatProvider = require('./MyFormatProvider');
 module.exports = new API(new MyFormatProvider());
 ```  
 
-Configure this in your `package.json` file and you're API is ready!
+Configure this in your `package.json` file and your API is ready!
 
 ### CLI
 
@@ -95,7 +95,7 @@ Make sure that your file is executable. For example;
 $ chmod a+x bin/<PACKAGE-NAME>
 ```
 
-Configure this in your `package.json` file and you're CLI is ready!
+Configure this in your `package.json` file and your CLI is ready!
 
 ## Testing
 

@@ -35,12 +35,15 @@ const util = require('util');
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 
+const _allowedAttributeNames = Symbol('allowedAttributeNames');
+const _allowedDeprecatedAttributeNames = Symbol('allowedDeprecatedAttributeNames');
 const _browser = Symbol('browser');
 const _convert = Symbol('convert');
 const _destroyed = Symbol('destroyed');
 const _getDimensions = Symbol('getDimensions');
 const _getPage = Symbol('getPage');
 const _getTempFile = Symbol('getTempFile');
+const _isAttributeAllowed = Symbol('isAttributeAllowed');
 const _options = Symbol('options');
 const _page = Symbol('page');
 const _parseOptions = Symbol('parseOptions');
@@ -63,8 +66,8 @@ const _validate = Symbol('validate');
  * it to convert a collection of SVG files to files in another format and then destroy it afterwards. It's not
  * recommended to keep an instance around for too long, as it will use up resources.
  *
- * Due constraints within Chromium, the SVG input is first written to a temporary HTML file and then navigated to. This
- * is because the default page for Chromium is using the <code>chrome</code> protocol so cannot load externally
+ * Due to constraints within Chromium, the SVG input is first written to a temporary HTML file and then navigated to.
+ * This is because the default page for Chromium is using the <code>chrome</code> protocol so cannot load externally
  * referenced files (e.g. that use the <code>file</code> protocol). This temporary file is reused for the lifespan of
  * each {@link Converter} instance and will be deleted when it is destroyed.
  *
@@ -86,17 +89,81 @@ class Converter {
   constructor(provider, options) {
     this[_provider] = provider;
     this[_options] = Object.assign({}, options);
+    this[_allowedAttributeNames] = new Set([
+      // Core
+      'height',
+      'preserveAspectRatio',
+      'viewBox',
+      'width',
+      'x',
+      'xmlns',
+      'y',
+      // Conditional Processing
+      'requiredExtensions',
+      'systemLanguage',
+      // Presentation
+      'clip-path',
+      'clip-rule',
+      'color',
+      'color-interpolation',
+      'cursor',
+      'display',
+      'fill',
+      'fill-opacity',
+      'fill-rule',
+      'filter',
+      'mask',
+      'opacity',
+      'overflow',
+      'pointer-events',
+      'shape-rendering',
+      'stroke',
+      'stroke-dasharray',
+      'stroke-dashoffset',
+      'stroke-linecap',
+      'stroke-linejoin',
+      'stroke-miterlimit',
+      'stroke-opacity',
+      'stroke-width',
+      'style',
+      'transform',
+      'vector-effect',
+      'visibility',
+      // XML
+      'xml:lang',
+      'xmlns',
+      'xmlns:xlink'
+    ]);
+    this[_allowedDeprecatedAttributeNames] = new Set([
+      // Core
+      'baseProfile',
+      'version',
+      'zoomAndPan',
+      // Conditional Processing
+      'requiredFeatures',
+      // Presentation
+      'clip',
+      'color-rendering',
+      'enable-background',
+      // XML
+      'xml:base',
+      'xml:space'
+    ]);
     this[_destroyed] = false;
   }
 
   /**
    * Converts the specified <code>input</code> SVG into another format using the <code>options</code> provided.
    *
-   * <code>input</code> can either be a SVG buffer or string.
+   * <code>input</code> can either be an SVG buffer or string.
    *
    * If the width and/or height cannot be derived from <code>input</code> then they must be provided via their
    * corresponding options. This method attempts to derive the dimensions from <code>input</code> via any
    * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
+   *
+   * Only standard SVG element attributes (excl. event attributes) are allowed and others are stripped from the SVG
+   * before being converted. This includes deprecated attributes unless the <code>allowDeprecatedAttributes</code>
+   * option is disabled. This is primarily for security purposes to ensure that malicious code cannot be injected.
    *
    * This method is resolved with the converted output buffer.
    *
@@ -128,6 +195,10 @@ class Converter {
    * If the width and/or height cannot be derived from the input file then they must be provided via their corresponding
    * options. This method attempts to derive the dimensions from the input file via any
    * <code>width</code>/<code>height</code> attributes or its calculated <code>viewBox</code> attribute.
+   *
+   * Only standard SVG element attributes (excl. event attributes) are allowed and others are stripped from the SVG
+   * before being converted. This includes deprecated attributes unless the <code>allowDeprecatedAttributes</code>
+   * option is disabled. This is primarily for security purposes to ensure that malicious code cannot be injected.
    *
    * This method is resolved with the path of the converted output file for reference.
    *
@@ -190,7 +261,7 @@ class Converter {
     input = Buffer.isBuffer(input) ? input.toString('utf8') : input;
 
     const { provider } = this;
-    const svg = cheerio.default.html(this[_sanitize](cheerio.load(input, null, false)('svg')));
+    const svg = cheerio.default.html(this[_sanitize](cheerio.load(input, null, false)('svg'), options));
 
     if (!svg) {
       throw new Error('SVG element not found in input. Check the SVG input');
@@ -321,6 +392,11 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
     });
   }
 
+  [_isAttributeAllowed](attributeName, options) {
+    return this[_allowedAttributeNames].has(attributeName) ||
+      (options.allowDeprecatedAttributes && this[_allowedDeprecatedAttributeNames].has(attributeName));
+  }
+
   [_parseOptions](options, inputFilePath) {
     options = Object.assign({}, options);
 
@@ -332,6 +408,10 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
       const outputFileName = `${path.basename(inputFilePath, path.extname(inputFilePath))}${extension}`;
 
       options.outputFilePath = path.join(outputDirPath, outputFileName);
+    }
+
+    if (typeof options.allowDeprecatedAttributes !== 'boolean') {
+      options.allowDeprecatedAttributes = true;
     }
 
     if (options.baseFile != null && options.baseUrl != null) {
@@ -385,8 +465,16 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
     };
   }
 
-  [_sanitize](svg) {
-    return svg.removeAttr('onload');
+  [_sanitize](svg, options) {
+    const attributeNames = Object.keys(svg.attr() || {});
+
+    for (const attributeName of attributeNames) {
+      if (!this[_isAttributeAllowed](attributeName, options)) {
+        svg.removeAttr(attributeName);
+      }
+    }
+
+    return svg;
   }
 
   async [_setDimensions](page, dimensions) {
@@ -457,6 +545,8 @@ module.exports = Converter;
  * The options that can be passed to {@link Converter#convert}.
  *
  * @typedef {Object} Converter~ConvertOptions
+ * @property {boolean} [allowDeprecatedAttributes=true] - Whether deprecated SVG element attributes should be retained
+ * in the SVG during conversion.
  * @property {string} [background] - The background color to be used to fill transparent regions within the SVG. If
  * omitted, the {@link Provider} will determine the default background color.
  * @property {string} [baseFile] - The path of the file to be converted into a file URL to use for all relative URLs
