@@ -1,3 +1,7 @@
+## Version 0.6.4, 2022.06.07
+
+* Convert only first SVG element from input [#86](https://github.com/neocotic/convert-svg/issues/86) [2bbc498](https://github.com/neocotic/convert-svg/commit/2bbc498c5029238637206661dbac9e44d37d17c5)
+
 ## Version 0.6.3, 2022.06.06
 
 * Retain only allowed attributes from SVG input [#84](https://github.com/neocotic/convert-svg/issues/84) [a43dffa](https://github.com/neocotic/convert-svg/commit/a43dffaab0f1e419d5be84e2e7356b86ffac3cf1)
