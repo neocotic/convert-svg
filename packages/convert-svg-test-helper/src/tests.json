@@ -169,6 +169,12 @@
     "message": "should strip onload attribute"
   },
   {
+    "name": "when SVG has multiple SVG elements",
+    "file": "issue-86.svg",
+    "options": { "width": 1000, "height": 1000 },
+    "message": "should only read first SVG element"
+  },
+  {
     "name": "when setting both baseFile and baseUrl options",
     "file": "external-file.svg",
     "includeBaseFile": true,
