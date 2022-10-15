@@ -226,7 +226,7 @@ class CLI {
   }
 
   [_parseOptions]() {
-    const command = this[_command];
+    const command = this[_command].opts();
     const options = {
       background: command.background,
       baseUrl: command.baseUrl,
