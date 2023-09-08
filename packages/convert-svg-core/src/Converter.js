@@ -29,7 +29,6 @@ const fileUrl = require('file-url');
 const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
-const tmp = require('tmp');
 const util = require('util');
 
 const readFile = util.promisify(fs.readFile);
@@ -42,7 +41,6 @@ const _convert = Symbol('convert');
 const _destroyed = Symbol('destroyed');
 const _getDimensions = Symbol('getDimensions');
 const _getPage = Symbol('getPage');
-const _getTempFile = Symbol('getTempFile');
 const _isAttributeAllowed = Symbol('isAttributeAllowed');
 const _options = Symbol('options');
 const _page = Symbol('page');
@@ -52,7 +50,6 @@ const _roundDimension = Symbol('roundDimension');
 const _roundDimensions = Symbol('roundDimensions');
 const _sanitize = Symbol('sanitize');
 const _setDimensions = Symbol('setDimensions');
-const _tempFile = Symbol('tempFile');
 const _validate = Symbol('validate');
 
 /**
@@ -246,10 +243,6 @@ class Converter {
 
     this[_destroyed] = true;
 
-    if (this[_tempFile]) {
-      this[_tempFile].cleanup();
-      delete this[_tempFile];
-    }
     if (this[_browser]) {
       await this[_browser].close();
       delete this[_browser];
@@ -365,32 +358,11 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
       this[_page] = await this[_browser].newPage();
     }
 
-    const tempFile = await this[_getTempFile]();
-
-    await writeFile(tempFile.path, html);
-
-    await this[_page].goto(fileUrl(tempFile.path));
+    await this[_page].setContent(html);
 
     return this[_page];
   }
 
-  [_getTempFile]() {
-    if (this[_tempFile]) {
-      return Promise.resolve(this[_tempFile]);
-    }
-
-    return new Promise((resolve, reject) => {
-      tmp.file({ prefix: 'convert-svg-', postfix: '.html' }, (error, filePath, fd, cleanup) => {
-        if (error) {
-          reject(error);
-        } else {
-          this[_tempFile] = { path: filePath, cleanup };
-
-          resolve(this[_tempFile]);
-        }
-      });
-    });
-  }
 
   [_isAttributeAllowed](attributeName, options) {
     return this[_allowedAttributeNames].has(attributeName) ||
