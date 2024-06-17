@@ -28,9 +28,9 @@ const { EOL } = require('os');
 const fs = require('fs');
 const getStdin = require('get-stdin').buffer;
 const glob = require('glob');
-const omit = require('lodash.omit');
+const omit = require('lodash').omit;
 const path = require('path');
-const pick = require('lodash.pick');
+const pick = require('lodash').pick;
 const util = require('util');
 
 const Converter = require('./Converter');

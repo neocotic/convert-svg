@@ -23,7 +23,7 @@
 'use strict';
 
 const assert = require('assert');
-const cloneDeep = require('lodash.clonedeep');
+const cloneDeep = require('lodash').cloneDeep;
 const fileUrl = require('file-url');
 const fs = require('fs');
 const path = require('path');
