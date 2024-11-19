@@ -261,8 +261,10 @@ class Converter {
     input = Buffer.isBuffer(input) ? input.toString('utf8') : input;
 
     const { provider } = this;
-    const svg = cheerio.default.html(this[_sanitize](cheerio.load(input, null, false)('svg:first'), options));
-
+    const $ = cheerio.load(input, null, false); 
+    const sanitizedSvg = this[_sanitize]($('svg:first'), options);
+    const svg = $.html(sanitizedSvg);
+    
     if (!svg) {
       throw new Error('SVG element not found in input. Check the SVG input');
     }
