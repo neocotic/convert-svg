@@ -305,53 +305,54 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
 
   async [_getDimensions](page, options) {
     const dimensions = await page.evaluate(() => {
-      const el = document.querySelector('svg');
-      if (!el) {
-        return null;
-      }
-
-      function parseAttributeDimension(attributeName) {
-        const attributeValue = el.getAttribute(attributeName);
-        if (!attributeValue || attributeValue.endsWith('%')) {
+      try {
+        const el = document.querySelector('svg');
+        if (!el) {
           return null;
         }
 
-        const dimension = parseFloat(attributeValue);
-        if (Number.isNaN(dimension)) {
-          return null;
+        function parseAttributeDimension(attributeName) {
+          const attributeValue = el.getAttribute(attributeName);
+          if (!attributeValue || attributeValue.endsWith('%')) {
+            return null;
+          }
+
+          const dimension = parseFloat(attributeValue);
+          if (Number.isNaN(dimension)) {
+            return null;
+          }
+
+          if (attributeValue.endsWith('pt')) {
+            return dimension * 1.33333;
+          }
+
+          return dimension;
         }
 
-        if (attributeValue.endsWith('pt')) {
-          return dimension * 1.33333;
+        const width = parseAttributeDimension('width');
+        const height = parseAttributeDimension('height');
+
+        if (width && height) {
+          return { width, height };
         }
 
-        return dimension;
-      }
+        const viewBoxWidth = el.viewBox.animVal.width;
+        const viewBoxHeight = el.viewBox.animVal.height;
 
-      const width = parseAttributeDimension('width');
-      const height = parseAttributeDimension('height');
+        if (width && viewBoxHeight) {
+          return {
+            width,
+            height: (width * viewBoxHeight) / viewBoxWidth,
+          };
+        }
 
-      if (width && height) {
-        return { width, height };
-      }
-
-      const viewBoxWidth = el.viewBox.animVal.width;
-      const viewBoxHeight = el.viewBox.animVal.height;
-
-      if (width && viewBoxHeight) {
-        return {
-          width,
-          height: width * viewBoxHeight / viewBoxWidth
-        };
-      }
-
-      if (height && viewBoxWidth) {
-        return {
-          width: height * viewBoxWidth / viewBoxHeight,
-          height
-        };
-      }
-
+        if (height && viewBoxWidth) {
+          return {
+            width: (height * viewBoxWidth) / viewBoxHeight,
+            height,
+          };
+        }
+      } catch (error) {}
       return null;
     });
     if (!dimensions) {
