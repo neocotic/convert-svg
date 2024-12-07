@@ -22,8 +22,8 @@
 
 'use strict';
 
-const omit = require('lodash').omit;
-const pick = require('lodash').pick;
+const omit = require('lodash/omit');
+const pick = require('lodash/pick');
 
 const Converter = require('./Converter');
 
