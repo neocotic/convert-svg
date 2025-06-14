@@ -1,2 +1,5 @@
+.tshy/
+.tshy-build/
+src/
 test/
-.*
+tsconfig.json

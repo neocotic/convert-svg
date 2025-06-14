@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/temp" />
+      <excludeFolder url="file://$MODULE_DIR$/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-core/.tshy-build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-core/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-core-cli/.tshy-build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-core-cli/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-core-test/.tshy-build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-core-test/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-jpeg/.tshy-build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-jpeg/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-jpeg-cli/.tshy-build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-jpeg-cli/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-png/.tshy-build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-png/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-png-cli/.tshy-build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-png-cli/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-webp/.tshy-build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-webp/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-webp-cli/.tshy-build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/convert-svg-to-webp-cli/dist" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

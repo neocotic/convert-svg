@@ -1,6 +1,6 @@
 {
   "name": "convert-svg-to-jpeg",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "description": "Converts SVG to JPEG using headless Chromium",
   "homepage": "https://github.com/neocotic/convert-svg",
   "bugs": {
@@ -35,18 +35,44 @@
     "url": "https://github.com/neocotic/convert-svg.git",
     "directory": "packages/convert-svg-to-jpeg"
   },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "type": "module",
+  "types": "./dist/commonjs/index.d.ts",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "scripts": {
+    "build": "tshy",
+    "test": "node --import tsx --enable-source-maps --test \"test/**/*.test.ts\""
+  },
   "dependencies": {
-    "convert-svg-core": "^0.6.4"
+    "convert-svg-core": "^0.7.0"
   },
   "devDependencies": {
-    "convert-svg-test-helper": "^0.6.4",
-    "mocha": "^9.2.2"
+    "@types/node": "^24.0.1",
+    "puppeteer-core": "^24.10.1",
+    "sinon": "^21.0.0",
+    "tshy": "^3.0.2",
+    "tsx": "^4.20.3"
   },
-  "bin": {
-    "convert-svg-to-jpeg": "bin/convert-svg-to-jpeg"
-  },
-  "main": "src/index.js",
   "engines": {
-    "node": "^12.20.0 || >=14"
+    "node": ">=22"
+  },
+  "tshy": {
+    "exports": {
+      ".": "./src/index.ts",
+      "./package.json": "./package.json"
+    }
   }
 }

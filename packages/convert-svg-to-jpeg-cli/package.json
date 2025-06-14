@@ -1,0 +1,79 @@
+{
+  "name": "convert-svg-to-jpeg-cli",
+  "version": "0.7.0",
+  "description": "Converts SVG to JPEG using headless Chromium via CLI",
+  "homepage": "https://github.com/neocotic/convert-svg",
+  "bugs": {
+    "url": "https://github.com/neocotic/convert-svg/issues"
+  },
+  "author": {
+    "name": "neocotic",
+    "url": "https://github.com/neocotic"
+  },
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/neocotic"
+    },
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/neocotic"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "convert",
+    "converter",
+    "svg",
+    "jpg",
+    "jpeg",
+    "cli",
+    "headless",
+    "chromium"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neocotic/convert-svg.git",
+    "directory": "packages/convert-svg-to-jpeg-cli"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/bin.d.mts",
+        "default": "./dist/esm/bin.mjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "convert-svg-to-jpeg": "./dist/esm/bin.mjs"
+  },
+  "type": "module",
+  "module": "./dist/esm/bin.mjs",
+  "scripts": {
+    "build": "tshy",
+    "test": "node --import tsx --enable-source-maps --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "convert-svg-core-cli": "^0.7.0",
+    "convert-svg-to-jpeg": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.1",
+    "@types/sinon": "^17.0.4",
+    "commander": "^14.0.0",
+    "convert-svg-core": "^0.7.0",
+    "sinon": "^21.0.0",
+    "tshy": "^3.0.2",
+    "tsx": "^4.20.3"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "tshy": {
+    "exports": {
+      ".": "./src/bin.mts",
+      "./package.json": "./package.json"
+    }
+  }
+}

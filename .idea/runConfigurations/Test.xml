@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Test" type="CompoundRunConfigurationType">
+    <toRun name="Test (core)" type="NodeJsTestRunner" />
+    <toRun name="Test (core-cli)" type="NodeJsTestRunner" />
+    <toRun name="Test (to-jpeg)" type="NodeJsTestRunner" />
+    <toRun name="Test (to-jpeg-cli)" type="NodeJsTestRunner" />
+    <toRun name="Test (to-png)" type="NodeJsTestRunner" />
+    <toRun name="Test (to-png-cli)" type="NodeJsTestRunner" />
+    <toRun name="Test (to-webp)" type="NodeJsTestRunner" />
+    <toRun name="Test (to-webp-cli)" type="NodeJsTestRunner" />
+    <method v="2" />
+  </configuration>
+</component>

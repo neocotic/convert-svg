@@ -1,3 +1,36 @@
+## Version 0.7.0, 2025.06.14
+
+* **Breaking Change:** All packages now require Node.js v22 or newer
+* **Breaking Change:** Change `createConverter` to be async
+* **Breaking Change:** Rename `Converter#destroy` to `Converter#close`
+* **Breaking Change:** Rename `puppeteer` option to `launch`
+* **Breaking Change:** Change all `convert-svg-to-<FORMAT>` packages to only depend on `puppeteer-core` so consumers
+  **must** depend on `puppeteer` and pass either a `Browser` instance via the `browser` option or `LaunchOptions` via
+  the `launch` option to `convert`, `convertFile`, and `createConverter` functions
+* **Breaking Change:** Remove CLI support from all `convert-svg-to-<FORMAT>` packages and create new
+  `convert-svg-to-<FORMAT>-cli` packages for that purpose (which come with `puppeteer` dependency to ensure browser is
+  downloaded and installed for ease-of-use)
+* Rewrite the entire codebase in TypeScript and support both ESM and CJS usage
+* Add `browser` option to `convert`, `convertFile`, and `createConverter` functions to accept optional `Browser`
+  instance
+* Add `closeBehavior` option to `convert`, `convertFile`, and `createConverter` functions to control the behavior when
+  `Converter#close` is called
+* Add `page` option to `convert`, `convertFile`, and `createConverter` functions to accept optional options to be passed
+  to `puppeteer-core` when creating a page
+* Add support for `CONVERT_SVG_LAUNCH_OPTIONS` environment variable to be merged with `launch` option
+* Change `Converter` to create and use `BrowserContext` per instance to use when opening new pages to ensure they are
+  isolated and that they can be closed by the `Converter` accordingly
+* Change `Converter#convert` and `Converter#convertFile` to create a new temporary file and open a new `Page` per
+  invocation to support safe concurrent invocations of these methods on the same `Converter` instance
+* Sanitize attributes on deeply nested SVG elements
+* Apply the `round` option to SVG width and height when applying the `scale` option
+* Improve documentation
+* Improve the developer experience for contributors with better tooling
+* Deprecate `convert-svg-test-helper` and create new `convert-svg-core-test` package as a replacement
+* Create new `convert-svg-core-cli` package to support CLI packages
+* Many internal changes to `convert-svg-core`
+* Bump all dependencies to latest versions
+
 ## Version 0.6.4, 2022.06.07
 
 * Convert only first SVG element from input [#86](https://github.com/neocotic/convert-svg/issues/86) [2bbc498](https://github.com/neocotic/convert-svg/commit/2bbc498c5029238637206661dbac9e44d37d17c5)

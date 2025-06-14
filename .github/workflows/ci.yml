@@ -17,26 +17,28 @@ jobs:
 
     strategy:
       matrix:
-        node: [ 14 ]
+        node: [ 22 ]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Node ${{ matrix.node }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-      - name: Install Microsoft fonts
+      - name: Setup Environment
         run: |
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
           sudo apt-get -qq update
-          sudo apt-get install -y ttf-mscorefonts-installer
+          sudo apt-get install -y libgbm1 ttf-mscorefonts-installer
           sudo fc-cache -fv
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
       - name: Install dependencies
-        run: |
-          npm install
-          npm run bootstrap
+        run: npm ci
+      - name: Build packages
+        run: npm run build
       - name: Lint packages
         run: npm run lint
       - name: Test packages
         run: npm test
+        env:
+          CONVERT_SVG_LAUNCH_OPTIONS: '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}'

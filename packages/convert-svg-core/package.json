@@ -1,6 +1,6 @@
 {
   "name": "convert-svg-core",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "description": "Supports converting SVG into another format using headless Chromium",
   "homepage": "https://github.com/neocotic/convert-svg",
   "bugs": {
@@ -34,25 +34,49 @@
     "url": "https://github.com/neocotic/convert-svg.git",
     "directory": "packages/convert-svg-core"
   },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "type": "module",
+  "types": "./dist/commonjs/index.d.ts",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "scripts": {
+    "build": "tshy",
+    "test": "node --import tsx --enable-source-maps --test \"test/**/*.test.ts\""
+  },
   "dependencies": {
-    "chalk": "^4.1.2",
-    "cheerio": "^1.0.0-rc.11",
-    "commander": "^9.2.0",
-    "file-url": "^3.0.0",
-    "get-stdin": "^8.0.0",
-    "glob": "^8.0.1",
-    "lodash.omit": "^4.5.0",
-    "lodash.pick": "^4.4.0",
-    "pollock": "^0.2.0",
-    "puppeteer": "^13.7.0",
-    "tmp": "^0.2.1"
+    "cheerio": "^1.1.0",
+    "file-url": "^4.0.0",
+    "puppeteer-core": "^24.10.1",
+    "tmp": "^0.2.3"
   },
   "devDependencies": {
-    "mocha": "^9.2.2",
-    "sinon": "^13.0.2"
+    "@types/node": "^24.0.1",
+    "@types/sinon": "^17.0.4",
+    "@types/tmp": "^0.2.6",
+    "domhandler": "^5.0.3",
+    "sinon": "^21.0.0",
+    "tshy": "^3.0.2",
+    "tsx": "^4.20.3"
   },
-  "main": "src/index.js",
   "engines": {
-    "node": "^12.20.0 || >=14"
+    "node": ">=22"
+  },
+  "tshy": {
+    "exports": {
+      ".": "./src/index.ts",
+      "./package.json": "./package.json"
+    }
   }
 }

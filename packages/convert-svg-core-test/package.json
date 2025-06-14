@@ -1,0 +1,82 @@
+{
+  "name": "convert-svg-core-test",
+  "version": "0.7.0",
+  "description": "Test runner for convert-svg-core implementations",
+  "homepage": "https://github.com/neocotic/convert-svg",
+  "bugs": {
+    "url": "https://github.com/neocotic/convert-svg/issues"
+  },
+  "author": {
+    "name": "neocotic",
+    "url": "https://github.com/neocotic"
+  },
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/neocotic"
+    },
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/neocotic"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "convert",
+    "converter",
+    "svg",
+    "core",
+    "test",
+    "runner",
+    "headless",
+    "chromium"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neocotic/convert-svg.git",
+    "directory": "packages/convert-svg-core-test"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "type": "module",
+  "types": "./dist/commonjs/index.d.ts",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "scripts": {
+    "build": "tshy",
+    "test": "node --import tsx --enable-source-maps --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "convert-svg-core": "^0.7.0",
+    "del": "^8.0.0",
+    "file-url": "^4.0.0",
+    "looks-same": "^9.0.1",
+    "puppeteer": "^24.10.1",
+    "zod": "^3.25.64"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.1",
+    "tshy": "^3.0.2",
+    "tsx": "^4.20.3"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "tshy": {
+    "exports": {
+      ".": "./src/index.ts",
+      "./package.json": "./package.json"
+    }
+  }
+}
