@@ -1,190 +1,207 @@
 # convert-svg-to-webp
 
+[![Build Status](https://img.shields.io/github/actions/workflow/status/neocotic/convert-svg/ci.yml?event=push&style=for-the-badge)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
+[![Downloads](https://img.shields.io/npm/dw/convert-svg-to-webp?style=for-the-badge)](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-webp)
+[![Release](https://img.shields.io/npm/v/convert-svg-to-webp?style=for-the-badge)](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-webp)
+[![License](https://img.shields.io/github/license/neocotic/convert-svg?style=for-the-badge)](https://github.com/neocotic/convert-svg/blob/main/LICENSE.md)
+
 A [Node.js](https://nodejs.org) package for converting SVG to WEBP using headless Chromium.
 
-[![Build Status](https://img.shields.io/github/workflow/status/neocotic/convert-svg/CI/main?style=flat-square)](https://github.com/neocotic/convert-svg/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/blob/main/LICENSE.md)
-[![Release](https://img.shields.io/github/release/neocotic/convert-svg.svg?style=flat-square)](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-webp)
-
-* [Install](#install)
-* [CLI](#cli)
-* [API](#api)
-* [Other Formats](#other-formats)
-* [Bugs](#bugs)
-* [Contributors](#contributors)
-* [License](#license)
+If you want to convert SVG to WEBP via CLI, you should instead look at
+[convert-svg-to-webp-cli](https://github.com/neocotic/convert-svg/tree/main/packages/convert-svg-to-webp-cli).
 
 ## Install
 
-Install using [npm](https://www.npmjs.com):
+Install using [npm](https://npmjs.com):
 
-``` bash
-$ npm install --save convert-svg-to-webp
+``` sh
+npm install --save convert-svg-to-webp
 ```
 
-You'll need to have at least [Node.js](https://nodejs.org) 12.20.0 or newer.
+You'll need to have at least [Node.js](https://nodejs.org) v22 or newer.
 
-If you want to use the command line interface you'll most likely want to install it globally so that you can run
-`convert-svg-to-webp` from anywhere:
+This package uses [Puppeteer](https://pptr.dev) under-the-hood to interface with a headless Chromium instance, however,
+this package *does not** download and install a headless Chromium instance for you as of version v0.7.0. The easiest
+solution is to also install `puppeteer` and connect it:
 
-``` bash
-$ npm install --global convert-svg-to-webp
+``` sh
+npm install --save puppeteer
 ```
 
-## CLI
+Continue reading for more information on how to connect `puppeteer` to `convert-svg-to-webp`.
 
-    Usage: convert-svg-to-webp [options] [files...]
+## Usage
 
-
-      Options:
-
-        -V, --version          output the version number
-        --no-color             disables color output
-        --background <color>   specify background color for transparent regions in SVG
-        --base-url <url>       specify base URL to use for all relative URLs in SVG
-        --filename <filename>  specify filename for the WEBP output when processing STDIN
-        --height <value>       specify height for WEBP
-        --puppeteer <json>     specify a json object for puppeteer.launch options
-        --rounding <type>      specify type of rounding to apply to dimensions
-        --scale <value>        specify scale to apply to dimensions [1]
-        --width <value>        specify width for WEBP
-        -h, --help             output usage information
-
-The CLI can be used in the following ways:
-
-* Pass SVG files to be converted to WEBP files as command arguments
-  * A [glob](https://www.npmjs.com/package/glob) pattern can be passed
-  * Each converted SVG file will result in a corresponding WEBP with the same base file name (e.g.
-    `image.svg -> image.webp`)
-* Pipe SVG buffer to be converted to WEBP to command via STDIN
-  * If the `--filename` option is passed, the WEBP will be written to a file resolved using its value
-  * Otherwise, the WEBP will be streamed to STDOUT
-
-## API
-
-### `convert(input[, options])`
+### `convert(input, options)`
 
 Converts the specified `input` SVG into a WEBP using the `options` provided via a headless Chromium instance.
 
 `input` can either be an SVG buffer or string.
 
-If the width and/or height cannot be derived from `input` then they must be provided via their corresponding options.
+If the width and/or height cannot be derived from `input`, then they must be provided via their corresponding options.
 This method attempts to derive the dimensions from `input` via any `width`/`height` attributes or its calculated
 `viewBox` attribute.
 
-Only standard SVG element attributes (excl. event attributes) are allowed and others are stripped from the SVG before
+Only standard SVG element attributes (excl. event attributes) are allowed, and others are stripped from the SVG before
 being converted. This includes deprecated attributes unless the `allowDeprecatedAttributes` option is disabled. This is
 primarily for security purposes to ensure that malicious code cannot be injected.
 
 This method is resolved with the WEBP output buffer.
 
 An error will occur if both the `baseFile` and `baseUrl` options have been provided, `input` does not contain an SVG
-element or no `width` and/or `height` options were provided and this information could not be derived from `input`.
+element or no `width` and/or `height` options were provided, and this information could not be derived from `input`.
+
+A `Converter` is created and closed to perform this operation using a this `createConverter` function below. If multiple
+files are being converted it is recommended to use `createConverter` to create a `Converter` and call its
+`Converter#convert` method multiple times instead.
 
 #### Options
 
-| Option                      | Type                   | Default                 | Description                                                                                                                                                      |
-|-----------------------------|------------------------|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `allowDeprecatedAttributes` | Boolean                | `true`                  | Whether deprecated SVG element attributes should be retained in the SVG during conversion.                                                                       |
-| `background`                | String                 | N/A                     | Background color to be used to fill transparent regions within the SVG. Will remain transparent if omitted.                                                      |
-| `baseFile`                  | String                 | N/A                     | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option. |
-| `baseUrl`                   | String                 | `"file:///path/to/cwd"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                        |
-| `height`                    | Number/String          | N/A                     | Height of the output to be generated. Derived from SVG input if omitted.                                                                                         |
-| `puppeteer`                 | Object                 | N/A                     | Options that are to be passed directly to `puppeteer.launch` when creating the `Browser` instance.                                                               |
-| `rounding`                  | `ceil`/`floor`/`round` | `"round"`               | Type of rounding to be applied to the width and height.                                                                                                          |
-| `scale`                     | Number                 | `1`                     | Scale to be applied to the width and height (specified as options or derived).                                                                                   |
-| `width`                     | Number/String          | N/A                     | Width of the output to be generated. Derived from SVG input if omitted.                                                                                          |
+| Option                      | Type                                    | Default                      | Description                                                                                                                                                                                                                                                            |
+|-----------------------------|-----------------------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `allowDeprecatedAttributes` | boolean                                 | `true`                       | Whether deprecated SVG element attributes should be retained in the SVG during conversion.                                                                                                                                                                             |
+| `background`                | string                                  | `"#FFF"` (White)             | Background color to be used to fill transparent regions within the SVG.                                                                                                                                                                                                |
+| `baseFile`                  | string                                  | `process.cwd()`              | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option.                                                                                                       |
+| `baseUrl`                   | string                                  | `"file:///${process.cwd()}"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                                                                                                                              |
+| `browser`                   | object                                  | *None*                       | Existing `Browser` instance provided by `puppeteer` that is used to create a `BrowserContext` to open each new `Page` to capture a screenshot of an SVG to convert it into a WEBP. If specified, the `launch` option will be ignored.                                  |
+| `closeBehavior`             | `"close"` \| `"disconnect"` \| `"none"` | `"close"`                    | Behavior when the converter is closed.                                                                                                                                                                                                                                 |
+| `height`                    | number \| string                        | *Derived*                    | Height of the output to be generated. Derived from SVG input if omitted.                                                                                                                                                                                               |
+| `quality`                   | number                                  | `100`                        | Quality of the output to be generated. Must be between 0-100 (inclusive).                                                                                                                                                                                              |
+| `launch`                    | object                                  | *None*                       | Options that are to be passed directly to `puppeteer` when launching a new `Browser` that is used to create a `BrowserContext` to open each new `Page` to capture a screenshot of an SVG to convert it into a WEBP. Ignored if the `browser` option is also specified. |
+| `page`                      | object                                  | *None*                       | Options that are to be passed directly to `puppeteer` when populating a `Page` with the SVG contents.                                                                                                                                                                  |
+| `rounding`                  | `"ceil"` \| `"floor"` \| `"round"`      | `"round"`                    | Type of rounding to be applied to the width and height.                                                                                                                                                                                                                |
+| `scale`                     | number                                  | `1`                          | Scale to be applied to the width and height (specified as options or derived).                                                                                                                                                                                         |
+| `width`                     | number \| string                        | *Derived*                    | Width of the output to be generated. Derived from SVG input if omitted.                                                                                                                                                                                                |
 
-The `puppeteer` option is not available when calling this method on a `Converter` instance created using
-`createConverter`.
-
-#### Example
+#### Examples
 
 ``` javascript
-const { convert } = require('convert-svg-to-webp');
-const express = require('express');
+import { convert } from "convert-svg-to-webp";
+import express from "express";
+import { executablePath } from "puppeteer";
 
 const app = express();
 
-app.post('/convert', async(req, res) => {
-  const webp = await convert(req.body);
+app.post("/convert", async (req, res) => {
+  const webp = await convert(req.body, {
+    launch: { executablePath },
+  });
 
-  res.set('Content-Type', 'image/webp');
+  res.set("Content-Type", "image/webp");
   res.send(webp);
 });
 
 app.listen(3000);
 ```
 
-### `convertFile(inputFilePath[, options])`
+### `convertFile(inputFilePath, options)`
 
 Converts the SVG file at the specified path into a WEBP using the `options` provided and writes it to the output file.
 
 The output file is derived from `inputFilePath` unless the `outputFilePath` option is specified.
 
-If the width and/or height cannot be derived from the input file then they must be provided via their corresponding
+If the width and/or height cannot be derived from the input file, then they must be provided via their corresponding
 options. This method attempts to derive the dimensions from the input file via any `width`/`height` attributes or its
 calculated `viewBox` attribute.
 
-Only standard SVG element attributes (excl. event attributes) are allowed and others are stripped from the SVG before
+Only standard SVG element attributes (excl. event attributes) are allowed, and others are stripped from the SVG before
 being converted. This includes deprecated attributes unless the `allowDeprecatedAttributes` option is disabled. This is
 primarily for security purposes to ensure that malicious code cannot be injected.
 
 This method is resolved with the path of the WEBP output file for reference.
 
 An error will occur if both the `baseFile` and `baseUrl` options have been provided, the input file does not contain an
-SVG element, no `width` and/or `height` options were provided and this information could not be derived from input file,
-or a problem arises while reading the input file or writing the output file.
+SVG element, no `width` and/or `height` options were provided, and this information could not be derived from an input
+file, or a problem arises while reading the input file or writing the output file.
+
+A `Converter` is created and closed to perform this operation using a this `createConverter` function below. If multiple
+files are being converted it is recommended to use `createConverter` to create a `Converter` and call its
+`Converter#convertFile` method multiple times instead.
 
 #### Options
 
-Has the same options as the standard `convert` method but also supports the following additional options:
+| Option                      | Type                                    | Default                      | Description                                                                                                                                                                                                                                                            |
+|-----------------------------|-----------------------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `allowDeprecatedAttributes` | boolean                                 | `true`                       | Whether deprecated SVG element attributes should be retained in the SVG during conversion.                                                                                                                                                                             |
+| `background`                | string                                  | `"#FFF"` (White)             | Background color to be used to fill transparent regions within the SVG.                                                                                                                                                                                                |
+| `baseFile`                  | string                                  | `process.cwd()`              | Path of the file to be converted into a file URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseUrl` option.                                                                                                       |
+| `baseUrl`                   | string                                  | `"file:///${process.cwd()}"` | Base URL to use for all relative URLs contained within the SVG. Cannot be used in conjunction with the `baseFile` option.                                                                                                                                              |
+| `browser`                   | object                                  | *None*                       | Existing `Browser` instance provided by `puppeteer` that is used to create a `BrowserContext` to open each new `Page` to capture a screenshot of an SVG to convert it into a WEBP. If specified, the `launch` option will be ignored.                                  |
+| `closeBehavior`             | `"close"` \| `"disconnect"` \| `"none"` | `"close"`                    | Behavior when the converter is closed.                                                                                                                                                                                                                                 |
+| `height`                    | number \| string                        | *Derived*                    | Height of the output to be generated. Derived from SVG input if omitted.                                                                                                                                                                                               |
+| `outputFilePath `           | string                                  | *Derived*                    | Path of the file to which the WEBP output should be written to. Derived from `inputFilePath` if omitted.                                                                                                                                                               |
+| `quality`                   | number                                  | `100`                        | Quality of the output to be generated.                                                                                                                                                                                                                                 |
+| `launch`                    | object                                  | *None*                       | Options that are to be passed directly to `puppeteer` when launching a new `Browser` that is used to create a `BrowserContext` to open each new `Page` to capture a screenshot of an SVG to convert it into a WEBP. Ignored if the `browser` option is also specified. |
+| `page`                      | object                                  | *None*                       | Options that are to be passed directly to `puppeteer` when populating a `Page` with the SVG contents.                                                                                                                                                                  |
+| `rounding`                  | `"ceil"` \| `"floor"` \| `"round"`      | `"round"`                    | Type of rounding to be applied to the width and height.                                                                                                                                                                                                                |
+| `scale`                     | number                                  | `1`                          | Scale to be applied to the width and height (specified as options or derived).                                                                                                                                                                                         |
+| `width`                     | number \| string                        | *Derived*                    | Width of the output to be generated. Derived from SVG input if omitted.                                                                                                                                                                                                |
 
-| Option           | Type   | Default | Description                                                                                              |
-|------------------|--------|---------|----------------------------------------------------------------------------------------------------------|
-| `outputFilePath` | String | N/A     | Path of the file to which the WEBP output should be written to. Derived from input file path if omitted. |
-
-#### Example
+#### Examples
 
 ``` javascript
-const { convertFile}  = require('convert-svg-to-webp');
+import { convertFile} from "convert-svg-to-webp";
+import { executablePath } from "puppeteer";
 
-(async() => {
-  const inputFilePath = '/path/to/my-image.svg';
-  const outputFilePath = await convertFile(inputFilePath);
+const main = async () => {
+  const inputFilePath = "/path/to/my-image.svg";
+  const outputFilePath = await convertFile(inputFilePath, {
+    launch: { executablePath },
+  });
 
   console.log(outputFilePath);
   //=> "/path/to/my-image.webp"
-})();
+};
+
+main().catch(console.error);
 ```
 
-### `createConverter([options])`
+### `createConverter(options)`
 
 Creates an instance of `Converter` using the `options` provided.
 
-It is important to note that, after the first time either `Converter#convert` or `Converter#convertFile` are called, a
-headless Chromium instance will remain open until `Converter#destroy` is called. This is done automatically when using
-the `API` convert methods, however, when using `Converter` directly, it is the responsibility of the caller. Due to the
-fact that creating browser instances is expensive, this level of control allows callers to reuse a browser for multiple
-conversions. It's not recommended to keep an instance around for too long, as it will use up resources.
+When a `Converter` is created it must either be passed an existing `Browser` instance via the `browser` option or
+`LaunchOptions` via the `launch` option so that a browser instance can be created or connected; otherwise it will fail
+to be created.
+
+If an existing `Browser` instance is being used you may want to also consider what happens if/when the `Converter` is
+closed (e.g. via `Converter#close`) as the default behavior is to close the browser and all open pages, even those not
+opened by the `Converter`. It can instead be instructed to either disconnect from the browser process or do nothing at
+all via the `closeBehavior` option.
+
+Due to constraints within Chromium, the SVG input is first written to a temporary HTML file and then navigated to.
+This is because the default page for Chromium is using the `chrome` protocol so cannot load externally referenced
+files (e.g. that use the `file` protocol). Each invocation of `Converter#convert` or `Converter#convertFile` open their
+own `Page` and create their own temporary files to avoid conflicts with other asynchronous invocations, which is closed
+and deleted respectively once finished. This allows the returned `Converter` to safely process these calls concurrently.
+
+A `Converter` uses its own `BrowserContext` to open each new `Page`. This ensures that the pages are isolated and that
+they can be closed by the `Converter` accordingly.
+
+When calling either the `Converter#convert` or `Converter#convertFiles` the `options` parameter is the same as described
+above except that it is entirely optional and excludes the options that intersect with the options for
+`createConverter` (see below).
 
 #### Options
 
-| Option      | Type   | Default | Description                                                                                        |
-|-------------|--------|---------|----------------------------------------------------------------------------------------------------|
-| `puppeteer` | Object | N/A     | Options that are to be passed directly to `puppeteer.launch` when creating the `Browser` instance. |
+| Option          | Type                                    | Default   | Description                                                                                                                                                                                                                                                            |
+|-----------------|-----------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `browser`       | object                                  | *None*    | Existing `Browser` instance provided by `puppeteer` that is used to create a `BrowserContext` to open each new `Page` to capture a screenshot of an SVG to convert it into a WEBP. If specified, the `launch` option will be ignored.                                  |
+| `closeBehavior` | `"close"` \| `"disconnect"` \| `"none"` | `"close"` | Behavior when the converter is closed.                                                                                                                                                                                                                                 |
+| `launch`        | object                                  | *None*    | Options that are to be passed directly to `puppeteer` when launching a new `Browser` that is used to create a `BrowserContext` to open each new `Page` to capture a screenshot of an SVG to convert it into a WEBP. Ignored if the `browser` option is also specified. |
+| `page`          | object                                  | *None*    | Options that are to be passed directly to `puppeteer` when populating a `Page` with the SVG contents.                                                                                                                                                                  |
 
-#### Example
+#### Examples
 
 ``` javascript
-const { createConverter } = require('convert-svg-to-webp');
-const fs = require('fs');
-const util = require('util');
+import { readdir } from "node:fs/promises";
+import { createConverter } from "convert-svg-to-webp";
+import { executablePath } from "puppeteer";
 
-const readdir = util.promisify(fs.readdir);
-
-async function convertSvgFiles(dirPath) {
-  const converter = createConverter();
+export const convertSvgFiles = async (dirPath) => {
+  const converter = await createConverter({
+    launch: { executablePath },
+  });
 
   try {
     const filePaths = await readdir(dirPath);
@@ -193,9 +210,9 @@ async function convertSvgFiles(dirPath) {
       await converter.convertFile(filePath);
     }
   } finally {
-    await converter.destroy();
+    await converter.close();
   }
-}
+};
 ```
 
 ## Other Formats
@@ -206,19 +223,19 @@ https://github.com/neocotic/convert-svg
 
 ## Bugs
 
-If you have any problems with this package or would like to see changes currently in development you can do so
+If you have any problems with this package or would like to see changes currently in development, you can do so
 [here](https://github.com/neocotic/convert-svg/issues).
 
 ## Contributors
 
 If you want to contribute, you're a legend! Information on how you can do so can be found in
-[CONTRIBUTING.md](https://github.com/neocotic/convert-svg/blob/main/CONTRIBUTING.md). We want your suggestions and
-pull requests!
+[CONTRIBUTING.md](https://github.com/neocotic/convert-svg/blob/main/CONTRIBUTING.md). We want your suggestions and pull
+requests!
 
 A list of all contributors can be found in [AUTHORS.md](https://github.com/neocotic/convert-svg/blob/main/AUTHORS.md).
 
 ## License
 
-Copyright © 2022 neocotic
+Copyright © 2025 neocotic
 
 See [LICENSE.md](https://github.com/neocotic/convert-svg/raw/main/LICENSE.md) for more information on our MIT license.

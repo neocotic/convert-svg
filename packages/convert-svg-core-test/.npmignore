@@ -1,0 +1,4 @@
+.tshy/
+.tshy-build/
+src/
+tsconfig.json

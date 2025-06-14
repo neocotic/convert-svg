@@ -1,31 +1,35 @@
 {
-  "name": "convert-svg",
+  "name": "convert-svg-root",
+  "version": "0.7.0",
+  "private": true,
   "license": "MIT",
-  "devDependencies": {
-    "del-cli": "^4.0.1",
-    "eslint": "^8.14.0",
-    "eslint-config-notninja": "^0.4.0",
-    "lerna": "^4.0.0",
-    "mocha": "^9.2.2"
-  },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "clean": "del-cli node_modules package-lock.json \"packages/*/node_modules\" \"packages/*/package-lock.json\"",
-    "flint": "eslint . --fix",
-    "install:all": "npm install && npm run bootstrap",
-    "install:clean": "npm run clean && npm run install:all",
+    "build": "npm run build --workspace=convert-svg-core && npm run build --workspace=convert-svg-core-cli && npm run build --workspace=convert-svg-core-test && npm run build --workspace=convert-svg-to-jpeg && npm run build --workspace=convert-svg-to-jpeg-cli && npm run build --workspace=convert-svg-to-png && npm run build --workspace=convert-svg-to-png-cli && npm run build --workspace=convert-svg-to-webp && npm run build --workspace=convert-svg-to-webp-cli",
     "lint": "eslint .",
-    "outdated:packages": "lerna exec --stream --no-bail \"npm outdated\"",
-    "publish:packages": "lerna publish from-package",
-    "test": "mocha -O maxDiffSize=32 -R list \"packages/*/test/**/*.spec.js\"",
-    "test:jpeg": "npm test -- --grep convert-svg-to-jpeg",
-    "test:png": "npm test -- --grep convert-svg-to-png",
-    "test:webp": "npm test -- --grep convert-svg-to-webp",
-    "verify": "npm run bootstrap && npm run lint && npm test",
-    "version:packages": "lerna version --no-git-tag-version --no-push"
+    "lint:fix": "eslint . --fix",
+    "publish:packages": "npm run verify && npm publish --workspaces",
+    "test": "npm run test --workspaces",
+    "verify": "npm run build && npm run lint && npm test",
+    "verify:fix": "npm run build && npm run lint:fix && npm test",
+    "version:packages": "npm version --include-workspace-root --workspaces"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@typescript-eslint/parser": "^8.34.0",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-import-resolver-typescript": "^4.4.3",
+    "eslint-plugin-import-x": "^4.15.2",
+    "eslint-plugin-prettier": "^5.4.1",
+    "globals": "^16.2.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0"
   },
   "engines": {
-    "node": "^12.20.0 || >=14"
-  },
-  "private": true
+    "node": ">=22"
+  }
 }

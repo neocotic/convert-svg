@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Test (to-jpeg)" type="NodeJsTestRunner">
+    <node-interpreter value="project" />
+    <node-options value="--enable-source-maps" />
+    <working-dir value="$PROJECT_DIR$/packages/convert-svg-to-jpeg" />
+    <language value="TYPE_SCRIPT" />
+    <typescript-loader value="TSX" />
+    <envs />
+    <scope-kind value="DIRECTORY" />
+    <test-directory value="$PROJECT_DIR$/packages/convert-svg-to-jpeg/test" />
+    <method v="2" />
+  </configuration>
+</component>
