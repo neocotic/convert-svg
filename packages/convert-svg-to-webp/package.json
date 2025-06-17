@@ -1,6 +1,6 @@
 {
   "name": "convert-svg-to-webp",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Converts SVG to WEBP using headless Chromium",
   "homepage": "https://github.com/neocotic/convert-svg",
   "bugs": {
@@ -53,14 +53,17 @@
   "module": "./dist/esm/index.js",
   "scripts": {
     "build": "tshy",
-    "test": "node --import tsx --enable-source-maps --test \"test/**/*.test.ts\""
+    "test": "node --import tsx --enable-source-maps --test \"test/**/*.test.ts\"",
+    "pretest:docker": "rimraf ./test/fixtures/actual && docker buildx build -t convert-svg-to-webp-test --build-arg PACKAGE_NAME=convert-svg-to-webp -f ../../docker/test/Dockerfile ../..",
+    "test:docker": "docker run -i --init --cap-add=SYS_ADMIN --rm --env CONVERT_SVG_LAUNCH_OPTIONS=\"$CONVERT_SVG_LAUNCH_OPTIONS\" --env CONVERT_SVG_TEST_OPTIONS=\"$CONVERT_SVG_TEST_OPTIONS\" -v $(PWD)/test/fixtures/actual:/workspace/test/fixtures/actual convert-svg-to-webp-test"
   },
   "dependencies": {
-    "convert-svg-core": "^0.7.0"
+    "convert-svg-core": "^0.7.1"
   },
   "devDependencies": {
-    "@types/node": "^24.0.1",
+    "@types/node": "^24.0.3",
     "puppeteer-core": "^24.10.1",
+    "rimraf": "^6.0.1",
     "sinon": "^21.0.0",
     "tshy": "^3.0.2",
     "tsx": "^4.20.3"

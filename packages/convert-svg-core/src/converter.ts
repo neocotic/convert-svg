@@ -21,7 +21,13 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
-import { basename, dirname, extname, join, resolve } from "node:path";
+import {
+  basename,
+  dirname,
+  extname,
+  join,
+  resolve as resolvePath,
+} from "node:path";
 import { type Cheerio, load as loadHtml } from "cheerio";
 import type { Element } from "domhandler";
 import fileUrl from "file-url";
@@ -40,8 +46,8 @@ import type { IProvider } from "./provider.js";
  * Converts SVG to another format using a headless Chromium instance.
  *
  * When an {@link IConverter} is created it must either be passed an existing {@link Browser} instance via
- * {@link IConverterOptions#browser} or {@link LaunchOptions} via {@link IConverterOptions#launch} so that a browser
- * instance can be created or connected; otherwise it will fail to be created.
+ * {@link IConverterOptions#browser} or {@link IConverterLaunchOptions} via {@link IConverterOptions#launch} so that a
+ * browser instance can be created or connected; otherwise it will fail to be created.
  *
  * If an existing {@link Browser} instance is being used you may want to also consider what happens if/when the
  * {@link IConverter} is closed (e.g. via {@link #close}) as the default behavior is to close the browser and all open
@@ -199,7 +205,7 @@ export interface IConverterOptions<
    * open due to ongoing invocations of those methods will be closed immediately and will likely result in them
    * rejecting.
    */
-  launch?: LaunchOptions;
+  launch?: IConverterLaunchOptions;
   /**
    * The options that are to be passed directly to `puppeteer-core` when populating a {@link Page} with the SVG
    * contents.
@@ -353,6 +359,26 @@ export type IConverterConvertFileOptionsParsed<
 };
 
 /**
+ * The options that can be passed directly to `puppeteer-core` when launching a new {@link Browser} that is used to
+ * create a {@link BrowserContext} to open each new {@link Page} to capture a screenshot of an SVG to convert it into
+ * another format.
+ */
+export type IConverterLaunchOptions = Omit<LaunchOptions, "executablePath"> & {
+  /**
+   * The executable path of a puppeteer-compatible browser to be used or a function that returns it based on the
+   * {@link LaunchOptions} provided.
+   *
+   * This supports passing the `executablePath` exported from `puppeteer` to be passed directly as an option without
+   * first invoking it, ensuring that all other {@link LaunchOptions} are resolved beforehand (incl. any provided via
+   * the `CONVERT_SVG_LAUNCH_OPTIONS` environment variable).
+   *
+   * @param options The resolved {@link LaunchOptions} to be used.
+   * @return The browser executable path to be used.
+   */
+  executablePath?: string | ((options: LaunchOptions) => string);
+};
+
+/**
  * The type of rounding to be applied to the width and height during a conversion, which may be one of the following:
  *
  * - `"ceil"` - Values are rounded using `Math.ceil`.
@@ -454,7 +480,12 @@ export class Converter<
     } = options;
     const browser =
       browserOption ??
-      (await launchBrowser(Converter.#mergeEnvLaunchOptions(launchOptions)));
+      (await launchBrowser(
+        Converter.#handleExecutablePath({
+          ...Converter.parseEnvLaunchOptions(),
+          ...launchOptions,
+        }),
+      ));
     const browserContext = await browser.createBrowserContext();
 
     return new Converter<ConvertOptions, ConvertOptionsParsed>({
@@ -464,15 +495,60 @@ export class Converter<
     });
   }
 
-  static #mergeEnvLaunchOptions(
-    launch: LaunchOptions | undefined,
-  ): LaunchOptions {
-    const rawEnvOptions = process.env.CONVERT_SVG_LAUNCH_OPTIONS;
-    const envOptions = rawEnvOptions
-      ? (JSON.parse(rawEnvOptions) as LaunchOptions)
-      : undefined;
+  /**
+   * Attempts to retrieve and parse {@link IConverterLaunchOptions} from the `CONVERT_SVG_LAUNCH_OPTIONS` environment
+   * variable.
+   *
+   * The parsed value is only very loosely validated to ensure that it represents a plain object.
+   *
+   * @return An {@link IConverterLaunchOptions} parsed from the environment variable or `undefined` if empty.
+   * @throws {Error} If the environment variable contains an invalid value.
+   */
+  static parseEnvLaunchOptions(): IConverterLaunchOptions | undefined {
+    const options = process.env.CONVERT_SVG_LAUNCH_OPTIONS;
+    if (!options) {
+      return;
+    }
 
-    return { ...envOptions, ...launch };
+    let parsedOptions: unknown;
+    try {
+      parsedOptions = JSON.parse(options);
+    } catch (err) {
+      throw new Error(
+        `Failed to parse "CONVERT_SVG_LAUNCH_OPTIONS" environment variable: ${options}`,
+        { cause: err },
+      );
+    }
+
+    if (
+      typeof parsedOptions === "object" &&
+      parsedOptions &&
+      !Array.isArray(parsedOptions)
+    ) {
+      return parsedOptions as IConverterLaunchOptions;
+    }
+
+    throw new Error(
+      `Failed to parse "CONVERT_SVG_LAUNCH_OPTIONS" environment variable: ${options}`,
+    );
+  }
+
+  static #handleExecutablePath(
+    options: IConverterLaunchOptions,
+  ): LaunchOptions {
+    const { executablePath, ...launchOptions } = options;
+
+    switch (typeof executablePath) {
+      case "string":
+        return { ...launchOptions, executablePath };
+      case "function":
+        return {
+          ...launchOptions,
+          executablePath: executablePath(launchOptions),
+        };
+      default:
+        return launchOptions;
+    }
   }
 
   static #isAttributeAllowed(
@@ -847,7 +923,7 @@ html { background-color: ${provider.getBackgroundColor(options)}; }
     options: IConverterConvertFileOptions<ConvertOptions> | undefined,
   ): IConverterConvertFileOptionsParsed<ConvertOptionsParsed> {
     const parsedOptions = this.#parseConvertOptions(options, () =>
-      inputFilePath ? resolve(inputFilePath) : process.cwd(),
+      inputFilePath ? resolvePath(inputFilePath) : process.cwd(),
     );
 
     let outputFilePath = options?.outputFilePath;

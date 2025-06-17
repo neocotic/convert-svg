@@ -37,7 +37,7 @@ import { deleteAsync } from "del";
 import fileUrl from "file-url";
 import looksSame, { type LooksSameOptions } from "looks-same";
 import { executablePath } from "puppeteer";
-import { z } from "zod";
+import { TestRunnerEnvOptionsSchema, TestSchema } from "./schema.js";
 import { sourceDirname } from "./source-dirname.js";
 
 /**
@@ -143,20 +143,6 @@ export interface ITestRunner<
   describeConverterConvertFile(t: TestContext): Promise<void>;
 }
 
-const TestSchema = z.object({
-  assertion: z.record(z.string(), z.unknown()).optional(),
-  core: z.boolean().optional(),
-  error: z.string().optional(),
-  file: z.string().nonempty().endsWith(".svg"),
-  includeBaseFile: z.boolean().optional(),
-  includeBaseUrl: z.boolean().optional(),
-  message: z.string().nonempty().optional(),
-  name: z.string().nonempty(),
-  only: z.boolean().optional(),
-  options: z.record(z.string(), z.unknown()).optional(),
-  skip: z.boolean().optional(),
-});
-
 /**
  * An implementation of {@link ITestRunner}.
  */
@@ -169,6 +155,33 @@ export class TestRunner<
   static readonly #defaultAssertion: ITestAssertion = {
     tolerance: 2.8, // Default is 2.3
   };
+
+  /**
+   * Attempts to retrieve and parse {@link TestRunnerEnvOptions} from the `CONVERT_SVG_TEST_OPTIONS` environment
+   * variable.
+   *
+   * Schemas defined within `convert-svg-core-test` will be validated, however, any external schemas (e.g.
+   * {@link TestRunnerEnvOptions#assertion}) are not fully validated.
+   *
+   * @return A {@link TestRunnerEnvOptions} parsed from the environment variable or `undefined` if empty.
+   * @throws {Error} If the environment variable contains an invalid value.
+   */
+  static parseEnvOptions(): TestRunnerEnvOptions | undefined {
+    const options = process.env.CONVERT_SVG_TEST_OPTIONS;
+
+    try {
+      return options
+        ? (TestRunnerEnvOptionsSchema.parse(
+            JSON.parse(options),
+          ) as TestRunnerEnvOptions)
+        : undefined;
+    } catch (err) {
+      throw new Error(
+        `Failed to parse "CONVERT_SVG_TEST_OPTIONS" environment variable: ${options}`,
+        { cause: err },
+      );
+    }
+  }
 
   static #getCoreTests<
     ConvertOptions extends IConverterConvertOptions,
@@ -213,6 +226,8 @@ export class TestRunner<
   constructor(
     options: TestRunnerOptions<ConvertOptions, ConvertOptionsParsed>,
   ) {
+    options = { ...TestRunner.parseEnvOptions(), ...options };
+
     const tests = TestRunner.#getCoreTests<ConvertOptions>();
     if (options.tests) {
       options.tests.forEach((test) =>
@@ -450,8 +465,8 @@ export class TestRunner<
                   actual,
                   expected,
                   this.#isRetainOutputFilesEnabled
-                    ? `should write expected output file: re-run test with "retainOutputFiles" option enabled for TestRunner and manually compare expected file (${expectedFilePath}) with actual file (${actualFilePath})`
-                    : `should write expected output file: manually compare expected file (${expectedFilePath}) with actual file (${actualFilePath})`,
+                    ? `should write expected output file: manually compare expected file (${expectedFilePath}) with actual file (${actualFilePath})`
+                    : `should write expected output file: re-run test with "retainOutputFiles" option enabled for TestRunner and manually compare expected file (${expectedFilePath}) with actual file (${actualFilePath})`,
                 );
               }
             });
@@ -479,7 +494,7 @@ export class TestRunner<
     IConverter<ConvertOptions, ConvertOptionsParsed>
   > {
     return Converter.create({
-      launch: { executablePath: executablePath() },
+      launch: { executablePath, ...Converter.parseEnvLaunchOptions() },
       provider: this.#provider,
     });
   }
@@ -573,23 +588,17 @@ export class TestRunner<
 }
 
 /**
- * The options that can be used to construct a {@link TestRunner}.
+ * The options that can be used to construct a {@link TestRunner} that can be provided via the
+ * `CONVERT_SVG_TEST_OPTIONS` environment variable.
  */
-export interface TestRunnerOptions<
-  ConvertOptions extends IConverterConvertOptions,
-  ConvertOptionsParsed extends IConverterConvertOptionsParsed,
-> {
+export interface TestRunnerEnvOptions {
   /**
    * The options to control the assertion used when comparing the actual and expected outputs for each test.
    *
    * These options are merged on top of sensible defaults for comparing converted SVG outputs and are typically most
    * suited for applying output format-specific defaults.
    */
-  assertion?: LooksSameOptions;
-  /**
-   * The path for the base directory of the tests.
-   */
-  baseDir: string;
+  assertion?: ITestAssertion;
   /**
    * Whether to convert all test input files and write their outputs to the `fixtures/actual` directory before the
    * {@link IConverter#convertFile} test suite.
@@ -607,10 +616,6 @@ export interface TestRunnerOptions<
    */
   preGenerateOutputFiles?: boolean;
   /**
-   * The {@link IProvider} to be tested.
-   */
-  provider: IProvider<ConvertOptions, ConvertOptionsParsed>;
-  /**
    * Whether to retain the `fixtures/actual` directory and its contents after the test suite has finished.
    *
    * Since this directory is the {@link IConverter#convertFile} test suite writes output files, this option can be
@@ -618,6 +623,23 @@ export interface TestRunnerOptions<
    * tests failing due to mismatching images.
    */
   retainOutputFiles?: boolean;
+}
+
+/**
+ * The options that can be used to construct a {@link TestRunner}.
+ */
+export interface TestRunnerOptions<
+  ConvertOptions extends IConverterConvertOptions,
+  ConvertOptionsParsed extends IConverterConvertOptionsParsed,
+> extends TestRunnerEnvOptions {
+  /**
+   * The path for the base directory of the tests.
+   */
+  baseDir: string;
+  /**
+   * The {@link IProvider} to be tested.
+   */
+  provider: IProvider<ConvertOptions, ConvertOptionsParsed>;
   /**
    * Any additional tests to be run after the core tests.
    */

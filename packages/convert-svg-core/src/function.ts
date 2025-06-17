@@ -135,8 +135,8 @@ export interface IFuncDefinitions<
    *
    * When an {@link IConverter} is created it must either be passed an existing
    * {@link import('puppeteer-core').Browser Browser} instance via {@link ICreateConverterFuncOptions#browser} or
-   * {@link import('puppeteer-core').LaunchOptions LaunchOptions} via {@link ICreateConverterFuncOptions#launch}
-   * so that a browser instance can be created or connected; otherwise it will fail to be created.
+   * {@link IConverterLaunchOptions} via {@link ICreateConverterFuncOptions#launch} so that a browser instance can be
+   * created or connected; otherwise it will fail to be created.
    *
    * If an existing {@link import('puppeteer-core').Browser Browser} instance is being used you may want to also
    * consider what happens if/when the {@link IConverter} is closed (e.g. via {@link IConverter#close}) as the default

@@ -29,6 +29,7 @@ export type {
   IConverterConvertFileOptionsParsed,
   IConverterConvertOptions,
   IConverterConvertOptionsParsed,
+  IConverterLaunchOptions,
   IConverterOptions,
   IConverterRounding,
   ICreateConverterFuncOptions,

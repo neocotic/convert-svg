@@ -37,6 +37,24 @@ lot of the conversion logic, a
 available to make testing implementations even easier. Again, take a look at the tests for existing SVG converters under
 the [packages](https://github.com/neocotic/convert-svg/tree/main/packages) directory for examples.
 
+## Environment
+
+This package supports the use of a `CONVERT_SVG_TEST_OPTIONS` environment variable to act as a base for the options
+passed to the `TestRunner` constructor. This can make it easier to temporarily change test options during testing. For
+example;
+
+``` sh
+CONVERT_SVG_TEST_OPTIONS='{"retainOutputFiles": true}' npm test
+```
+
+## macOS
+
+> ⚠️ **Heads up!**
+>
+> If you develop using macOS it's important to note that, due to a noticeable reduction in the quality of output files
+> when running on macOS, you will be expected to use some slightly different npm run-scripts. These use Docker
+> under-the-hood primarily to ensure more consistent test outputs. Most notably, these run-scripts include:
+
 ## Bugs
 
 If you have any problems with this package or would like to see changes currently in development, you can do so

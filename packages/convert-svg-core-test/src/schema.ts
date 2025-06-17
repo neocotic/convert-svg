@@ -20,21 +20,32 @@
  * SOFTWARE.
  */
 
-export type {
-  IConvertFileFuncOptions,
-  IConvertFuncOptions,
-  IConverter,
-  IConverterCloseBehavior,
-  IConverterConvertFileOptions,
-  IConverterConvertFileOptionsParsed,
-  IConverterConvertOptions,
-  IConverterConvertOptionsParsed,
-  IConverterLaunchOptions,
-  IConverterOptions,
-  IConverterRounding,
-  ICreateConverterFuncOptions,
-  IFuncDefinitions,
-  IProvider,
-} from "convert-svg-core";
-export * from "./function.js";
-export * from "./provider.js";
+import { z } from "zod";
+
+const TestAssertionSchema = z.record(z.string(), z.unknown());
+
+/**
+ * A schema that can be used to parse and validate a {@link TestRunnerEnvOptions}.
+ */
+export const TestRunnerEnvOptionsSchema = z.strictObject({
+  assertion: TestAssertionSchema.optional(),
+  preGenerateOutputFiles: z.boolean().optional(),
+  retainOutputFiles: z.boolean().optional(),
+});
+
+/**
+ * A schema that can be used to parse and validate an {@link ITest}.
+ */
+export const TestSchema = z.strictObject({
+  assertion: TestAssertionSchema.optional(),
+  core: z.boolean().optional(),
+  error: z.string().optional(),
+  file: z.string().nonempty().endsWith(".svg"),
+  includeBaseFile: z.boolean().optional(),
+  includeBaseUrl: z.boolean().optional(),
+  message: z.string().nonempty().optional(),
+  name: z.string().nonempty(),
+  only: z.boolean().optional(),
+  options: z.record(z.string(), z.unknown()).optional(),
+  skip: z.boolean().optional(),
+});

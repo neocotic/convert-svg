@@ -28,7 +28,7 @@ Microsoft fonts installed. For example, Ubuntu users can do the following:
 
 ``` sh
 sudo apt-get update
-sudo apt-get install ttf-mscorefonts-installer -y
+sudo apt-get install -y ttf-mscorefonts-installer
 sudo fc-cache -fv
 ```
 
@@ -46,3 +46,18 @@ packages, and publish the packages. Some helpful run-scripts are available to ai
 npm run version:packages -- minor
 npm run publish:packages
 ```
+
+If you're making changes to GitHub Workflows, you can use [act](https://nektosact.com) to run jobs locally to test your
+changes before opening a pull request.
+
+## macOS
+
+> ⚠️ **Heads up!**
+> 
+> If you develop using macOS it's important to note that, due to a noticeable reduction in the quality of output files
+> when running on macOS, you will be expected to use some slightly different npm run-scripts. These use Docker
+> under-the-hood primarily to ensure more consistent test outputs. Most notably, these run-scripts include:
+>
+> * `test:docker`
+> * `verify:docker`
+> * `verify:docker:fix`

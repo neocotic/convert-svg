@@ -1,33 +1,39 @@
 {
   "name": "convert-svg-root",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "license": "MIT",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
+    "act": "act -P ubuntu-latest=catthehacker/ubuntu:custom-latest --artifact-server-path $(PWD)/.artifacts",
     "build": "npm run build --workspace=convert-svg-core && npm run build --workspace=convert-svg-core-cli && npm run build --workspace=convert-svg-core-test && npm run build --workspace=convert-svg-to-jpeg && npm run build --workspace=convert-svg-to-jpeg-cli && npm run build --workspace=convert-svg-to-png && npm run build --workspace=convert-svg-to-png-cli && npm run build --workspace=convert-svg-to-webp && npm run build --workspace=convert-svg-to-webp-cli",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "publish:packages": "npm run verify && npm publish --workspaces",
+    "publish:packages:docker": "npm run verify:docker && npm publish --workspaces",
     "test": "npm run test --workspaces",
+    "pretest:docker": "node ./docker/test/pack.mjs",
+    "test:docker": "npm run test --workspace=convert-svg-core --workspace=convert-svg-core-cli --workspace=convert-svg-core-test --workspace=convert-svg-to-jpeg-cli --workspace=convert-svg-to-png-cli --workspace=convert-svg-to-webp-cli && npm run test:docker --workspace=convert-svg-to-jpeg --workspace=convert-svg-to-png --workspace=convert-svg-to-webp",
     "verify": "npm run build && npm run lint && npm test",
+    "verify:docker": "npm run build && npm run lint && npm run test:docker",
+    "verify:docker:fix": "npm run build && npm run lint:fix && npm run test:docker",
     "verify:fix": "npm run build && npm run lint:fix && npm test",
     "version:packages": "npm version --include-workspace-root --workspaces"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
-    "@typescript-eslint/parser": "^8.34.0",
+    "@typescript-eslint/parser": "^8.34.1",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^4.4.3",
     "eslint-plugin-import-x": "^4.15.2",
-    "eslint-plugin-prettier": "^5.4.1",
+    "eslint-plugin-prettier": "^5.5.0",
     "globals": "^16.2.0",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.34.0"
+    "typescript-eslint": "^8.34.1"
   },
   "engines": {
     "node": ">=22"

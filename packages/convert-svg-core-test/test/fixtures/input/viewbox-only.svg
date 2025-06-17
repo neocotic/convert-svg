@@ -15,7 +15,8 @@
             }
 
             text {
-              font-family: "Verdana";
+              font-family: Arial;
+              font-weight: normal;
               font-size: 200px;
               fill: white;
               text-anchor: middle;
