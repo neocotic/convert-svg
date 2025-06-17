@@ -1,6 +1,6 @@
 {
   "name": "convert-svg-core-cli",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Supports converting SVG into another format using headless Chromium via CLI",
   "homepage": "https://github.com/neocotic/convert-svg",
   "bugs": {
@@ -59,14 +59,14 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
-    "convert-svg-core": "^0.7.0",
+    "convert-svg-core": "^0.7.1",
     "get-stdin": "^9.0.0",
     "glob": "^11.0.3",
     "puppeteer": "^24.10.1",
     "read-package-up": "^11.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.1",
+    "@types/node": "^24.0.3",
     "@types/sinon": "^17.0.4",
     "@types/tmp": "^0.2.6",
     "sinon": "^21.0.0",

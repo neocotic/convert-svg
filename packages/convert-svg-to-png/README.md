@@ -213,6 +213,32 @@ export const convertSvgFiles = async (dirPath) => {
 };
 ```
 
+## Environment
+
+This package supports the use of a `CONVERT_SVG_LAUNCH_OPTIONS` environment variable to act as a base for the `launch`
+option passed to the `Converter` constructor. This can make it easier to control the browser launch/connection. For
+example;
+
+``` sh
+export CONVERT_SVG_LAUNCH_OPTIONS='{"browser": "firefox", "executablePath": "/Applications/Firefox.app/Contents/MacOS/firefox"}'
+```
+
+## macOS
+
+> ⚠️ **Heads up!**
+>
+> If you are using this package on macOS it's important to note that there is a noticeable reduction in the quality of
+> output files compared to other operating systems. This appears to be caused by SVG rendering within Chromium on macOS
+> itself.
+>
+> As such, there are a few options available:
+>
+> 1. Connect this package to a Firefox instance; however, some features may not be supported due to their lack of
+     > support in [WebDriver BiDi](https://w3c.github.io/webdriver-bidi/).
+> 2. Run this package on Linux (e.g. Ubuntu), even if it's just within Docker, will have noticeable improvements of
+     > macOS rendering.
+> 3. If possible, increase the size of the input SVG as this can sometimes result in a better output.
+
 ## Other Formats
 
 If you would like to convert an SVG into a format other than PNG, check out our other converter packages below:

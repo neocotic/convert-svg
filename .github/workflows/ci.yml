@@ -20,15 +20,23 @@ jobs:
         node: [ 22 ]
 
     steps:
-      - name: Setup Environment
+      - name: Set up environment
+        if: ${{ env.ACT == '' }}
         run: |
           echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
           sudo apt-get -qq update
-          sudo apt-get install -y libgbm1 ttf-mscorefonts-installer
-          sudo fc-cache -fv
+          sudo apt-get install -y ttf-mscorefonts-installer libgbm1
+          fc-cache -fv
+      - name: Set up environment (ACT)
+        if: ${{ env.ACT != '' }}
+        run: |
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
+          apt-get -qq update
+          apt-get install -y ttf-mscorefonts-installer libgbm1 libnss3-dev libatk-adaptor libasound2-dev
+          fc-cache -fv
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node ${{ matrix.node }}
+      - name: Set up Node v${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -39,6 +47,20 @@ jobs:
       - name: Lint packages
         run: npm run lint
       - name: Test packages
+        if: ${{ env.ACT == '' }}
         run: npm test
         env:
           CONVERT_SVG_LAUNCH_OPTIONS: '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}'
+      - name: Test packages (ACT)
+        if: ${{ env.ACT != '' }}
+        continue-on-error: true
+        run: npm test
+        env:
+          CONVERT_SVG_LAUNCH_OPTIONS: '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}'
+          CONVERT_SVG_TEST_OPTIONS: '{"retainOutputFiles": true}'
+      - name: Upload test output artifacts (ACT)
+        if: ${{ env.ACT != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: actual-fixtures
+          path: packages/*/test/fixtures/actual

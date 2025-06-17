@@ -1,6 +1,6 @@
 {
   "name": "convert-svg-to-webp-cli",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Converts SVG to WEBP using headless Chromium via CLI",
   "homepage": "https://github.com/neocotic/convert-svg",
   "bugs": {
@@ -54,14 +54,14 @@
     "test": "node --import tsx --enable-source-maps --test \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "convert-svg-core-cli": "^0.7.0",
-    "convert-svg-to-webp": "^0.7.0"
+    "convert-svg-core-cli": "^0.7.1",
+    "convert-svg-to-webp": "^0.7.1"
   },
   "devDependencies": {
-    "@types/node": "^24.0.1",
+    "@types/node": "^24.0.3",
     "@types/sinon": "^17.0.4",
     "commander": "^14.0.0",
-    "convert-svg-core": "^0.7.0",
+    "convert-svg-core": "^0.7.1",
     "sinon": "^21.0.0",
     "tshy": "^3.0.2",
     "tsx": "^4.20.3"

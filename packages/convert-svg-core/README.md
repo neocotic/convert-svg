@@ -48,6 +48,16 @@ lot of the conversion logic, a
 available to make testing implementations even easier. Again, take a look at the tests for existing SVG converters under
 the [packages](https://github.com/neocotic/convert-svg/tree/main/packages) directory for examples.
 
+## Environment
+
+This package supports the use of a `CONVERT_SVG_LAUNCH_OPTIONS` environment variable to act as a base for the `launch`
+option passed to the `Converter` constructor. This can make it easier to control the browser launch/connection. For
+example;
+
+``` sh
+export CONVERT_SVG_LAUNCH_OPTIONS='{"browser": "firefox", "executablePath": "/Applications/Firefox.app/Contents/MacOS/firefox"}'
+```
+
 ## Bugs
 
 If you have any problems with this package or would like to see changes currently in development, you can do so

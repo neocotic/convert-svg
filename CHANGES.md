@@ -1,3 +1,12 @@
+## Version 0.7.1, 2025.06.17
+
+* Allow `import('puppeteer').executablePath` to be passed directly in `launch` options to allow other launch options to
+  be passed to it as a function
+* Document supported `CONVERT_SVG_*` environment variables
+* Document potential issues with reduced quality on macOS
+* Add Docker support for running the test suite on a Linux-based image
+* Bump all dependencies to latest versions
+
 ## Version 0.7.0, 2025.06.14
 
 * **Breaking Change:** All packages now require Node.js v22 or newer
